@@ -97,3 +97,13 @@
       the root `src/index.ts` entry point, the NodeNext/`.js`-extension import discipline, the
       import-graph layering test, the package-manifest contract test, or the packed-tarball
       consumer smoke check (`scripts/smokePackage.ts`, `bun run smoke:package`)
+
+- app_docs/bdd-scenarios.md
+  - Owns:
+    - cucumber.js
+    - features/**
+  - Conditions:
+    - When working on the Cucumber/Gherkin BDD scenario suite (`bun run test:e2e`): per-issue
+      `.feature` files, the promoted regression vocabulary, step definitions, the shared
+      Cucumber world/support code, or the packaged-consumer (`@packaging`) fixture that packs
+      and installs the real tarball
