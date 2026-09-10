@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createGitHubTokenProvider, createLiteralTokenProvider } from '../githubTokenProvider.js';
 import type { GitHubTokenProviderInput } from '../githubTokenProvider.js';
 import type { CredentialRequest } from '../../../git/types.js';
+import { createLiteralTokenProvider as coreCreateLiteralTokenProvider } from '../../../git/literalTokenProvider.js';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -187,27 +188,12 @@ describe('overlay shape', () => {
 });
 
 // ---------------------------------------------------------------------------
-// createLiteralTokenProvider
+// createLiteralTokenProvider — moved to the git core (issue #9); this module
+// re-exports the very same function, not a duplicate implementation.
 // ---------------------------------------------------------------------------
 
 describe('createLiteralTokenProvider', () => {
-  it("'default' purpose returns the token", () => {
-    const provider = createLiteralTokenProvider('token-x');
-    expect(provider.credentialEnv(request()).GH_TOKEN).toBe('token-x');
-  });
-
-  it("'alternateIdentity' with a PAT returns the PAT", () => {
-    const provider = createLiteralTokenProvider('token-x', 'pat-y');
-    expect(provider.credentialEnv(request({ purpose: 'alternateIdentity' })).GH_TOKEN).toBe('pat-y');
-  });
-
-  it("'alternateIdentity' without a PAT degrades to the primary token", () => {
-    const provider = createLiteralTokenProvider('token-x');
-    expect(provider.credentialEnv(request({ purpose: 'alternateIdentity' })).GH_TOKEN).toBe('token-x');
-  });
-
-  it("'default' never returns the alternateIdentityPat", () => {
-    const provider = createLiteralTokenProvider('token-x', 'pat-y');
-    expect(provider.credentialEnv(request({ purpose: 'default' })).GH_TOKEN).toBe('token-x');
+  it('re-exports the same function object as the git core', () => {
+    expect(createLiteralTokenProvider).toBe(coreCreateLiteralTokenProvider);
   });
 });

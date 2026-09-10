@@ -3,7 +3,7 @@ import * as path from 'path';
 import { describe, it, expect, vi } from 'vitest';
 import { GitContext } from '../gitContext.js';
 import type { GitContextOptions, ExecFn, FsDeps, LogLevel } from '../types.js';
-import { createLiteralTokenProvider } from '../../providers/github/githubTokenProvider.js';
+import { createLiteralTokenProvider } from '../literalTokenProvider.js';
 
 const FRAMEWORK_ROOT = '/srv/adw/framework';
 const TARGET_REPOS_DIR = '/srv/adw/repos';

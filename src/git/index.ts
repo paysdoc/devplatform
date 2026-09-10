@@ -8,12 +8,17 @@
  * a forge adapter built on this package implements instead of the core
  * holding a credential — and the `Logger` port (`Logger`/`LogLevel`,
  * defaulting to `consoleLogger`), so the package carries no dependency on
- * the host application's logger. The GitHub implementation of the
- * TokenProvider port (`createGitHubTokenProvider`), the gh command-string
- * builders, GitHub App authentication, token resolution, GitHub remote-URL
- * parsing, bot-identity derivation, clone-URL construction and
- * `gh auth token` all live in the GitHub forge adapter
- * (`adws/providers/github/`, #792/#793), not here.
+ * the host application's logger. Also exports `createLiteralTokenProvider`,
+ * a fixed-string TokenProvider for tests and fixtures — the one
+ * implementation that lives here rather than in a forge adapter, since it
+ * carries no forge logic. Every *production* TokenProvider implementation
+ * (`createGitHubTokenProvider`), the gh command-string builders, GitHub App
+ * authentication, token resolution, GitHub remote-URL parsing, bot-identity
+ * derivation, clone-URL construction and `gh auth token` all live in the
+ * GitHub forge adapter (`adws/providers/github/`, #792/#793), not here. The
+ * forge-keyed `createForgeCredentials` factory (`src/providers/forgeCredentials.ts`,
+ * issue #9) is the public way to obtain a production TokenProvider without
+ * naming a forge.
  *
  * Also exports the worktree lifecycle op namespaces (create/remove/query/
  * probe/reset) and the distributed-lock `claimOps`, alongside the
@@ -36,6 +41,7 @@ export type {
   TokenProvider, CredentialPurpose, CredentialRequest, Logger, LogLevel,
 } from './types.js';
 export { consoleLogger } from './consoleLogger.js';
+export { createLiteralTokenProvider } from './literalTokenProvider.js';
 export { killProcessesInDirectory } from './processCleanup.js';
 export { claimOps } from './claimOps.js';
 export { worktreeCreateOps } from './worktreeCreateOps.js';
