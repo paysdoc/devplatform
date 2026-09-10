@@ -30,6 +30,61 @@ function assertFileExists(absPath: string, label: string): void {
   if (!fs.existsSync(absPath)) fail(`expected ${label} to exist`);
 }
 
+/** Every public name the packed tarball must resolve, keyed by entry-point subpath. Widening a barrel is a one-line change here (issue #11). */
+const EXPECTED_EXPORTS: Readonly<Record<string, readonly string[]>> = {
+  '@paysdoc/devplatform': ['BoardStatus'],
+  '@paysdoc/devplatform/providers': [
+    'forgeProviders',
+    'createForgeCredentials',
+    'createGitHubTokenProvider',
+    'resolveBootstrapGitIdentity',
+    'resolveContextToken',
+    'ghAuthToken',
+    'isGitHubAppConfigured',
+    'getInstallationToken',
+    'createGhRepoApi',
+  ],
+  '@paysdoc/devplatform/git': [
+    'GitContext',
+    'createLiteralTokenProvider',
+    'commitOps',
+    'branchOps',
+    'isLeaseRejection',
+  ],
+};
+
+/**
+ * Builds a dependency-free ESM script that dynamically imports every subpath
+ * in `table` and verifies every listed key resolves to a defined value,
+ * printing `OK` or exiting 1 naming each `subpath.key` miss. Types cannot be
+ * checked at runtime — that is what the `@packaging` type-check scenario is
+ * for. Runnable under both `node --input-type=module -e` and `bun -e`; wrapped
+ * in an async IIFE with an explicit `process.exit(1)` on rejection since a
+ * bare top-level throw's exit behaviour differs subtly between the two.
+ */
+function buildDynamicImportKeyCheck(table: Readonly<Record<string, readonly string[]>>): string {
+  return [
+    '(async () => {',
+    `  const expected = ${JSON.stringify(table)};`,
+    '  const missing = [];',
+    '  for (const [subpath, names] of Object.entries(expected)) {',
+    '    const mod = await import(subpath);',
+    '    for (const name of names) {',
+    '      if (mod[name] === undefined) missing.push(`${subpath}.${name}`);',
+    '    }',
+    '  }',
+    '  if (missing.length > 0) {',
+    "    console.error('MISSING', missing);",
+    '    process.exit(1);',
+    '  }',
+    "  console.log('OK');",
+    '})().catch((error) => {',
+    '  console.error(error);',
+    '  process.exit(1);',
+    '});',
+  ].join('\n');
+}
+
 function main(): void {
   console.log('==> bun run build');
   run('bun run build');
@@ -72,17 +127,7 @@ function main(): void {
     );
     run(`npm install "${tarballPath}"`, consumerDir);
 
-    const importCheck = [
-      "import * as root from '@paysdoc/devplatform';",
-      "import * as providers from '@paysdoc/devplatform/providers';",
-      "import * as git from '@paysdoc/devplatform/git';",
-      "if (typeof root.BoardStatus === 'undefined') throw new Error('root entry missing BoardStatus');",
-      "if (typeof providers.forgeProviders !== 'function') throw new Error('providers entry missing forgeProviders');",
-      "if (typeof providers.createForgeCredentials !== 'function') throw new Error('providers entry missing createForgeCredentials');",
-      "if (typeof git.GitContext !== 'function') throw new Error('git entry missing GitContext');",
-      "if (typeof git.createLiteralTokenProvider !== 'function') throw new Error('git entry missing createLiteralTokenProvider');",
-      "console.log('OK');",
-    ].join('\n');
+    const importCheck = buildDynamicImportKeyCheck(EXPECTED_EXPORTS);
 
     console.log('==> node consumer (node --input-type=module -e ...)');
     const nodeOut = execFileSync('node', ['--input-type=module', '-e', importCheck], { cwd: consumerDir, encoding: 'utf-8' });
