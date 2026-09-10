@@ -1,5 +1,8 @@
-import { describe, it, expect } from 'vitest';
-import { parseOwnerRepoFromUrl } from '../repoContext';
+import { describe, it, expect, afterEach } from 'vitest';
+import { mkdtempSync, rmSync, mkdirSync, writeFileSync } from 'fs';
+import { tmpdir } from 'os';
+import { join } from 'path';
+import { parseOwnerRepoFromUrl, validateWorkingDirectory } from '../workspaceValidation';
 
 describe('parseOwnerRepoFromUrl', () => {
   describe('HTTPS URLs', () => {
@@ -80,5 +83,40 @@ describe('parseOwnerRepoFromUrl', () => {
     it('returns null for unrecognised URL format', () => {
       expect(parseOwnerRepoFromUrl('not-a-url')).toBeNull();
     });
+  });
+});
+
+describe('validateWorkingDirectory', () => {
+  let tempDir: string | null = null;
+
+  afterEach(() => {
+    if (tempDir) {
+      rmSync(tempDir, { recursive: true, force: true });
+      tempDir = null;
+    }
+  });
+
+  it('throws when the path does not exist', () => {
+    expect(() => validateWorkingDirectory('/no/such/path/adw-workspace-validation')).toThrow(/does not exist/);
+  });
+
+  it('throws when the path is a file, not a directory', () => {
+    tempDir = mkdtempSync(join(tmpdir(), 'adw-wsval-'));
+    const filePath = join(tempDir, 'not-a-dir');
+    writeFileSync(filePath, 'x');
+    expect(() => validateWorkingDirectory(filePath)).toThrow(/not a directory/);
+  });
+
+  it('throws when the directory has no .git', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'adw-wsval-'));
+    tempDir = dir;
+    expect(() => validateWorkingDirectory(dir)).toThrow(/not a git repository/);
+  });
+
+  it('passes when the directory contains a .git directory', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'adw-wsval-'));
+    tempDir = dir;
+    mkdirSync(join(dir, '.git'));
+    expect(() => validateWorkingDirectory(dir)).not.toThrow();
   });
 });
