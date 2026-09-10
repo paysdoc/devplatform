@@ -1,0 +1,21 @@
+{
+  "name": "@paysdoc/devplatform",
+  "version": "0.0.0-development",
+  "description": "Forge ports and adapters (GitHub, GitLab, Jira) over a forge-neutral git/worktree core",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paysdoc/devplatform.git"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test:unit": "vitest run",
+    "test": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.0",
+    "typescript": "^5.7.3",
+    "vitest": "^4.1.0"
+  }
+}

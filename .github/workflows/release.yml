@@ -1,0 +1,16 @@
+name: Release
+
+# Placeholder. Release automation (semantic-release with the agent-prefixed
+# commit parser, OIDC trusted publishing) is issue L2 of the extraction PRD.
+# The filename is referenced when the npm trusted publisher is linked.
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  release:
+    name: Release (not yet configured)
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Release automation is configured by issue L2."

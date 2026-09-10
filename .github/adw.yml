@@ -1,0 +1,6 @@
+# ADW configuration for this repository.
+# This file lives outside `.adw/`, so `/adw_init` regeneration never overwrites it.
+
+# Inject the target-repo agent guardrails (`--settings` deny list + framework hooks)
+# on every ADW agent spawn against this repository.
+guardrails: true
