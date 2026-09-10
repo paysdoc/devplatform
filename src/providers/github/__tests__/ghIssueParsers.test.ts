@@ -8,7 +8,7 @@ import {
   parseFirstIssueNumber,
   parseIssueSummaries,
   parseIssueListEntries,
-} from '../ghIssueParsers';
+} from '../ghIssueParsers.js';
 
 describe('parseGitHubIssue', () => {
   it('maps a full payload, flattening author/labels/comments', () => {

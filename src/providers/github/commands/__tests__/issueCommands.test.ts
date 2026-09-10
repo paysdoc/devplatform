@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { listOpenIssuesCmd } from '../issueCommands';
+import { listOpenIssuesCmd } from '../issueCommands.js';
 
 describe('listOpenIssuesCmd', () => {
   it('defaults to --state open when no state option is supplied', () => {

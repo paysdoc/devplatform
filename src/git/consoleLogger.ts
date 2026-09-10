@@ -4,7 +4,7 @@
  * for callers that inject no logger of their own.
  */
 
-import type { Logger } from './types';
+import type { Logger } from './types.js';
 
 export const consoleLogger: Logger = (message) => {
   console.log(message);

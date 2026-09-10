@@ -8,12 +8,12 @@
  * `Logger` port instead of `adws/core`'s `log`.
  */
 
-import { consoleLogger, type GitContext, type Logger } from '../../git';
-import type { BoardManager, BoardColumnDefinition, RepoIdentifier } from '../types';
-import { BOARD_COLUMNS, validateRepoIdentifier } from '../types';
-import { assertContextBoundTo } from './contextBinding';
-import { createGhCommandRunner, type GhCommandRunner } from './ghCommandRunner';
-import { graphQLCmd, graphQLInputCmd } from './commands/boardCommands';
+import { consoleLogger, type GitContext, type Logger } from '../../git/index.js';
+import type { BoardManager, BoardColumnDefinition, RepoIdentifier } from '../types.js';
+import { BOARD_COLUMNS, validateRepoIdentifier } from '../types.js';
+import { assertContextBoundTo } from './contextBinding.js';
+import { createGhCommandRunner, type GhCommandRunner } from './ghCommandRunner.js';
+import { graphQLCmd, graphQLInputCmd } from './commands/boardCommands.js';
 
 type StatusOption = { id?: string; name: string; color: string; description: string };
 

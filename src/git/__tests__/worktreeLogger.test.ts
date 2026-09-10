@@ -1,9 +1,9 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { describe, it, expect, vi } from 'vitest';
-import { GitContext } from '../gitContext';
-import type { GitContextOptions, ExecFn, FsDeps, LogLevel } from '../types';
-import { createLiteralTokenProvider } from '../../providers/github/githubTokenProvider';
+import { GitContext } from '../gitContext.js';
+import type { GitContextOptions, ExecFn, FsDeps, LogLevel } from '../types.js';
+import { createLiteralTokenProvider } from '../../providers/github/githubTokenProvider.js';
 
 const FRAMEWORK_ROOT = '/srv/adw/framework';
 const TARGET_REPOS_DIR = '/srv/adw/repos';

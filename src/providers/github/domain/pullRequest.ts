@@ -6,7 +6,7 @@
  * `adws/github/prApi.ts`.
  */
 
-import type { GitHubUser } from './issue';
+import type { GitHubUser } from './issue.js';
 
 /**
  * PR review comment from GitHub API.

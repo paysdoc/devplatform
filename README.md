@@ -3,7 +3,23 @@
 A TypeScript library of forge-neutral git/worktree primitives plus GitHub, GitLab, and Jira adapters for building dev-workflow automation.
 
 Extracted from [AI_Dev_Workflow](https://github.com/paysdoc/AI_Dev_Workflow) with history.
-Package build, entry points, and release automation are tracked in this repository's issues.
+Release automation is tracked as a separate issue in this repository.
+
+## Install
+
+```
+bun add @paysdoc/devplatform
+# or
+npm i @paysdoc/devplatform
+```
+
+The package ships three entry points:
+
+```ts
+import { BoardStatus, type Issue, type RepoContext } from '@paysdoc/devplatform';         // forge ports + domain model
+import { forgeProviders } from '@paysdoc/devplatform/providers';                          // adapter assembly + GitHub/GitLab/Jira adapters
+import { GitContext, consoleLogger } from '@paysdoc/devplatform/git';                     // forge-neutral git/worktree core
+```
 
 ## What it does
 
@@ -23,7 +39,8 @@ Package build, entry points, and release automation are tracked in this reposito
 - **Jira adapter** — issue tracker backed by the Jira REST API v3, including Markdown ↔ Atlassian Document Format (ADF) conversion.
 - **Board status model** — a canonical, ordered set of board columns (`Blocked`/`Todo`/`In Progress`/`Review`/`Done`) with colors and descriptions shared across board-capable adapters.
 - **Injected configuration everywhere** — GitLab, Jira, and GitHub App adapters take configuration as constructor arguments; none reads `process.env` or files directly, keeping the library embeddable in any host.
-- **CI type-check and unit-test gate** — GitHub Actions workflow runs `bun install`, `bun run typecheck`, and `bun run test:unit` on every PR and push to `main`.
+- **Compiled ESM + type declarations** — `bun run build` emits `dist/**/*.js` and `dist/**/*.d.ts` via `tsc`, with a three-entry-point `exports` map (`.`, `./providers`, `./git`) and a `files` allow-list so `npm pack` ships only `dist/`, `README.md`, and `LICENSE`.
+- **CI type-check, unit-test, and package gate** — GitHub Actions runs `bun install`, `bun run typecheck`, and `bun run test:unit` on every PR and push to `main`, plus a second job that builds, packs, and smoke-tests the tarball under both Node and Bun.
 - **Release workflow placeholder** — a `Release` GitHub Actions job reserved for future semantic-release automation (tracked as a separate issue).
 - **Claude Code agent guardrails** — a hooked `.claude/settings.json` and `.claude/hooks/*` scripts (pre/post-tool-use, notification, stop, subagent-stop) constrain and observe agent tool use in this repo.
 
@@ -33,6 +50,7 @@ Package build, entry points, and release automation are tracked in this reposito
 2. Copy the environment template and fill in your own values: `cp .env.sample .env`
 3. Type-check: `bun run typecheck`
 4. Run the unit test suite: `bun run test:unit`
+5. Build: `bun run build`
 
 ## Domain glossary
 
@@ -50,14 +68,19 @@ See [UBIQUITOUS_LANGUAGE.md](./UBIQUITOUS_LANGUAGE.md) for the canonical terms u
   workflows/release.yml        Release automation placeholder
   adw.yml                      ADW guardrails toggle (outside .adw/, survives regeneration)
 features/regression/vocabulary.md   Regression test vocabulary
+scripts/
+  smokePackage.ts             Builds, packs, and smoke-tests the tarball under Node + Bun (`bun run smoke:package`)
 src/
-  git/                        Forge-neutral git/worktree core (GitContext, worktree ops, bootstrap identity, process cleanup)
-  providers/                  Forge provider ports and adapters
+  index.ts                    Root entry point ("."): forge ports + domain model only
+  git/                        Forge-neutral git/worktree core (GitContext, worktree ops, bootstrap identity, process cleanup) — entry point "./git"
+  providers/                  Forge provider ports and adapters — entry point "./providers"
     github/                   GitHub adapter (issue tracker, code host, board manager, App auth, gh CLI commands)
     gitlab/                   GitLab adapter (API client, code host, type mappers)
     jira/                     Jira adapter (API client, issue tracker, ADF converter)
     forgeProviders.ts          Provider assembly function
     types.ts                   Platform-agnostic provider interfaces
-tsconfig.json                 TypeScript strict-mode configuration
+dist/                        Build output (gitignored) — emitted by `bun run build`
+tsconfig.json                 TypeScript strict-mode configuration (NodeNext modules/resolution)
+tsconfig.build.json            Build config: extends tsconfig.json, emits dist/**/*.js + dist/**/*.d.ts
 vitest.config.ts               Vitest configuration (JUnit output via $ADW_UNIT_TEST_REPORT_PATH)
 ```

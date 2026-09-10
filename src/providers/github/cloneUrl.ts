@@ -5,7 +5,7 @@
  * clone URL; the core itself clones exactly what it is given.
  */
 
-import { parseGitHubRemoteUrl } from './githubIdentity';
+import { parseGitHubRemoteUrl } from './githubIdentity.js';
 
 /**
  * Converts an HTTPS GitHub clone URL to SSH format.

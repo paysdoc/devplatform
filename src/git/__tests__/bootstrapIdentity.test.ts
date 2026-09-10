@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { execSync } from 'child_process';
-import { readOriginRemoteUrl, readEnvGitIdentity, readGitConfigIdentity } from '../bootstrapIdentity';
+import { readOriginRemoteUrl, readEnvGitIdentity, readGitConfigIdentity } from '../bootstrapIdentity.js';
 
 // ---------------------------------------------------------------------------
 // readOriginRemoteUrl — real git remote, generic read (no parse, no forge)

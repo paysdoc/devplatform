@@ -4,8 +4,8 @@ import {
   getTargetRepoWorkspacePath,
   isRepoCloned,
   ensureRepoWorkspace,
-} from '../repoWorkspace';
-import type { WorkspaceExecFn } from '../repoWorkspace';
+} from '../repoWorkspace.js';
+import type { WorkspaceExecFn } from '../repoWorkspace.js';
 
 const TARGET_REPOS_DIR = '/srv/adw/repos';
 

@@ -6,8 +6,8 @@
  * is pure and throws on malformed JSON.
  */
 
-import type { GitHubIssue, IssueCommentSummary } from './domain/issue';
-import type { IssueListEntry, IssueSummary } from '../types';
+import type { GitHubIssue, IssueCommentSummary } from './domain/issue.js';
+import type { IssueListEntry, IssueSummary } from '../types.js';
 
 interface RawGitHubUser {
   login?: string;

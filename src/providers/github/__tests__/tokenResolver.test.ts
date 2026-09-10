@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { resolveContextToken } from '../tokenResolver';
-import type { ResolveContextTokenInput } from '../tokenResolver';
+import { resolveContextToken } from '../tokenResolver.js';
+import type { ResolveContextTokenInput } from '../tokenResolver.js';
 
 // ---------------------------------------------------------------------------
 // Helpers

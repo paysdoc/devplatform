@@ -6,11 +6,11 @@
  * redeclare it.
  */
 
-import { type CodeHostForge, type IssueTrackerForge, type ForgeProvidersOptions } from '../forgeProviders';
-import { Platform, type RepoIdentifier } from '../types';
-import { GitContext } from '../../git';
-import type { GitContextOptions, ExecFn } from '../../git';
-import { createLiteralTokenProvider } from '../github/githubTokenProvider';
+import { type CodeHostForge, type IssueTrackerForge, type ForgeProvidersOptions } from '../forgeProviders.js';
+import { Platform, type RepoIdentifier } from '../types.js';
+import { GitContext } from '../../git/index.js';
+import type { GitContextOptions, ExecFn } from '../../git/index.js';
+import { createLiteralTokenProvider } from '../github/githubTokenProvider.js';
 
 export function makeRepoId(overrides: Partial<RepoIdentifier> = {}): RepoIdentifier {
   return { owner: 'acme', repo: 'webapp', platform: Platform.GitHub, ...overrides };

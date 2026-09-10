@@ -5,9 +5,9 @@
  * throws on every command — no `vi.mock` of any `adws/github/*` module.
  */
 import { describe, it, expect } from 'vitest';
-import { createGitHubIssueTracker } from '../githubIssueTracker';
-import { Platform, type RepoIdentifier } from '../../types';
-import { makeCtx } from './gitContextFixture';
+import { createGitHubIssueTracker } from '../githubIssueTracker.js';
+import { Platform, type RepoIdentifier } from '../../types.js';
+import { makeCtx } from './gitContextFixture.js';
 
 const REPO_ID: RepoIdentifier = { owner: 'acme', repo: 'widget', platform: Platform.GitHub };
 

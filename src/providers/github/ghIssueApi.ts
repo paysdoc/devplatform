@@ -5,14 +5,14 @@
  * only — assembled into `GhRepoApi` by `ghRepoApi.ts`.
  */
 
-import type { GhCommandRunner } from './ghCommandRunner';
+import type { GhCommandRunner } from './ghCommandRunner.js';
 import {
   fetchIssueCmd, commentOnIssueCmd, issueStateCmd, closeIssueCmd, issueTitleCmd,
   fetchIssueCommentsCmd, issueHasLabelCmd, addIssueLabelCmd, createIssueCmd,
   updateIssueBodyCmd, findOpenUpgradeIssueCmd, deleteIssueCommentCmd,
   listOpenIssuesCmd, issueCommentsCmd,
   type ListOpenIssuesOptions,
-} from './commands/issueCommands';
+} from './commands/issueCommands.js';
 
 /** The 14 issue operations relocated from GitContext's former semantic surface, bound to one owner/repo. */
 export interface GhIssueApi {

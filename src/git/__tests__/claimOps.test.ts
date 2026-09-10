@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { claimOps } from '../claimOps';
+import { claimOps } from '../claimOps.js';
 
 interface RunnerCall {
   command: string;

@@ -3,9 +3,9 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { execSync } from 'child_process';
-import { resolveBootstrapGitIdentity, parseGitHubRemoteUrl, readLocalRepoInfo } from '../githubIdentity';
-import type { BootstrapIdentityDeps } from '../githubIdentity';
-import { Platform } from '../../types';
+import { resolveBootstrapGitIdentity, parseGitHubRemoteUrl, readLocalRepoInfo } from '../githubIdentity.js';
+import type { BootstrapIdentityDeps } from '../githubIdentity.js';
+import { Platform } from '../../types.js';
 
 // ---------------------------------------------------------------------------
 // parseGitHubRemoteUrl

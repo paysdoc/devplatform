@@ -3,10 +3,10 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { BoardStatus, BOARD_COLUMNS } from '../types';
-import { mergeStatusOptions } from '../github/githubBoardManager';
-import { createJiraBoardManager } from '../jira/jiraBoardManager';
-import { createGitLabBoardManager } from '../gitlab/gitlabBoardManager';
+import { BoardStatus, BOARD_COLUMNS } from '../types.js';
+import { mergeStatusOptions } from '../github/githubBoardManager.js';
+import { createJiraBoardManager } from '../jira/jiraBoardManager.js';
+import { createGitLabBoardManager } from '../gitlab/gitlabBoardManager.js';
 
 describe('BOARD_COLUMNS', () => {
   it('has exactly 5 entries', () => {

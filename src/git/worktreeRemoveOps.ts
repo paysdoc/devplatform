@@ -4,8 +4,8 @@
  */
 
 import * as path from 'path';
-import type { Logger } from './types';
-import { killProcessesInDirectory } from './processCleanup';
+import type { Logger } from './types.js';
+import { killProcessesInDirectory } from './processCleanup.js';
 
 type Runner = (command: string, cwd: string) => string;
 

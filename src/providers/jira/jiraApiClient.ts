@@ -7,9 +7,9 @@
  * `fetchFn` is the hermetic transport test seam; production uses global fetch.
  */
 
-import type { Logger } from '../../git/types';
-import { consoleLogger } from '../../git/consoleLogger';
-import type { JiraIssueResponse, JiraCommentResponse, JiraCommentPage, JiraTransition, JiraTransitionsResponse } from './jiraTypes';
+import type { Logger } from '../../git/types.js';
+import { consoleLogger } from '../../git/consoleLogger.js';
+import type { JiraIssueResponse, JiraCommentResponse, JiraCommentPage, JiraTransition, JiraTransitionsResponse } from './jiraTypes.js';
 
 export interface JiraCloudAuth {
   readonly email: string;

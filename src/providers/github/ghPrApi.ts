@@ -5,12 +5,12 @@
  * Deep-import only — assembled into `GhRepoApi` by `ghRepoApi.ts`.
  */
 
-import type { GhCommandRunner } from './ghCommandRunner';
+import type { GhCommandRunner } from './ghCommandRunner.js';
 import {
   findPRByBranchCmd, fetchPRDetailsCmd, fetchPRReviewsCmd, fetchPRReviewCommentsCmd,
   commentOnPRCmd, mergePRCmd, approvePRCmd, prApprovalStateCmd,
   fetchPRListCmd, fetchAllPRsCmd, createPRCmd, fetchMergedPRsCmd, prChangedFilesCmd,
-} from './commands/prCommands';
+} from './commands/prCommands.js';
 
 /** The 13 pull-request operations relocated from GitContext's former semantic surface, bound to one owner/repo. */
 export interface GhPrApi {

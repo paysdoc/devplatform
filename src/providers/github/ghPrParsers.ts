@@ -6,7 +6,7 @@
  * pure and throws on malformed JSON; there is no logging and no I/O.
  */
 
-import type { PRDetails, PRReviewComment, PRListItem, RawPR } from './domain/pullRequest';
+import type { PRDetails, PRReviewComment, PRListItem, RawPR } from './domain/pullRequest.js';
 
 interface RawPRDetails {
   number: number;

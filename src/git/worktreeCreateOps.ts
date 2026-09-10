@@ -4,8 +4,8 @@
  * computation here.
  */
 
-import type { Logger } from './types';
-import { worktreeQueryOps } from './worktreeQueryOps';
+import type { Logger } from './types.js';
+import { worktreeQueryOps } from './worktreeQueryOps.js';
 
 type Runner = (command: string, cwd: string) => string;
 

@@ -4,8 +4,8 @@
  * All functions are pure — no side effects, no imports of global state.
  */
 
-import type { PullRequest, ReviewComment, RepoIdentifier } from '../types';
-import type { GitLabMergeRequest, GitLabNote, GitLabDiscussion } from './gitlabTypes';
+import type { PullRequest, ReviewComment, RepoIdentifier } from '../types.js';
+import type { GitLabMergeRequest, GitLabNote, GitLabDiscussion } from './gitlabTypes.js';
 
 /**
  * Extracts the first linked issue number from a merge request description.
