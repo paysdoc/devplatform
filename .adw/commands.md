@@ -5,7 +5,7 @@ bun
 bun install
 
 ## Run Linter
-N/A (no linter configured in this repo)
+bun run lint:git-guard
 
 ## Type Check
 bun run typecheck

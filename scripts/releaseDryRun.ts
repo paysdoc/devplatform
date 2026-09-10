@@ -8,6 +8,7 @@
 import { spawnSync } from 'node:child_process';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readCurrentBranch } from '../src/git/index.js';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -20,14 +21,11 @@ function resolveBranch(): string {
   const envBranch = process.env.DRY_RUN_BRANCH;
   if (envBranch && envBranch.trim()) return envBranch.trim();
 
-  const result = spawnSync('git', ['rev-parse', '--abbrev-ref', 'HEAD'], {
-    cwd: REPO_ROOT,
-    encoding: 'utf-8',
-  });
-  if (result.status !== 0 || !result.stdout.trim()) {
-    fail(`could not resolve current branch: ${result.stderr}`);
+  try {
+    return readCurrentBranch(REPO_ROOT);
+  } catch (err) {
+    fail(`could not resolve current branch: ${err instanceof Error ? err.message : String(err)}`);
   }
-  return result.stdout.trim();
 }
 
 function main(): void {

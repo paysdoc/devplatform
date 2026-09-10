@@ -48,7 +48,7 @@ export type { WorktreeRegistration } from './worktreeProbeOps.js';
 export type { LogSinceOptions } from './gitReadOps.js';
 
 // Bootstrap — absorbed pre-context primitives (issue #700), generic git reads only (#793)
-export { readOriginRemoteUrl, readEnvGitIdentity, readGitConfigIdentity } from './bootstrapIdentity.js';
+export { readOriginRemoteUrl, readCurrentBranch, readEnvGitIdentity, readGitConfigIdentity } from './bootstrapIdentity.js';
 export type { GitConfigIdentityDeps } from './bootstrapIdentity.js';
 export {
   getTargetRepoWorkspacePath,

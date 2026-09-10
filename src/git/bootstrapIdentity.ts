@@ -39,6 +39,15 @@ export function readOriginRemoteUrl(cwd?: string): string {
   return execSync('git remote get-url origin', { encoding: 'utf-8', cwd }).trim();
 }
 
+/**
+ * Reads the current branch name, trimmed. Throws with the raw git failure on
+ * a detached HEAD or any other git failure — the caller decides how to
+ * degrade, the core does not guess.
+ */
+export function readCurrentBranch(cwd?: string): string {
+  return execSync('git rev-parse --abbrev-ref HEAD', { encoding: 'utf-8', cwd }).trim();
+}
+
 // ---------------------------------------------------------------------------
 // readEnvGitIdentity / readGitConfigIdentity
 // ---------------------------------------------------------------------------

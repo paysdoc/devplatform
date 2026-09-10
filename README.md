@@ -40,8 +40,9 @@ import { GitContext, consoleLogger } from '@paysdoc/devplatform/git';           
 - **Board status model** — a canonical, ordered set of board columns (`Blocked`/`Todo`/`In Progress`/`Review`/`Done`) with colors and descriptions shared across board-capable adapters.
 - **Injected configuration everywhere** — GitLab, Jira, and GitHub App adapters take configuration as constructor arguments; none reads `process.env` or files directly, keeping the library embeddable in any host.
 - **Compiled ESM + type declarations** — `bun run build` emits `dist/**/*.js` and `dist/**/*.d.ts` via `tsc`, with a three-entry-point `exports` map (`.`, `./providers`, `./git`) and a `files` allow-list so `npm pack` ships only `dist/`, `README.md`, and `LICENSE`.
-- **CI type-check, unit-test, and package gate** — GitHub Actions runs `bun install`, `bun run typecheck`, and `bun run test:unit` on every PR and push to `main`, plus a second job that builds, packs, and smoke-tests the tarball under both Node and Bun.
+- **CI type-check, git/gh guard, unit-test, and package gate** — GitHub Actions runs `bun install`, `bun run typecheck`, `bun run lint:git-guard`, and `bun run test:unit` on every PR and push to `main`, plus a second job that builds, packs, and smoke-tests the tarball under both Node and Bun.
 - **Automated releases via semantic-release** — a `Release` GitHub Actions job runs semantic-release on every push to `main`, using a commit parser that accepts an optional `<agent-name>: ` prefix before the conventional type (`build-agent: feat: …` → minor, `review-patch-agent: fix: …` → patch, `plan-orchestrator: chore: …` → no release), a PR `release-dry-run` job that prints the computed next version before merge, and npm OIDC trusted publishing with an `NPM_TOKEN` fallback.
+- **Git/gh CI guard** — an AST-based check (`bun run lint:git-guard`, `scripts/checkGitGhGuard.ts` + `scripts/guard/`) that fails CI on a direct `git`/`gh` shell-out outside `src/git/` and `src/providers/github/` (the two structurally-exempt packages), or on ad-hoc provider/`GitContext` construction anywhere outside the one-entry `src/providers/forgeProviders.ts` allowlist.
 - **Claude Code agent guardrails** — a hooked `.claude/settings.json` and `.claude/hooks/*` scripts (pre/post-tool-use, notification, stop, subagent-stop) constrain and observe agent tool use in this repo.
 
 ## Setup
@@ -91,16 +92,19 @@ See [UBIQUITOUS_LANGUAGE.md](./UBIQUITOUS_LANGUAGE.md) for the canonical terms u
   skills/                     Agent skills (TDD, PRD authoring, architecture review, ubiquitous language, ...)
   settings.json                Agent permission/guardrail configuration
 .github/
-  workflows/ci.yml             Typecheck + unit test CI gate, build/pack/smoke-test package gate, and a PR-only release-dry-run job
+  workflows/ci.yml             Typecheck + git/gh guard + unit test CI gate, build/pack/smoke-test package gate, and a PR-only release-dry-run job
   workflows/release.yml        Release automation: semantic-release on push to main (v1.0.0 baseline guard, OIDC + NPM_TOKEN fallback)
   adw.yml                      ADW guardrails toggle (outside .adw/, survives regeneration)
-app_docs/                    Generated per-feature documentation
+app_docs/                    Per-module documentation owned by conditional_docs.md routing (ADW-generated)
+UBIQUITOUS_LANGUAGE.md       Canonical domain glossary
 features/regression/vocabulary.md   Regression test vocabulary
 specs/                        Per-issue implementation plans (ADW-generated)
 release.config.js             semantic-release configuration: agent-prefix-aware commit parser, branches, plugin list
 scripts/
   smokePackage.ts             Builds, packs, and smoke-tests the tarball under Node + Bun (`bun run smoke:package`)
   releaseDryRun.ts             Runs `semantic-release --dry-run` and prints the computed next version (`bun run release:dry-run`)
+  checkGitGhGuard.ts          CI git/gh guard entry point (`bun run lint:git-guard`) — dev-only, excluded from dist/
+  guard/                      Guard rule modules: shell-out exempt-package set, construction allowlist, stdout report
 src/
   index.ts                    Root entry point ("."): forge ports + domain model only
   __tests__/                  Import-graph, package-exports, and release-config contract tests

@@ -74,6 +74,15 @@
     - When troubleshooting why an agent-prefixed or plain conventional commit does or does not
       trigger a release, or what release type (patch/minor/major/none) a commit computes to
 
+- app_docs/git-gh-guard.md
+  - Owns:
+    - scripts/checkGitGhGuard.ts
+    - scripts/guard/**
+  - Conditions:
+    - When working on the CI git/gh shell-out guard or the unsanctioned-construction guard
+      rule: the exempt-package set, the sanctioned construction-site allowlist, or the guard's
+      report/stdout formatting
+
 - app_docs/feature-wdjsgu-package-build-export-package-build.md
   - Owns:
     - package.json

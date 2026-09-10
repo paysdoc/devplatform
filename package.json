@@ -38,6 +38,7 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
+    "lint:git-guard": "bunx tsx scripts/checkGitGhGuard.ts",
     "test:unit": "vitest run",
     "test": "tsc --noEmit",
     "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",

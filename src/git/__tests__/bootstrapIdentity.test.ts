@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { execSync } from 'child_process';
-import { readOriginRemoteUrl, readEnvGitIdentity, readGitConfigIdentity } from '../bootstrapIdentity.js';
+import { readOriginRemoteUrl, readCurrentBranch, readEnvGitIdentity, readGitConfigIdentity } from '../bootstrapIdentity.js';
 
 // ---------------------------------------------------------------------------
 // readOriginRemoteUrl — real git remote, generic read (no parse, no forge)
@@ -33,6 +33,42 @@ describe('readOriginRemoteUrl', () => {
 
   it('propagates the git failure when there is no origin remote', () => {
     expect(() => readOriginRemoteUrl(tempDir)).toThrow();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// readCurrentBranch — real git branch, generic read (no parse, no forge)
+// ---------------------------------------------------------------------------
+
+describe('readCurrentBranch', () => {
+  let tempDir = '';
+
+  beforeEach(() => {
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'adw-793-core-branch-'));
+    execSync('git init -q -b main', { cwd: tempDir, stdio: 'pipe' });
+    execSync('git -c user.name=Test -c user.email=test@test.dev commit -q --allow-empty -m init', { cwd: tempDir, stdio: 'pipe' });
+  });
+
+  afterEach(() => {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  });
+
+  it('returns the trimmed current branch name of a throwaway repo', () => {
+    expect(readCurrentBranch(tempDir)).toBe('main');
+  });
+
+  it('reflects a checked-out branch other than the default', () => {
+    execSync('git checkout -q -b feature/x', { cwd: tempDir, stdio: 'pipe' });
+    expect(readCurrentBranch(tempDir)).toBe('feature/x');
+  });
+
+  it('propagates the git failure outside a repository', () => {
+    const outsideRepo = fs.mkdtempSync(path.join(os.tmpdir(), 'adw-793-not-a-repo-'));
+    try {
+      expect(() => readCurrentBranch(outsideRepo)).toThrow();
+    } finally {
+      fs.rmSync(outsideRepo, { recursive: true, force: true });
+    }
   });
 });
 
