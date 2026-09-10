@@ -192,3 +192,54 @@ describe('resolveBootstrapGitIdentity — resolution order', () => {
     expect(identity.committerEmail).toBe(identity.authorEmail);
   });
 });
+
+// ---------------------------------------------------------------------------
+// resolveBootstrapGitIdentity — injected appConfig (issue #9)
+// ---------------------------------------------------------------------------
+
+describe('resolveBootstrapGitIdentity — injected appConfig', () => {
+  it('a complete appConfig derives the bot identity even with an empty environment', () => {
+    const identity = resolveBootstrapGitIdentity({
+      env: {},
+      appConfig: { appId: '12345', appSlug: 'adw-bot', privateKeyPath: '/path/to/key' },
+    });
+    expect(identity.authorName).toBe('adw-bot[bot]');
+    expect(identity.authorEmail).toBe('12345+adw-bot[bot]@users.noreply.github.com');
+    expect(identity.committerName).toBe('adw-bot[bot]');
+    expect(identity.committerEmail).toBe('12345+adw-bot[bot]@users.noreply.github.com');
+  });
+
+  it('appConfig: null skips bot derivation even when the environment carries GITHUB_APP_* and GIT_AUTHOR_*', () => {
+    const identity = resolveBootstrapGitIdentity({
+      env: {
+        GITHUB_APP_ID: '12345',
+        GITHUB_APP_SLUG: 'adw-bot',
+        GITHUB_APP_PRIVATE_KEY_PATH: '/path/to/key',
+        GIT_AUTHOR_NAME: 'CI Bot',
+        GIT_AUTHOR_EMAIL: 'ci@test.dev',
+      },
+      appConfig: null,
+    });
+    expect(identity.authorName).toBe('CI Bot');
+    expect(identity.authorEmail).toBe('ci@test.dev');
+  });
+
+  it('an incomplete appConfig is not configured — falls through to environment/git-config/fallback', () => {
+    const identity = resolveBootstrapGitIdentity({
+      env: { GIT_AUTHOR_NAME: 'CI Bot', GIT_AUTHOR_EMAIL: 'ci@test.dev' },
+      appConfig: { appId: 'x' },
+    });
+    expect(identity.authorName).toBe('CI Bot');
+    expect(identity.authorEmail).toBe('ci@test.dev');
+  });
+
+  it('an explicitly injected isAppConfigured still wins the gate even when appConfig is null', () => {
+    const identity = resolveBootstrapGitIdentity({
+      env: { GITHUB_APP_ID: '999', GITHUB_APP_SLUG: 'env-bot' },
+      appConfig: null,
+      isAppConfigured: () => true,
+    });
+    expect(identity.authorName).toBe('env-bot[bot]');
+    expect(identity.authorEmail).toBe('999+env-bot[bot]@users.noreply.github.com');
+  });
+});
