@@ -4,7 +4,7 @@ const junitReportPath = process.env.ADW_UNIT_TEST_REPORT_PATH;
 
 export default defineConfig({
   test: {
-    include: ['src/**/__tests__/**/*.test.ts'],
+    include: ['src/**/__tests__/**/*.test.ts', 'scripts/**/__tests__/**/*.test.ts'],
     reporters: junitReportPath
       ? ['default', ['junit', { outputFile: junitReportPath }]]
       : ['default'],

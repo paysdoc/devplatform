@@ -29,10 +29,15 @@ with history. `bun run build` compiles `src/` to `dist/**/*.js` + `dist/**/*.d.t
   `__tests__/`).
 - `scripts/smokePackage.ts` — builds, packs, and smoke-tests the tarball under Node + Bun (`bun run
   smoke:package`).
+- `scripts/checkGitGhGuard.ts`, `scripts/guard/` — AST-based git/gh CI guard (`bun run
+  lint:git-guard`): a `git-gh-shellout` rule exempting `src/git/` and `src/providers/github/`, and
+  an `unsanctioned-construction` rule allowlisting only `src/providers/forgeProviders.ts`, walked
+  over the whole tree. Dev-only; excluded from `dist/` and the npm tarball.
 - `.github/adw.yml` — ADW configuration living outside `.adw/` (guardrails toggle); not overwritten
   by `/adw_init` regeneration.
 - `.github/workflows/ci.yml` — CI: `check` job (`bun install`, `bun run typecheck`, `bun run
-  test:unit`) plus a `package` job (`bun run build`, `npm pack --dry-run`, `bun run smoke:package`).
+  lint:git-guard`, `bun run test:unit`) plus a `package` job (`bun run build`, `npm pack --dry-run`,
+  `bun run smoke:package`).
 - `vitest.config.ts` — Test runner config; already wires JUnit output via
   `$ADW_UNIT_TEST_REPORT_PATH`.
 
