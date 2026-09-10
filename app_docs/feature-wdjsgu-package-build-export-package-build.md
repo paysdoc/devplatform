@@ -45,6 +45,12 @@ git/worktree core independently, without pulling adapter code into a git-only co
   `bun install` → `bun run build` → `npm pack --dry-run` → `bun run smoke:package` on
   `oven-sh/setup-bun@v2` + `actions/setup-node@v4`, so the Node consumer leg is real rather than
   Bun-shimmed.
+- `tsconfig.json`'s `include` and `vitest.config.ts`'s `test.include` both also cover
+  `scripts/**` (widened alongside `scripts/checkGitGhGuard.ts` + `scripts/guard/`, issue #3),
+  so the dev-only `scripts/` tree — the packed-tarball smoke check and the git/gh CI guard — is
+  typechecked by `bun run typecheck` and tested by `bun run test:unit`, without becoming part
+  of the build: `tsconfig.build.json` keeps its own `include`/`rootDir` at `src` only. See
+  `app_docs/git-gh-guard.md` for the guard itself.
 
 ## Contracts & Invariants
 
@@ -62,8 +68,15 @@ git/worktree core independently, without pulling adapter code into a git-only co
   cross-boundary import ever reaches `dist/`.
 - `npm pack` never ships `src/` — enforced by both `scripts/smokePackage.ts` and
   `src/__tests__/packageExports.test.ts`.
-- The existing `check` CI job (`bun install` → `bun run typecheck` → `bun run test:unit`) is
-  unchanged; the `package` job is additive and runs on the same triggers.
+- `npm pack` never ships `scripts/` either, despite `tsconfig.json`/`vitest.config.ts` now
+  covering it: `files` stays exactly `["dist", "README.md", "LICENSE"]`, and
+  `tsconfig.build.json`'s `include`/`rootDir` stay `src`-only, so `scripts/checkGitGhGuard.ts`
+  and `scripts/guard/` are excluded from both `dist/` and the tarball by construction, not by a
+  separate exclusion rule.
+- The `check` CI job runs `bun install` → `bun run typecheck` → `bun run lint:git-guard` →
+  `bun run test:unit` (the `lint:git-guard` step, #3, is documented in
+  `app_docs/git-gh-guard.md`); the `package` job is unchanged, additive, and runs on the same
+  triggers.
 - `bun run test` remains a naming quirk that runs `tsc --noEmit`, not the suite; `bun run
   test:unit` is the real suite. This module does not change that.
 
@@ -72,6 +85,8 @@ git/worktree core independently, without pulling adapter code into a git-only co
 - `bun run build` — `bun run clean && tsc -p tsconfig.build.json`; `clean` removes `dist/` via a
   dependency-free `node -e` script (no `rimraf`).
 - `bun run smoke:package` — `bunx tsx scripts/smokePackage.ts`.
+- `bun run lint:git-guard` — `bunx tsx scripts/checkGitGhGuard.ts`; see
+  `app_docs/git-gh-guard.md` for the rules it enforces.
 - `prepack` — runs `bun run build`, so a packed/published artifact is never stale.
 - `package.json`: `sideEffects: false` (lets consumer bundlers tree-shake `"./providers"` down to
   the adapter actually used), `publishConfig.access: "public"` (required for a scoped package),

@@ -52,6 +52,15 @@
     - When working on the CI pipeline (typecheck/test workflow, release workflow) or on this
       repository's ADW guardrails configuration
 
+- app_docs/git-gh-guard.md
+  - Owns:
+    - scripts/checkGitGhGuard.ts
+    - scripts/guard/**
+  - Conditions:
+    - When working on the CI git/gh shell-out guard or the unsanctioned-construction guard
+      rule: the exempt-package set, the sanctioned construction-site allowlist, or the guard's
+      report/stdout formatting
+
 - app_docs/feature-wdjsgu-package-build-export-package-build.md
   - Owns:
     - package.json

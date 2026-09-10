@@ -40,7 +40,8 @@ import { GitContext, consoleLogger } from '@paysdoc/devplatform/git';           
 - **Board status model** — a canonical, ordered set of board columns (`Blocked`/`Todo`/`In Progress`/`Review`/`Done`) with colors and descriptions shared across board-capable adapters.
 - **Injected configuration everywhere** — GitLab, Jira, and GitHub App adapters take configuration as constructor arguments; none reads `process.env` or files directly, keeping the library embeddable in any host.
 - **Compiled ESM + type declarations** — `bun run build` emits `dist/**/*.js` and `dist/**/*.d.ts` via `tsc`, with a three-entry-point `exports` map (`.`, `./providers`, `./git`) and a `files` allow-list so `npm pack` ships only `dist/`, `README.md`, and `LICENSE`.
-- **CI type-check, unit-test, and package gate** — GitHub Actions runs `bun install`, `bun run typecheck`, and `bun run test:unit` on every PR and push to `main`, plus a second job that builds, packs, and smoke-tests the tarball under both Node and Bun.
+- **CI type-check, git/gh guard, unit-test, and package gate** — GitHub Actions runs `bun install`, `bun run typecheck`, `bun run lint:git-guard`, and `bun run test:unit` on every PR and push to `main`, plus a second job that builds, packs, and smoke-tests the tarball under both Node and Bun.
+- **Git/gh CI guard** — an AST-based check (`bun run lint:git-guard`, `scripts/checkGitGhGuard.ts` + `scripts/guard/`) that fails CI on a direct `git`/`gh` shell-out outside `src/git/` and `src/providers/github/` (the two structurally-exempt packages), or on ad-hoc provider/`GitContext` construction anywhere outside the one-entry `src/providers/forgeProviders.ts` allowlist.
 - **Release workflow placeholder** — a `Release` GitHub Actions job reserved for future semantic-release automation (tracked as a separate issue).
 - **Claude Code agent guardrails** — a hooked `.claude/settings.json` and `.claude/hooks/*` scripts (pre/post-tool-use, notification, stop, subagent-stop) constrain and observe agent tool use in this repo.
 
@@ -73,6 +74,8 @@ features/regression/vocabulary.md   Regression test vocabulary
 specs/                        Per-issue implementation plans (ADW-generated)
 scripts/
   smokePackage.ts             Builds, packs, and smoke-tests the tarball under Node + Bun (`bun run smoke:package`)
+  checkGitGhGuard.ts          CI git/gh guard entry point (`bun run lint:git-guard`) — dev-only, excluded from dist/
+  guard/                      Guard rule modules: shell-out exempt-package set, construction allowlist, stdout report
 src/
   index.ts                    Root entry point ("."): forge ports + domain model only
   git/                        Forge-neutral git/worktree core (GitContext, worktree ops, bootstrap identity, process cleanup) — entry point "./git"
