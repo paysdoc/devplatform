@@ -64,11 +64,17 @@ const gitContext = new GitContext({ owner: 'acme', repo: 'webapp', selfHost: fal
 ## Setup
 
 1. Install dependencies: `bun install`
-2. Copy the environment template and fill in your own values: `cp .env.sample .env`
-3. Type-check: `bun run typecheck`
-4. Run the unit test suite: `bun run test:unit`
-5. Run the BDD scenario suite: `bun run test:e2e`
-6. Build: `bun run build`
+2. Type-check: `bun run typecheck`
+3. Run the unit test suite: `bun run test:unit`
+4. Run the BDD scenario suite: `bun run test:e2e`
+5. Build: `bun run build`
+
+This package takes all forge configuration (tokens, App credentials, GitLab/Jira settings) as
+constructor arguments from the consumer — it reads no `.env` file and no `process.env` value as
+its primary configuration path. There is no root `.env.sample` to copy for using the library
+itself; the optional `GIT_AUTHOR_*`/`GITHUB_APP_*` environment fallbacks used only by the
+bootstrap-identity readers are documented in `app_docs/git-worktree-core.md` and
+`app_docs/github-provider.md`.
 
 ## Releasing
 
