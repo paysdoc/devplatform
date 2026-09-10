@@ -57,14 +57,9 @@ export function createGitHubTokenProvider(input: GitHubTokenProviderInput): Toke
 }
 
 /**
- * A TokenProvider that serves a fixed credential — `alternateIdentityPat`
- * (when given) for `'alternateIdentity'` requests, `token` otherwise. For
- * tests and fixtures; production boundaries use {@link createGitHubTokenProvider}.
+ * Re-exported from the git core (`src/git/literalTokenProvider.ts`) so every
+ * existing `'../githubTokenProvider.js'` import in this package keeps
+ * working — the function itself carries no GitHub logic and moved there
+ * (issue #9).
  */
-export function createLiteralTokenProvider(token: string, alternateIdentityPat?: string): TokenProvider {
-  return {
-    credentialEnv({ purpose }: CredentialRequest): NodeJS.ProcessEnv {
-      return { GH_TOKEN: (purpose === 'alternateIdentity' && alternateIdentityPat) ? alternateIdentityPat : token };
-    },
-  };
-}
+export { createLiteralTokenProvider } from '../../git/literalTokenProvider.js';

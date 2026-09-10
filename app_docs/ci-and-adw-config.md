@@ -7,8 +7,8 @@ GitHub Actions workflow definitions for this repository (`.github/workflows/*.ym
 ## Responsibilities
 
 - `.github/workflows/ci.yml` — runs on every `pull_request` and push to `main`, as three jobs:
-  - `check` — `bun install` → `bun run typecheck` → `bun run lint:git-guard` → `bun run test:unit`. See `app_docs/git-gh-guard.md` for the guard itself.
-  - `package` — builds, `npm pack --dry-run`, and smoke-tests the tarball (`bun run smoke:package`) under Node + Bun.
+  - `check` — `bun install` → `bun run typecheck` → `bun run lint:git-guard` → `bun run test:unit` → `bun run test:e2e --tags "not @packaging"`. See `app_docs/git-gh-guard.md` for the guard itself, and `app_docs/bdd-scenarios.md` for the BDD scenario suite.
+  - `package` — builds, `npm pack --dry-run`, smoke-tests the tarball (`bun run smoke:package`) under Node + Bun, then runs `bun run test:e2e --tags "@packaging"` (the committed tarball-pack-and-install BDD scenarios) against the same build.
   - `release-dry-run` — `pull_request`-only; runs `bun run release:dry-run` so a commit-header configuration that would never trigger a release is caught before merge. See `app_docs/feature-9xqejz-release-automation.md` for the release logic this job exercises.
 - `.github/workflows/release.yml` — runs on push to `main` (and `workflow_dispatch`): verifies the `v1.0.0` baseline tag is reachable, then runs the real `semantic-release` binary. See `app_docs/feature-9xqejz-release-automation.md` for the release-config/parser details.
 - `.github/adw.yml` — toggles injection of the target-repo agent guardrails (`--settings` deny list + framework hooks) on every ADW agent spawn against this repository. Kept outside `.adw/` specifically so `/adw_init` regeneration never overwrites it.
@@ -17,6 +17,7 @@ GitHub Actions workflow definitions for this repository (`.github/workflows/*.ym
 
 - `check` runs `bun run lint:git-guard` after `bun run typecheck` and before `bun run test:unit`, so a git/gh shell-out or unsanctioned-construction violation fails CI before the unit suite runs. See `app_docs/git-gh-guard.md` for the guard itself.
 - `package` never runs the guard: the guard is a dev-only tool excluded from the packed tarball (`scripts/` is outside `tsconfig.build.json`'s `include` and outside `package.json`'s `files` — see `app_docs/feature-wdjsgu-package-build-export-package-build.md`).
+- The BDD scenario suite (`bun run test:e2e`, `app_docs/bdd-scenarios.md`) is split across both jobs by the same rule the Gotchas section states below: the hermetic (`not @packaging`) scenarios need nothing built, so they run in `check` right after the unit suite; the `@packaging` scenarios `npm pack`+`npm install` the real tarball into a throwaway consumer, so they need Node + npm and run in `package`, after `bun run smoke:package` builds and packs it.
 - The npm trusted publisher on npmjs.com is linked to this exact workflow filename (`release.yml`) — renaming it silently breaks OIDC trusted publishing.
 - `release.yml` hard-fails before running semantic-release if `refs/tags/v1.0.0` is not reachable after `fetch-tags: true`, so the hand-published `1.0.0` baseline can never be recomputed.
 - `release.yml` sets `concurrency: { group: release, cancel-in-progress: false }` so overlapping pushes to `main` queue rather than race or cancel a run mid-publish.

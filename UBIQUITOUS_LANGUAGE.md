@@ -30,15 +30,17 @@
 | **RepoContext** | A `BoundProviders` plus `{cwd, repoId}`, passed through workflow phases so they stay decoupled from a specific platform | Workflow context |
 | **forgeProviders()** | The library's single public assembly function: validates identity, token provider shape, and context binding, then constructs the bound provider triple | Provider factory |
 | **ForgeSelection** | The `{codeHost, issueTracker}` pair naming which forge implements each port for a given assembly call | Forge config |
-| **UnknownForgeError** | Thrown by `forgeProviders()` when a forge name falls outside the closed union for its port | Invalid forge |
+| **UnknownForgeError** | Thrown by `forgeProviders()` or `createForgeCredentials()` when a forge name falls outside the closed union for its port | Invalid forge |
 | **BoardStatus** | The canonical, ordered set of board columns — Blocked, Todo, In Progress, Review, Done — shared across board-capable adapters | Board column, status |
 | **ForgeActionResult** | A forge mutation's outcome reported as `{success, error?}` rather than thrown | Result, response |
+| **createForgeCredentials()** | The forge-keyed factory that resolves a **TokenProvider** and a bootstrap **GitIdentity** from `forge.codeHost` alone; sibling of `forgeProviders()`, same closed-union refusal via **UnknownForgeError** | Credential factory |
 
 ## Relationships
 
 - A **GitContext** is constructed from exactly one **Identity** and exposes **exec()** as the sole spawn site.
 - A **Worktree** belongs to exactly one **GitContext**'s base repository and has one **Worktree registration** at any time.
 - **forgeProviders()** takes one **ForgeSelection** and one **Identity** and returns one **BoundProviders**.
+- **createForgeCredentials()** takes one **ForgeSelection** and one **Identity** and returns one `{tokenProvider, gitIdentity}` pair — the two values a **GitContext** cannot be constructed without.
 - A **BoundProviders** contains exactly one **IssueTracker** and one **CodeHost**, and at most one **BoardManager**.
 - Each **Adapter** implements one or more **Ports**, but never more than one **Adapter** backs a given **Port** within a single **BoundProviders**.
 - A **RepoContext** extends **BoundProviders** with the **RepoIdentifier** and working directory it was assembled for.

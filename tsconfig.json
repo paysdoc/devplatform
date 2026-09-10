@@ -13,6 +13,6 @@
     "allowJs": true,
     "noEmit": true
   },
-  "include": ["src/**/*.ts", "scripts/**/*.ts", "release.config.js"],
+  "include": ["src/**/*.ts", "scripts/**/*.ts", "features/**/*.ts", "release.config.js"],
   "exclude": ["node_modules", "dist"]
 }

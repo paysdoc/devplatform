@@ -40,7 +40,9 @@ git/worktree core independently, without pulling adapter code into a git-only co
   present, packs a real tarball, installs it into a throwaway temp consumer (its own
   `node_modules`, not the workspace's), and imports all three subpaths under both `node` and
   `bun`, asserting a representative symbol from each (`BoardStatus`, `forgeProviders`,
-  `GitContext`).
+  `createForgeCredentials`, `GitContext`, `createLiteralTokenProvider`) — the last two names
+  (issue #9) are the same symbols the committed `@packaging` BDD scenarios prove resolve at
+  runtime and in the emitted `.d.ts` (`app_docs/bdd-scenarios.md`).
 - CI: a `package` job (`.github/workflows/ci.yml`, alongside the existing `check` job) runs
   `bun install` → `bun run build` → `npm pack --dry-run` → `bun run smoke:package` on
   `oven-sh/setup-bun@v2` + `actions/setup-node@v4`, so the Node consumer leg is real rather than
@@ -51,6 +53,12 @@ git/worktree core independently, without pulling adapter code into a git-only co
   typechecked by `bun run typecheck` and tested by `bun run test:unit`, without becoming part
   of the build: `tsconfig.build.json` keeps its own `include`/`rootDir` at `src` only. See
   `app_docs/git-gh-guard.md` for the guard itself.
+- `tsconfig.json`'s `include` also covers `features/**/*.ts` (issue #9), so the Cucumber step
+  layer is typechecked by `bun run typecheck`/`bun run test` too. Same isolation rule as
+  `scripts/`: `tsconfig.build.json` keeps its own `src`-only `include`/`rootDir`, so nothing
+  under `features/` ever reaches `dist/` or the tarball. See `app_docs/bdd-scenarios.md` for the
+  scenario suite itself, including the `@packaging` scenarios that build their own throwaway
+  `tsconfig.json` against a consumer of the packed tarball — a separate, unrelated config.
 
 ## Contracts & Invariants
 

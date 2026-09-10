@@ -79,10 +79,10 @@ export interface ForgeProvidersOptions {
   readonly deps?: ForgeProviderDeps;
 }
 
-/** Thrown by {@link forgeProviders} for a forge name outside the closed union for its port. */
+/** Thrown by {@link forgeProviders} and `createForgeCredentials` for a forge name outside the closed union for its port. */
 export class UnknownForgeError extends Error {
-  constructor(value: string, port: 'code host' | 'issue tracker', allowed: readonly string[]) {
-    super(`forgeProviders: unknown ${port} forge "${value}" (expected one of: ${allowed.join(', ')})`);
+  constructor(value: string, port: 'code host' | 'issue tracker', allowed: readonly string[], source: string = 'forgeProviders') {
+    super(`${source}: unknown ${port} forge "${value}" (expected one of: ${allowed.join(', ')})`);
     this.name = 'UnknownForgeError';
   }
 }

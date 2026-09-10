@@ -15,12 +15,15 @@
 - app_docs/forge-providers.md
   - Owns:
     - src/providers/forgeProviders.ts
+    - src/providers/forgeCredentials.ts
     - src/providers/index.ts
     - src/providers/types.ts
     - src/providers/workspaceValidation.ts
   - Conditions:
-    - When working on the forge-neutral provider selection/registration abstraction, or on
-      cross-provider workspace validation shared by the GitHub/GitLab/Jira adapters
+    - When working on the forge-neutral provider selection/registration abstraction, the
+      forge-keyed credential factory (`createForgeCredentials`) that resolves a `TokenProvider`
+      and bootstrap `GitIdentity` from a forge selection alone, or on cross-provider workspace
+      validation shared by the GitHub/GitLab/Jira adapters
 
 - app_docs/github-provider.md
   - Owns:
@@ -97,3 +100,13 @@
       the root `src/index.ts` entry point, the NodeNext/`.js`-extension import discipline, the
       import-graph layering test, the package-manifest contract test, or the packed-tarball
       consumer smoke check (`scripts/smokePackage.ts`, `bun run smoke:package`)
+
+- app_docs/bdd-scenarios.md
+  - Owns:
+    - cucumber.js
+    - features/**
+  - Conditions:
+    - When working on the Cucumber/Gherkin BDD scenario suite (`bun run test:e2e`): per-issue
+      `.feature` files, the promoted regression vocabulary, step definitions, the shared
+      Cucumber world/support code, or the packaged-consumer (`@packaging`) fixture that packs
+      and installs the real tarball

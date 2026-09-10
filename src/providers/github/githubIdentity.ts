@@ -13,6 +13,7 @@ import type { GitIdentity } from '../../git/types.js';
 import { readOriginRemoteUrl, readEnvGitIdentity, readGitConfigIdentity } from '../../git/bootstrapIdentity.js';
 import type { GitConfigIdentityDeps } from '../../git/bootstrapIdentity.js';
 import { Platform, type RepoIdentifier } from '../types.js';
+import { isGitHubAppConfigured, type GitHubAppConfig } from './appAuth.js';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -20,6 +21,35 @@ import { Platform, type RepoIdentifier } from '../types.js';
 
 export interface BootstrapIdentityDeps extends GitConfigIdentityDeps {
   isAppConfigured?: () => boolean;
+  /**
+   * The App configuration the caller already resolved (issue #9's
+   * `createForgeCredentials`). Three states, each distinct:
+   *   - present and complete (`isGitHubAppConfigured`) → the bot identity
+   *     derives from `appConfig.appId`/`appConfig.appSlug`, regardless of
+   *     what the environment carries;
+   *   - `null` → the caller has established "no App"; bot derivation is
+   *     skipped even if the environment carries `GITHUB_APP_*`;
+   *   - `undefined` (the default) → today's behaviour: the `GITHUB_APP_*`
+   *     environment triple decides.
+   * An explicitly injected `isAppConfigured` still wins over this — it is
+   * the finer-grained seam and existing call sites rely on it.
+   */
+  appConfig?: GitHubAppConfig | null;
+}
+
+/** Resolves the App-bot decision and its appId/appSlug from the injected config or, absent one, the environment. */
+function resolveAppIdentitySource(deps: BootstrapIdentityDeps, env: NodeJS.ProcessEnv): { configured: boolean; appId?: string; appSlug?: string } {
+  if (deps.appConfig !== undefined) {
+    if (deps.appConfig !== null && isGitHubAppConfigured(deps.appConfig)) {
+      return { configured: true, appId: deps.appConfig.appId, appSlug: deps.appConfig.appSlug };
+    }
+    return { configured: false };
+  }
+  return {
+    configured: Boolean(env['GITHUB_APP_ID'] && env['GITHUB_APP_SLUG'] && env['GITHUB_APP_PRIVATE_KEY_PATH']),
+    appId: env['GITHUB_APP_ID'],
+    appSlug: env['GITHUB_APP_SLUG'],
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -114,13 +144,12 @@ function deriveAppBotIdentity(appId: string, appSlug: string): GitIdentity {
  */
 export function resolveBootstrapGitIdentity(deps: BootstrapIdentityDeps = {}): GitIdentity {
   const env = deps.env ?? process.env;
-  const isAppConfigured = deps.isAppConfigured ?? (() => Boolean(
-    env['GITHUB_APP_ID'] && env['GITHUB_APP_SLUG'] && env['GITHUB_APP_PRIVATE_KEY_PATH'],
-  ));
+  const derived = resolveAppIdentitySource(deps, env);
+  const isAppConfigured = deps.isAppConfigured ?? (() => derived.configured);
 
   if (isAppConfigured()) {
-    const appId = env['GITHUB_APP_ID'];
-    const appSlug = env['GITHUB_APP_SLUG'];
+    const appId = derived.appId ?? env['GITHUB_APP_ID'];
+    const appSlug = derived.appSlug ?? env['GITHUB_APP_SLUG'];
     if (appId && appSlug) {
       return deriveAppBotIdentity(appId, appSlug);
     }
