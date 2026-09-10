@@ -1,0 +1,26 @@
+[
+  {
+    "session_id": "458b370d-e698-4719-a8ca-eced17c94a0e",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/458b370d-e698-4719-a8ca-eced17c94a0e.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "45ef7729-f3fa-4d64-ba61-d01c216f47fe",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git diff HEAD --stat"
+    },
+    "tool_response": {
+      "stdout": " .../post_tool_use.json                             | 31 ++++++++++++++++++++++\n 1 file changed, 31 insertions(+)",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_01GZihrSaiYDKKSGsbLWQ4Zq",
+    "duration_ms": 384
+  }
+]
