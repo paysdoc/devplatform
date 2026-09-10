@@ -5,3 +5,6 @@ dist/
 # local env files
 .env
 .env*.local
+# ADW: copied slash commands (do not commit)
+.claude/commands/adw_init.md
+.adw/.regen-receipt
