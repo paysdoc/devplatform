@@ -67,6 +67,8 @@ See [UBIQUITOUS_LANGUAGE.md](./UBIQUITOUS_LANGUAGE.md) for the canonical terms u
   workflows/ci.yml             Typecheck + unit test CI gate
   workflows/release.yml        Release automation placeholder
   adw.yml                      ADW guardrails toggle (outside .adw/, survives regeneration)
+app_docs/                    Per-module documentation owned by conditional_docs.md routing (ADW-generated)
+UBIQUITOUS_LANGUAGE.md       Canonical domain glossary
 features/regression/vocabulary.md   Regression test vocabulary
 specs/                        Per-issue implementation plans (ADW-generated)
 scripts/
