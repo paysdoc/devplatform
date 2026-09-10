@@ -3,7 +3,7 @@
  * All methods throw — Jira board management is not yet supported.
  */
 
-import type { BoardManager } from '../types';
+import type { BoardManager } from '../types.js';
 
 /**
  * Stub BoardManager for Jira.

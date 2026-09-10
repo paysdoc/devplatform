@@ -7,9 +7,9 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { GitContext } from '../../../git';
-import type { GitContextOptions, ExecFn, TokenProvider, CredentialRequest } from '../../../git/types';
-import { createGhCommandRunner } from '../ghCommandRunner';
+import { GitContext } from '../../../git/index.js';
+import type { GitContextOptions, ExecFn, TokenProvider, CredentialRequest } from '../../../git/types.js';
+import { createGhCommandRunner } from '../ghCommandRunner.js';
 
 const FRAMEWORK_ROOT = '/srv/adw/framework';
 const TARGET_REPOS_DIR = '/srv/adw/repos';

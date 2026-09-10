@@ -20,7 +20,7 @@ import { execSync } from 'child_process';
 import type { ExecSyncOptions } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-import type { Logger } from './types';
+import type { Logger } from './types.js';
 
 // ---------------------------------------------------------------------------
 // Types

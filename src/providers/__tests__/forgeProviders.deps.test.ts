@@ -6,10 +6,10 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
-import { forgeProviders } from '../forgeProviders';
-import { BoardStatus } from '../types';
-import type { ExecFn } from '../../git';
-import { makeCtx, makeSpyExec, baseOptions } from './forgeProvidersFixture';
+import { forgeProviders } from '../forgeProviders.js';
+import { BoardStatus } from '../types.js';
+import type { ExecFn } from '../../git/index.js';
+import { makeCtx, makeSpyExec, baseOptions } from './forgeProvidersFixture.js';
 
 const PROJECT_RESPONSE = JSON.stringify({ data: { repository: { projectsV2: { nodes: [{ id: 'PVT_1' }] } } } });
 const ITEM_RESPONSE = JSON.stringify({

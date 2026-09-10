@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { createGitHubIssueTracker, GitHubIssueTracker } from '../githubIssueTracker';
-import { Platform, BoardStatus, type RepoIdentifier } from '../../types';
-import { makeCtx, makeSpyExec, makeCapturingLogger, FRAMEWORK_ROOT } from './gitContextFixture';
+import { createGitHubIssueTracker, GitHubIssueTracker } from '../githubIssueTracker.js';
+import { Platform, BoardStatus, type RepoIdentifier } from '../../types.js';
+import { makeCtx, makeSpyExec, makeCapturingLogger, FRAMEWORK_ROOT } from './gitContextFixture.js';
 
 const REPO_ID: RepoIdentifier = { owner: 'acme', repo: 'widget', platform: Platform.GitHub };
 

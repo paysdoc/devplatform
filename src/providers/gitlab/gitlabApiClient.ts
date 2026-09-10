@@ -8,15 +8,15 @@
  */
 
 import { spawnSync } from 'child_process';
-import type { Logger } from '../../git/types';
-import { consoleLogger } from '../../git/consoleLogger';
+import type { Logger } from '../../git/types.js';
+import { consoleLogger } from '../../git/consoleLogger.js';
 import type {
   GitLabProject,
   GitLabMergeRequest,
   GitLabNote,
   GitLabDiscussion,
   GitLabCreateMRPayload,
-} from './gitlabTypes';
+} from './gitlabTypes.js';
 
 /** The injected configuration `createGitLabCodeHost` takes (#818): the personal access token (api scope) and the instance origin, e.g. `https://gitlab.com`. Never read from the environment inside the adapter. */
 export interface GitLabConfig {

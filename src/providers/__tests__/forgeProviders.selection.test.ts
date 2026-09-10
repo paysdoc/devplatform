@@ -5,9 +5,9 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { forgeProviders } from '../forgeProviders';
-import { Platform } from '../types';
-import { makeRepoId, makeCtx, baseOptions } from './forgeProvidersFixture';
+import { forgeProviders } from '../forgeProviders.js';
+import { Platform } from '../types.js';
+import { makeRepoId, makeCtx, baseOptions } from './forgeProvidersFixture.js';
 
 describe('forgeProviders — gitlab code host selection', () => {
   it('with deps.gitlab: a GitLab code host bound to identity, a GitHub issue tracker, and no board manager', () => {

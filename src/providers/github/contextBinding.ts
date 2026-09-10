@@ -6,8 +6,8 @@
  * `platform` is deliberately not compared.
  */
 
-import type { GitContext } from '../../git';
-import type { RepoIdentifier } from '../types';
+import type { GitContext } from '../../git/index.js';
+import type { RepoIdentifier } from '../types.js';
 
 export function assertContextBoundTo(
   ctx: Pick<GitContext, 'owner' | 'repo'>,

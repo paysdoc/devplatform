@@ -2,7 +2,7 @@ import { describe, it, expect, afterEach } from 'vitest';
 import { mkdtempSync, rmSync, mkdirSync, writeFileSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
-import { parseOwnerRepoFromUrl, validateWorkingDirectory } from '../workspaceValidation';
+import { parseOwnerRepoFromUrl, validateWorkingDirectory } from '../workspaceValidation.js';
 
 describe('parseOwnerRepoFromUrl', () => {
   describe('HTTPS URLs', () => {

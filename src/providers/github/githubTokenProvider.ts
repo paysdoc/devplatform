@@ -10,8 +10,8 @@
  * wraps, rather than replaces, the existing pure {@link resolveContextToken}.
  */
 
-import { resolveContextToken } from './tokenResolver';
-import type { CredentialRequest, TokenProvider } from '../../git/types';
+import { resolveContextToken } from './tokenResolver.js';
+import type { CredentialRequest, TokenProvider } from '../../git/types.js';
 
 export interface GitHubTokenProviderInput {
   /** Candidate in the resolution order, after the App mint. */

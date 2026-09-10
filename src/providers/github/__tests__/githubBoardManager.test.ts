@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { createGitHubBoardManager } from '../githubBoardManager';
-import { Platform, type RepoIdentifier } from '../../types';
-import { makeCtx, makeSpyExec, makeCapturingLogger } from './gitContextFixture';
+import { createGitHubBoardManager } from '../githubBoardManager.js';
+import { Platform, type RepoIdentifier } from '../../types.js';
+import { makeCtx, makeSpyExec, makeCapturingLogger } from './gitContextFixture.js';
 
 const REPO_ID: RepoIdentifier = { owner: 'acme', repo: 'widget', platform: Platform.GitHub };
 

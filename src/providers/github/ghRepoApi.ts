@@ -8,16 +8,16 @@
  * construction site the guard's `unsanctioned-construction` rule needs to see.
  */
 
-import type { GitContext } from '../../git';
-import { createGhCommandRunner, type GhCommandRunner } from './ghCommandRunner';
-import { ghIssueApi, type GhIssueApi } from './ghIssueApi';
-import { ghPrApi, type GhPrApi } from './ghPrApi';
-import { createLabelCmd, applyLabelCmd } from './commands/labelCommands';
-import { setSecretCmd } from './commands/secretCommands';
+import type { GitContext } from '../../git/index.js';
+import { createGhCommandRunner, type GhCommandRunner } from './ghCommandRunner.js';
+import { ghIssueApi, type GhIssueApi } from './ghIssueApi.js';
+import { ghPrApi, type GhPrApi } from './ghPrApi.js';
+import { createLabelCmd, applyLabelCmd } from './commands/labelCommands.js';
+import { setSecretCmd } from './commands/secretCommands.js';
 import {
   graphQLCmd, graphQLInputCmd, projectQueryCmd, itemQueryCmd, fieldQueryCmd, moveStatusCmd,
   parseProjectId, parseIssueItem, parseStatusField,
-} from './commands/boardCommands';
+} from './commands/boardCommands.js';
 
 /** Repo-scoped operations (labels, secrets, board moves) not owned by the issue or PR leaf APIs. */
 export interface GhRepoOps {

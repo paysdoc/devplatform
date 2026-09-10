@@ -12,11 +12,11 @@
  * seams — the library itself never learns about Slack or about ADW's colours.
  */
 
-import { consoleLogger, type GitContext, type Logger } from '../../git';
-import type { IssueTracker, RepoIdentifier, Issue, IssueComment, IssueSummary, IssueListQuery, IssueListEntry } from '../types';
-import { validateRepoIdentifier, BoardStatus } from '../types';
-import { createGhRepoApi, type GhRepoApi } from './ghRepoApi';
-import { assertContextBoundTo } from './contextBinding';
+import { consoleLogger, type GitContext, type Logger } from '../../git/index.js';
+import type { IssueTracker, RepoIdentifier, Issue, IssueComment, IssueSummary, IssueListQuery, IssueListEntry } from '../types.js';
+import { validateRepoIdentifier, BoardStatus } from '../types.js';
+import { createGhRepoApi, type GhRepoApi } from './ghRepoApi.js';
+import { assertContextBoundTo } from './contextBinding.js';
 import {
   parseGitHubIssue,
   parseIssueState,
@@ -27,8 +27,8 @@ import {
   parseFirstIssueNumber,
   parseIssueSummaries,
   parseIssueListEntries,
-} from './ghIssueParsers';
-import { mapGitHubIssueToIssue, mapIssueCommentSummaryToIssueComment } from './mappers';
+} from './ghIssueParsers.js';
+import { mapGitHubIssueToIssue, mapIssueCommentSummaryToIssueComment } from './mappers.js';
 
 /** A label's canonical presentation — name, colour, and description — for the `applyLabel` lazy-create path. */
 export interface GitHubLabelDefinition {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { convertToSshUrl } from '../cloneUrl';
+import { convertToSshUrl } from '../cloneUrl.js';
 
 describe('convertToSshUrl', () => {
   it('converts HTTPS GitHub URL to SSH', () => {

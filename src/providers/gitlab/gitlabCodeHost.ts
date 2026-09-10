@@ -17,13 +17,13 @@ import {
   type RepoIdentifier,
   type ReviewComment,
   validateRepoIdentifier,
-} from '../types';
-import { GitLabApiClient, type GitLabConfig, type GitLabApiClientDeps } from './gitlabApiClient';
+} from '../types.js';
+import { GitLabApiClient, type GitLabConfig, type GitLabApiClientDeps } from './gitlabApiClient.js';
 import {
   mapGitLabMRToPullRequest,
   mapGitLabDiscussionsToReviewComments,
   toProjectPath,
-} from './mappers';
+} from './mappers.js';
 
 /**
  * GitLab-specific implementation of the CodeHost interface.

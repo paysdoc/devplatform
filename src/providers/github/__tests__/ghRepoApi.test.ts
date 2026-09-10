@@ -1,8 +1,8 @@
 import { describe, it, expect, afterEach } from 'vitest';
-import { GitContext } from '../../../git';
-import type { GitContextOptions, ExecFn } from '../../../git';
-import { createGhRepoApi } from '../ghRepoApi';
-import { createLiteralTokenProvider } from '../githubTokenProvider';
+import { GitContext } from '../../../git/index.js';
+import type { GitContextOptions, ExecFn } from '../../../git/index.js';
+import { createGhRepoApi } from '../ghRepoApi.js';
+import { createLiteralTokenProvider } from '../githubTokenProvider.js';
 
 const FRAMEWORK_ROOT = '/srv/adw/framework';
 const TARGET_REPOS_DIR = '/srv/adw/repos';

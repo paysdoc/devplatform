@@ -8,9 +8,9 @@
  * port instead of `adws/core`'s `log`.
  */
 
-import { consoleLogger, type GitContext, type Logger } from '../../git';
-import { createGhRepoApi, type GhRepoApi } from './ghRepoApi';
-import { assertContextBoundTo } from './contextBinding';
+import { consoleLogger, type GitContext, type Logger } from '../../git/index.js';
+import { createGhRepoApi, type GhRepoApi } from './ghRepoApi.js';
+import { assertContextBoundTo } from './contextBinding.js';
 import {
   parsePRDetails,
   parsePRReviews,
@@ -19,13 +19,13 @@ import {
   selectPreferredPR,
   parsePRApprovalState,
   type RawPRListEntry,
-} from './ghPrParsers';
+} from './ghPrParsers.js';
 import {
   mapPRDetailsToPullRequest,
   mapPRReviewCommentToReviewComment,
   mapPRListItemToPullRequest,
   mapRawPRToSummary,
-} from './mappers';
+} from './mappers.js';
 import {
   type CodeHost,
   type CreatePROptions,
@@ -38,7 +38,7 @@ import {
   type RepoIdentifier,
   type ReviewComment,
   validateRepoIdentifier,
-} from '../types';
+} from '../types.js';
 
 export interface GitHubCodeHostDeps {
   readonly logger?: Logger;

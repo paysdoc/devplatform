@@ -15,7 +15,7 @@
  */
 
 import { execSync } from 'child_process';
-import type { GitIdentity } from './types';
+import type { GitIdentity } from './types.js';
 
 // ---------------------------------------------------------------------------
 // Types

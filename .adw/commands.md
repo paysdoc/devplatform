@@ -19,8 +19,7 @@ so no `--reporter` flags are needed on the command line — just ensure `$ADW_UN
 exported in the environment before running.
 
 ## Run Build
-N/A (no build/dist pipeline configured yet; package build and entry points are tracked in this
-repository's issues per README.md)
+bun run build
 
 ## Start Dev Server
 N/A (library/CLI package; no dev server)

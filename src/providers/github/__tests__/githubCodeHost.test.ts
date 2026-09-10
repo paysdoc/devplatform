@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { createGitHubCodeHost, GitHubCodeHost } from '../githubCodeHost';
-import { mapRawPRToSummary } from '../mappers';
-import { Platform, type RepoIdentifier } from '../../types';
-import { makeCtx, makeSpyExec, makeCapturingLogger, FRAMEWORK_ROOT } from './gitContextFixture';
+import { createGitHubCodeHost, GitHubCodeHost } from '../githubCodeHost.js';
+import { mapRawPRToSummary } from '../mappers.js';
+import { Platform, type RepoIdentifier } from '../../types.js';
+import { makeCtx, makeSpyExec, makeCapturingLogger, FRAMEWORK_ROOT } from './gitContextFixture.js';
 
 const REPO_ID: RepoIdentifier = { owner: 'acme', repo: 'widget', platform: Platform.GitHub };
 

@@ -49,20 +49,20 @@ import { existsSync, mkdirSync, copyFileSync, rmSync } from 'fs';
 import type {
   GitContextOptions, GitIdentity, ExecFn, GitContextDeps, FsDeps, ExecOptions, ExecWorkingDirectory,
   TokenProvider, CredentialPurpose, Logger,
-} from './types';
-import { consoleLogger } from './consoleLogger';
-import { branchOps } from './branchOps';
-import { commitOps } from './commitOps';
-import { worktreeResetOps } from './worktreeResetOps';
-import { worktreeQueryOps, type WorktreeForIssueResult } from './worktreeQueryOps';
-import { worktreeCreateOps } from './worktreeCreateOps';
-import { worktreeRemoveOps } from './worktreeRemoveOps';
-import { worktreeProbeOps, type WorktreeRegistration } from './worktreeProbeOps';
-import { gitReadOps } from './gitReadOps';
-import type { LogSinceOptions } from './gitReadOps';
-import { remoteOps } from './remoteOps';
-import { claimOps } from './claimOps';
-import { rewrapMissingWorkingDirectory } from './workingDirectoryGuard';
+} from './types.js';
+import { consoleLogger } from './consoleLogger.js';
+import { branchOps } from './branchOps.js';
+import { commitOps } from './commitOps.js';
+import { worktreeResetOps } from './worktreeResetOps.js';
+import { worktreeQueryOps, type WorktreeForIssueResult } from './worktreeQueryOps.js';
+import { worktreeCreateOps } from './worktreeCreateOps.js';
+import { worktreeRemoveOps } from './worktreeRemoveOps.js';
+import { worktreeProbeOps, type WorktreeRegistration } from './worktreeProbeOps.js';
+import { gitReadOps } from './gitReadOps.js';
+import type { LogSinceOptions } from './gitReadOps.js';
+import { remoteOps } from './remoteOps.js';
+import { claimOps } from './claimOps.js';
+import { rewrapMissingWorkingDirectory } from './workingDirectoryGuard.js';
 
 /** Single real spawn site for the package — a thin execSync wrapper. */
 const defaultExec: ExecFn = (command, options) => {

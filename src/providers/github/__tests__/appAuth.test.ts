@@ -9,8 +9,8 @@ import {
   clearAppAuthCaches,
   redactBearerTokens,
   GITHUB_API_BASE_URL,
-} from '../appAuth';
-import type { RunCurl, GitHubAppConfig } from '../appAuth';
+} from '../appAuth.js';
+import type { RunCurl, GitHubAppConfig } from '../appAuth.js';
 
 // ---------------------------------------------------------------------------
 // Suite setup — throwaway RSA key + an explicit injected GitHubAppConfig.

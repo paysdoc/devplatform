@@ -2,10 +2,10 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { describe, it, expect, afterEach } from 'vitest';
-import { GitContext } from '../../../git';
-import type { GitContextOptions, ExecFn } from '../../../git';
-import { createGhRepoApi, type GhRepoApi } from '../ghRepoApi';
-import { createLiteralTokenProvider } from '../githubTokenProvider';
+import { GitContext } from '../../../git/index.js';
+import type { GitContextOptions, ExecFn } from '../../../git/index.js';
+import { createGhRepoApi, type GhRepoApi } from '../ghRepoApi.js';
+import { createLiteralTokenProvider } from '../githubTokenProvider.js';
 
 const FRAMEWORK_ROOT = '/srv/adw/framework';
 const TARGET_REPOS_DIR = '/srv/adw/repos';

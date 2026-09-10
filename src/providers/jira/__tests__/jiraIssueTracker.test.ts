@@ -6,11 +6,11 @@
  */
 
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { createJiraIssueTracker } from '../jiraIssueTracker';
-import type { FetchFn, JiraAuth } from '../jiraApiClient';
-import { BoardStatus } from '../../types';
-import type { LogLevel } from '../../../git/types';
-import type { JiraIssueResponse, JiraTransitionsResponse } from '../jiraTypes';
+import { createJiraIssueTracker } from '../jiraIssueTracker.js';
+import type { FetchFn, JiraAuth } from '../jiraApiClient.js';
+import { BoardStatus } from '../../types.js';
+import type { LogLevel } from '../../../git/types.js';
+import type { JiraIssueResponse, JiraTransitionsResponse } from '../jiraTypes.js';
 
 function makeLoggerSpy(): { logger: (message: string, level?: LogLevel) => void; messages: { message: string; level?: LogLevel }[] } {
   const messages: { message: string; level?: LogLevel }[] = [];

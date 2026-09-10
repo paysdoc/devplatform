@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { GitContext } from '../gitContext';
-import type { GitContextOptions, ExecFn } from '../types';
-import { createLiteralTokenProvider } from '../../providers/github/githubTokenProvider';
+import { GitContext } from '../gitContext.js';
+import type { GitContextOptions, ExecFn } from '../types.js';
+import { createLiteralTokenProvider } from '../../providers/github/githubTokenProvider.js';
 
 const FRAMEWORK_ROOT = '/srv/adw/framework';
 const TARGET_REPOS_DIR = '/srv/adw/repos';

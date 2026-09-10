@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { commitOps } from '../commitOps';
+import { commitOps } from '../commitOps.js';
 
 interface RunnerCall {
   command: string;

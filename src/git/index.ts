@@ -15,6 +15,13 @@
  * `gh auth token` all live in the GitHub forge adapter
  * (`adws/providers/github/`, #792/#793), not here.
  *
+ * Also exports the worktree lifecycle op namespaces (create/remove/query/
+ * probe/reset) and the distributed-lock `claimOps`, alongside the
+ * `repoWorkspace` workspace ops — the full forge-neutral git/worktree
+ * surface this package ships (issue #1). None of it imports from
+ * `src/providers/`; that boundary is enforced by a committed import-graph
+ * test.
+ *
  * Bootstrap exceptions (issue #700, narrowed by #793): the functions below
  * are the ONLY legitimate pre-context git reads in the codebase — generic
  * git reads only, no forge vocabulary. They live inside this structurally-
@@ -23,24 +30,30 @@
  * shelling out itself.
  */
 
-export { GitContext } from './gitContext';
+export { GitContext } from './gitContext.js';
 export type {
   GitIdentity, GitContextOptions, ExecFn, GitContextDeps, FsDeps, ExecWorkingDirectory, ExecOptions,
   TokenProvider, CredentialPurpose, CredentialRequest, Logger, LogLevel,
-} from './types';
-export { consoleLogger } from './consoleLogger';
-export { killProcessesInDirectory } from './processCleanup';
-export type { WorktreeForIssueResult } from './worktreeQueryOps';
-export type { WorktreeRegistration } from './worktreeProbeOps';
-export type { LogSinceOptions } from './gitReadOps';
+} from './types.js';
+export { consoleLogger } from './consoleLogger.js';
+export { killProcessesInDirectory } from './processCleanup.js';
+export { claimOps } from './claimOps.js';
+export { worktreeCreateOps } from './worktreeCreateOps.js';
+export { worktreeRemoveOps } from './worktreeRemoveOps.js';
+export { worktreeQueryOps } from './worktreeQueryOps.js';
+export { worktreeProbeOps } from './worktreeProbeOps.js';
+export { worktreeResetOps } from './worktreeResetOps.js';
+export type { WorktreeForIssueResult } from './worktreeQueryOps.js';
+export type { WorktreeRegistration } from './worktreeProbeOps.js';
+export type { LogSinceOptions } from './gitReadOps.js';
 
 // Bootstrap — absorbed pre-context primitives (issue #700), generic git reads only (#793)
-export { readOriginRemoteUrl, readEnvGitIdentity, readGitConfigIdentity } from './bootstrapIdentity';
-export type { GitConfigIdentityDeps } from './bootstrapIdentity';
+export { readOriginRemoteUrl, readEnvGitIdentity, readGitConfigIdentity } from './bootstrapIdentity.js';
+export type { GitConfigIdentityDeps } from './bootstrapIdentity.js';
 export {
   getTargetRepoWorkspacePath,
   isRepoCloned,
   cloneRepo,
   ensureRepoWorkspace,
-} from './repoWorkspace';
-export type { EnsureRepoWorkspaceDeps } from './repoWorkspace';
+} from './repoWorkspace.js';
+export type { EnsureRepoWorkspaceDeps } from './repoWorkspace.js';

@@ -6,13 +6,13 @@
  * the `Logger` port, defaulting to `consoleLogger`.
  */
 
-import type { Logger } from '../../git/types';
-import { consoleLogger } from '../../git/consoleLogger';
-import type { IssueTracker, Issue, IssueComment, IssueSummary, IssueListEntry } from '../types';
-import { BoardStatus } from '../types';
-import { JiraApiClient, isCloudAuth, type JiraAuth, type JiraApiClientDeps } from './jiraApiClient';
-import type { JiraIssueResponse, JiraCommentResponse } from './jiraTypes';
-import { markdownToAdf, adfToPlainText } from './adfConverter';
+import type { Logger } from '../../git/types.js';
+import { consoleLogger } from '../../git/consoleLogger.js';
+import type { IssueTracker, Issue, IssueComment, IssueSummary, IssueListEntry } from '../types.js';
+import { BoardStatus } from '../types.js';
+import { JiraApiClient, isCloudAuth, type JiraAuth, type JiraApiClientDeps } from './jiraApiClient.js';
+import type { JiraIssueResponse, JiraCommentResponse } from './jiraTypes.js';
+import { markdownToAdf, adfToPlainText } from './adfConverter.js';
 
 /** The injected configuration `createJiraIssueTracker` takes (#818); ADW's wiring supplies `auth` from `jiraAuthFromEnv()`; `instanceUrl`/`projectKey` come from the caller's own configuration, wired by `adws/core/forgeWiring.ts`. */
 export interface JiraConfig {

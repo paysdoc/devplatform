@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { remoteOps } from '../remoteOps';
+import { remoteOps } from '../remoteOps.js';
 
 interface RunnerCall {
   command: string;

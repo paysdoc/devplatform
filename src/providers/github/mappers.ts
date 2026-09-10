@@ -4,9 +4,9 @@
  * All functions are pure — no side effects, no imports of global state.
  */
 
-import type { GitHubIssue, GitHubComment, IssueCommentSummary } from './domain/issue';
-import type { PRDetails, PRReviewComment, PRListItem, RawPR } from './domain/pullRequest';
-import type { Issue, IssueComment, PullRequest, PullRequestSummary, ReviewComment } from '../types';
+import type { GitHubIssue, GitHubComment, IssueCommentSummary } from './domain/issue.js';
+import type { PRDetails, PRReviewComment, PRListItem, RawPR } from './domain/pullRequest.js';
+import type { Issue, IssueComment, PullRequest, PullRequestSummary, ReviewComment } from '../types.js';
 
 // ── IssueTracker mappers ──────────────────────────────────────────────
 

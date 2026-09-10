@@ -19,15 +19,15 @@
  * environment variable.
  */
 
-import type { GitContext, Logger, TokenProvider } from '../git';
-import { type BoardManager, type BoundProviders, type CodeHost, type IssueTracker, type RepoIdentifier, validateRepoIdentifier } from './types';
-import { assertContextBoundTo } from './github/contextBinding';
-import { createGitHubIssueTracker, type GitHubIssueTrackerDeps } from './github/githubIssueTracker';
-import { createGitHubCodeHost, type GitHubCodeHostDeps } from './github/githubCodeHost';
-import { createGitHubBoardManager } from './github/githubBoardManager';
-import { createGitLabCodeHost } from './gitlab/gitlabCodeHost';
-import type { GitLabConfig } from './gitlab/gitlabApiClient';
-import { createJiraIssueTracker, type JiraConfig } from './jira/jiraIssueTracker';
+import type { GitContext, Logger, TokenProvider } from '../git/index.js';
+import { type BoardManager, type BoundProviders, type CodeHost, type IssueTracker, type RepoIdentifier, validateRepoIdentifier } from './types.js';
+import { assertContextBoundTo } from './github/contextBinding.js';
+import { createGitHubIssueTracker, type GitHubIssueTrackerDeps } from './github/githubIssueTracker.js';
+import { createGitHubCodeHost, type GitHubCodeHostDeps } from './github/githubCodeHost.js';
+import { createGitHubBoardManager } from './github/githubBoardManager.js';
+import { createGitLabCodeHost } from './gitlab/gitlabCodeHost.js';
+import type { GitLabConfig } from './gitlab/gitlabApiClient.js';
+import { createJiraIssueTracker, type JiraConfig } from './jira/jiraIssueTracker.js';
 
 // ---------------------------------------------------------------------------
 // The closed forge unions — one per port

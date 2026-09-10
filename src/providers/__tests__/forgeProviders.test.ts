@@ -11,8 +11,8 @@ import {
   UnknownForgeError,
   type CodeHostForge,
   type IssueTrackerForge,
-} from '../forgeProviders';
-import { makeRepoId, makeCtx, makeSpyExec, baseOptions } from './forgeProvidersFixture';
+} from '../forgeProviders.js';
+import { makeRepoId, makeCtx, makeSpyExec, baseOptions } from './forgeProvidersFixture.js';
 
 // ── github/github ────────────────────────────────────────────────────────────
 

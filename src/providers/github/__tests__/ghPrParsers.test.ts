@@ -8,7 +8,7 @@ import {
   selectPreferredPR,
   isApprovedFromReviewsList,
   parsePRApprovalState,
-} from '../ghPrParsers';
+} from '../ghPrParsers.js';
 
 describe('issueNumberFromBranch', () => {
   it('extracts the issue number from an ADW branch name', () => {

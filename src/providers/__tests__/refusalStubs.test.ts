@@ -5,11 +5,11 @@
  * per class; the remaining stubs follow the identical shape.
  */
 import { describe, it, expect } from 'vitest';
-import { GitLabCodeHost } from '../gitlab/gitlabCodeHost';
-import type { GitLabApiClient } from '../gitlab/gitlabApiClient';
-import { JiraIssueTracker } from '../jira/jiraIssueTracker';
-import type { JiraApiClient } from '../jira/jiraApiClient';
-import { Platform, type RepoIdentifier } from '../types';
+import { GitLabCodeHost } from '../gitlab/gitlabCodeHost.js';
+import type { GitLabApiClient } from '../gitlab/gitlabApiClient.js';
+import { JiraIssueTracker } from '../jira/jiraIssueTracker.js';
+import type { JiraApiClient } from '../jira/jiraApiClient.js';
+import { Platform, type RepoIdentifier } from '../types.js';
 
 const REPO_ID: RepoIdentifier = { owner: 'acme', repo: 'widget', platform: Platform.GitLab };
 

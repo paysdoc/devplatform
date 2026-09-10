@@ -7,10 +7,10 @@ import {
   describeMissingWorkingDirectory,
   rewrapMissingWorkingDirectory,
   type WorkingDirectoryContext,
-} from '../workingDirectoryGuard';
-import { GitContext } from '../gitContext';
-import type { GitContextOptions, ExecFn, FsDeps } from '../types';
-import { createLiteralTokenProvider } from '../../providers/github/githubTokenProvider';
+} from '../workingDirectoryGuard.js';
+import { GitContext } from '../gitContext.js';
+import type { GitContextOptions, ExecFn, FsDeps } from '../types.js';
+import { createLiteralTokenProvider } from '../../providers/github/githubTokenProvider.js';
 
 const FRAMEWORK_ROOT = '/srv/adw/framework';
 const TARGET_REPOS_DIR = '/srv/adw/repos';
