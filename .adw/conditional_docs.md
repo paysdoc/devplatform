@@ -15,12 +15,15 @@
 - app_docs/forge-providers.md
   - Owns:
     - src/providers/forgeProviders.ts
+    - src/providers/forgeCredentials.ts
     - src/providers/index.ts
     - src/providers/types.ts
     - src/providers/workspaceValidation.ts
   - Conditions:
-    - When working on the forge-neutral provider selection/registration abstraction, or on
-      cross-provider workspace validation shared by the GitHub/GitLab/Jira adapters
+    - When working on the forge-neutral provider selection/registration abstraction, the
+      forge-keyed credential factory (`createForgeCredentials`) that resolves a `TokenProvider`
+      and bootstrap `GitIdentity` from a forge selection alone, or on cross-provider workspace
+      validation shared by the GitHub/GitLab/Jira adapters
 
 - app_docs/github-provider.md
   - Owns:
