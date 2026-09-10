@@ -78,7 +78,9 @@ function main(): void {
       "import * as git from '@paysdoc/devplatform/git';",
       "if (typeof root.BoardStatus === 'undefined') throw new Error('root entry missing BoardStatus');",
       "if (typeof providers.forgeProviders !== 'function') throw new Error('providers entry missing forgeProviders');",
+      "if (typeof providers.createForgeCredentials !== 'function') throw new Error('providers entry missing createForgeCredentials');",
       "if (typeof git.GitContext !== 'function') throw new Error('git entry missing GitContext');",
+      "if (typeof git.createLiteralTokenProvider !== 'function') throw new Error('git entry missing createLiteralTokenProvider');",
       "console.log('OK');",
     ].join('\n');
 
