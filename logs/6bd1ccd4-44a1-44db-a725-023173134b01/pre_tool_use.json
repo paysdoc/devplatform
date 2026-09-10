@@ -1,0 +1,336 @@
+[
+  {
+    "session_id": "6bd1ccd4-44a1-44db-a725-023173134b01",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/6bd1ccd4-44a1-44db-a725-023173134b01.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e2e6892b-26a7-4e4d-a3d8-8bf93530b193",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git diff origin/main --stat; echo \"---NAMES---\"; git diff origin/main --name-only",
+      "description": "Show diff stat and changed files vs origin/main"
+    },
+    "tool_use_id": "toolu_01CK41j2Rr1f2m8KLCnYAbMZ"
+  },
+  {
+    "session_id": "6bd1ccd4-44a1-44db-a725-023173134b01",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/6bd1ccd4-44a1-44db-a725-023173134b01.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e2e6892b-26a7-4e4d-a3d8-8bf93530b193",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/release.config.js"
+    },
+    "tool_use_id": "toolu_015EKPs2ceoSJKVUZUtm69Ut"
+  },
+  {
+    "session_id": "6bd1ccd4-44a1-44db-a725-023173134b01",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/6bd1ccd4-44a1-44db-a725-023173134b01.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e2e6892b-26a7-4e4d-a3d8-8bf93530b193",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/scripts/releaseDryRun.ts"
+    },
+    "tool_use_id": "toolu_01AfwT42DZbFYFWFkWNKJWMp"
+  },
+  {
+    "session_id": "6bd1ccd4-44a1-44db-a725-023173134b01",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/6bd1ccd4-44a1-44db-a725-023173134b01.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e2e6892b-26a7-4e4d-a3d8-8bf93530b193",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/.github/workflows/release.yml"
+    },
+    "tool_use_id": "toolu_0122ZzJ6sptjQVBNFH7GCdLL"
+  },
+  {
+    "session_id": "6bd1ccd4-44a1-44db-a725-023173134b01",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/6bd1ccd4-44a1-44db-a725-023173134b01.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e2e6892b-26a7-4e4d-a3d8-8bf93530b193",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/.adw/conditional_docs.md"
+    },
+    "tool_use_id": "toolu_018PQSF74vnxJackdnrBobdi"
+  },
+  {
+    "session_id": "6bd1ccd4-44a1-44db-a725-023173134b01",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/6bd1ccd4-44a1-44db-a725-023173134b01.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e2e6892b-26a7-4e4d-a3d8-8bf93530b193",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/app_docs/ci-and-adw-config.md"
+    },
+    "tool_use_id": "toolu_01Vpy94cBQJ7ptYBsKUEYP5V"
+  },
+  {
+    "session_id": "6bd1ccd4-44a1-44db-a725-023173134b01",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/6bd1ccd4-44a1-44db-a725-023173134b01.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e2e6892b-26a7-4e4d-a3d8-8bf93530b193",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git diff origin/main -- .github/workflows/ci.yml package.json tsconfig.json README.md",
+      "description": "Show diffs for ci.yml, package.json, tsconfig.json, README.md"
+    },
+    "tool_use_id": "toolu_01KZiQhiBkXuWaqJyAXN33dW"
+  },
+  {
+    "session_id": "6bd1ccd4-44a1-44db-a725-023173134b01",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/6bd1ccd4-44a1-44db-a725-023173134b01.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e2e6892b-26a7-4e4d-a3d8-8bf93530b193",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/src/__tests__/releaseParser.test.ts"
+    },
+    "tool_use_id": "toolu_01HoUgnbx8nqgcR5Vwp1qre6"
+  },
+  {
+    "session_id": "6bd1ccd4-44a1-44db-a725-023173134b01",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/6bd1ccd4-44a1-44db-a725-023173134b01.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e2e6892b-26a7-4e4d-a3d8-8bf93530b193",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/src/__tests__/releaseConfig.test.ts"
+    },
+    "tool_use_id": "toolu_017BSmszY5PaGcxpt3Uj3ipC"
+  },
+  {
+    "session_id": "6bd1ccd4-44a1-44db-a725-023173134b01",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/6bd1ccd4-44a1-44db-a725-023173134b01.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e2e6892b-26a7-4e4d-a3d8-8bf93530b193",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "ls app_docs/ 2>&1; echo \"---spec---\"; sed -n '1,80p' specs/issue-2-adw-9xqejz-release-automation-w-sdlc_planner-release-automation-agent-prefixed-parser.md",
+      "description": "List app_docs and view spec file"
+    },
+    "tool_use_id": "toolu_01Pq9vYTC9zH6NzAR66QC82k"
+  },
+  {
+    "session_id": "6bd1ccd4-44a1-44db-a725-023173134b01",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/6bd1ccd4-44a1-44db-a725-023173134b01.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e2e6892b-26a7-4e4d-a3d8-8bf93530b193",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git log --all --oneline -- app_docs/ci-and-adw-config.md | head -20; echo \"---\"; git show origin/main:app_docs/ci-and-adw-config.md 2>&1 | head -5; find . -iname \"*ci-and-adw*\" -not -path \"*/node_modules/*\"",
+      "description": "Check history of ci-and-adw-config.md doc"
+    },
+    "tool_use_id": "toolu_01HJ18kHZnCRaQ9ZxvWusuZq"
+  },
+  {
+    "session_id": "6bd1ccd4-44a1-44db-a725-023173134b01",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/6bd1ccd4-44a1-44db-a725-023173134b01.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e2e6892b-26a7-4e4d-a3d8-8bf93530b193",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git log --oneline --follow -- app_docs/ci-and-adw-config.md; echo \"---diff---\"; git log --diff-filter=D --oneline -- app_docs/ci-and-adw-config.md",
+      "description": "Check deletion history of the doc file"
+    },
+    "tool_use_id": "toolu_01TT6j66XazUHaqNVPWukfFE"
+  },
+  {
+    "session_id": "6bd1ccd4-44a1-44db-a725-023173134b01",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/6bd1ccd4-44a1-44db-a725-023173134b01.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e2e6892b-26a7-4e4d-a3d8-8bf93530b193",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git merge-base --is-ancestor 7a4597f HEAD && echo \"ancestor of HEAD\" || echo \"NOT ancestor of HEAD\"; git branch --contains 7a4597f; git log --oneline -1 7a4597f",
+      "description": "Check whether commit is ancestor of current branch"
+    },
+    "tool_use_id": "toolu_01Sg8uqM3B15RLBGV1E9hVK1"
+  },
+  {
+    "session_id": "6bd1ccd4-44a1-44db-a725-023173134b01",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/6bd1ccd4-44a1-44db-a725-023173134b01.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e2e6892b-26a7-4e4d-a3d8-8bf93530b193",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git log --oneline -- app_docs/ 2>&1 | head -20; echo \"---\"; git log --oneline --all --source -- app_docs/ci-and-adw-config.md | head; echo \"---branch base---\"; git log --oneline -5; echo \"---merge base with main---\"; git merge-base HEAD origin/main",
+      "description": "Check app_docs history on current branch"
+    },
+    "tool_use_id": "toolu_016F3Fd5eqCYfYyfNYFT2RJj"
+  },
+  {
+    "session_id": "6bd1ccd4-44a1-44db-a725-023173134b01",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/6bd1ccd4-44a1-44db-a725-023173134b01.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e2e6892b-26a7-4e4d-a3d8-8bf93530b193",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git show fee68b9:app_docs/ci-and-adw-config.md 2>&1 | head -3; echo \"---log for conditional_docs---\"; git log --oneline -- .adw/conditional_docs.md | head -20",
+      "description": "Check if doc file existed at merge base and history of the index file"
+    },
+    "tool_use_id": "toolu_01Wa2XZCguqnZFpgz5Vp6gzk"
+  },
+  {
+    "session_id": "6bd1ccd4-44a1-44db-a725-023173134b01",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/6bd1ccd4-44a1-44db-a725-023173134b01.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e2e6892b-26a7-4e4d-a3d8-8bf93530b193",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/.github/workflows/ci.yml"
+    },
+    "tool_use_id": "toolu_01YMHp9bigp3mzFU4iqoxpMC"
+  },
+  {
+    "session_id": "6bd1ccd4-44a1-44db-a725-023173134b01",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/6bd1ccd4-44a1-44db-a725-023173134b01.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e2e6892b-26a7-4e4d-a3d8-8bf93530b193",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "cat .github/adw.yml 2>&1; echo \"---\"; cat src/__tests__/semantic-release-commit-analyzer.d.ts 2>&1; echo \"---\"; cat src/__tests__/semantic-release-release-notes-generator.d.ts 2>&1",
+      "description": "Check adw.yml and semantic-release type stub files"
+    },
+    "tool_use_id": "toolu_01F4RuMcTodaHU8PcwMEcjHX"
+  },
+  {
+    "session_id": "6bd1ccd4-44a1-44db-a725-023173134b01",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/6bd1ccd4-44a1-44db-a725-023173134b01.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e2e6892b-26a7-4e4d-a3d8-8bf93530b193",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Write",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/app_docs/feature-9xqejz-release-automation.md",
+      "content": "# Release Automation\n\n## Overview\n\nComputes and publishes npm releases from commit history via [semantic-release](https://semantic-release.gitbook.io/), using a commit parser that understands this repository's ADW agent-prefixed commit headers (`build-agent: feat: …`) in addition to plain conventional-commit headers. A PR-time dry run and a hard-fail baseline guard keep the automation from silently never publishing or from recomputing the hand-published `1.0.0` release.\n\n## Responsibilities\n\n- Defines `parserOpts` (`release.config.js`) — a single `headerPattern`/`breakingHeaderPattern` pair shared by `@semantic-release/commit-analyzer` and `@semantic-release/release-notes-generator`, so analysis and notes-rendering can never diverge.\n- Accepts an optional `<agent-name>: ` prefix ahead of the conventional type. The prefix must match `[a-z0-9]+(?:-[a-z0-9]+)+` (hyphenated, lowercase, no capture needed beyond discarding it) so it can never be confused with a bare conventional type — none of `feat`, `fix`, `chore`, `docs`, `perf`, `refactor`, `test`, `build`, `ci`, `style`, `revert` contain a hyphen.\n- Maps commit types to release severity via the `conventionalcommits` preset: `feat` → minor, `fix` → patch, `!`-suffixed headers or a `BREAKING CHANGE:` footer → major, everything else (`chore`, `docs`, …) → no release.\n- Toggles the plugin list on `SEMANTIC_RELEASE_DRY_RUN=true`: only `commit-analyzer` and `release-notes-generator` run (no credentials needed); `@semantic-release/npm` and `@semantic-release/github` are added for real runs.\n- `scripts/releaseDryRun.ts` (`bun run release:dry-run`) shells out to `semantic-release --dry-run --no-ci` against a branch (`DRY_RUN_BRANCH` env var, falling back to the current git branch), pins `env-ci`'s branch detection to that branch via synthetic `GITHUB_EVENT_NAME=push` / `GITHUB_REF` env vars, prints the computed next version, and hard-fails if that version is `1.0.0` (the baseline must never be recomputed).\n- The `release-dry-run` job in `.github/workflows/ci.yml` runs `bun run release:dry-run` on every `pull_request`, so a commit-header configuration that would never trigger a release is visible before merge, without publishing anything.\n- The `Release` job in `.github/workflows/release.yml` runs the real `semantic-release` binary on every push to `main`, guarded by a step that hard-fails if `refs/tags/v1.0.0` is not reachable after fetching tags.\n\n## Contracts & Invariants\n\n- `release.config.js`'s `parserOpts` object is the single source of truth: `src/__tests__/releaseParser.test.ts` and `src/__tests__/releaseConfig.test.ts` import it directly (`import releaseConfig from '../../release.config.js'`) rather than a copy, so a test can never pass against a pattern the release does not use.\n- The agent-name prefix is a non-capturing group — `headerCorrespondence` (`['type', 'scope', 'subject']`) is identical to the stock `conventionalcommits` preset's, so no downstream plugin needs to know agents exist.\n- Dry-run mode never needs secrets: `SEMANTIC_RELEASE_DRY_RUN=true` drops `@semantic-release/npm` and `@semantic-release/github` from the plugin list before semantic-release loads them.\n- `scripts/releaseDryRun.ts` exits non-zero if the computed next version is `1.0.0`, and the `Release` job separately hard-fails if `refs/tags/v1.0.0` is unreachable — two independent guards against recomputing the hand-published baseline.\n- Publishing uses npm OIDC trusted publishing (`permissions.id-token: write` in `release.yml`); `NPM_TOKEN` is only a fallback credential, consumed by `@semantic-release/npm` when the OIDC trusted publisher isn't linked or the secret is present.\n- `tagFormat` is `v${version}` and `branches` is exactly `['main']`.\n\n## Configuration\n\n- `SEMANTIC_RELEASE_DRY_RUN` — `'true'` strips the publish plugins from `release.config.js`.\n- `DRY_RUN_BRANCH` — branch `scripts/releaseDryRun.ts` dry-runs against; defaults to the current git branch (`git rev-parse --abbrev-ref HEAD`) when unset.\n- `GITHUB_TOKEN` — required by the `release-dry-run` CI job (needs `contents: write`, since semantic-release probes push access with `git push --dry-run` even in dry-run mode) and by the real `Release` job.\n- `NPM_TOKEN` — optional fallback publish credential; OIDC trusted publishing is preferred.\n- `bun run release:dry-run` — runs `scripts/releaseDryRun.ts` via `bunx tsx`.\n- `tsconfig.json` sets `allowJs: true` and includes `release.config.js` so `src/__tests__/*.test.ts` can import it under typecheck; `tsconfig.build.json` keeps its own `src/**/*.ts`-only `include`, so the config file never leaks into `dist/`.\n- `src/__tests__/semantic-release-commit-analyzer.d.ts` and `src/__tests__/semantic-release-release-notes-generator.d.ts` are hand-written ambient type declarations (these two semantic-release plugins ship none) covering only the `analyzeCommits`/`generateNotes` export shapes the tests exercise.\n\n## Gotchas\n\n- On GitHub Actions `pull_request` events, `GITHUB_REF` is `refs/pull/<n>/merge`, and `env-ci` (which semantic-release uses for branch detection) hands that straight through. `--no-ci` only skips the pull-request early return, not branch detection, so without steering `GITHUB_EVENT_NAME`/`GITHUB_REF` at the branch actually being dry-run, the run would end with \"configured to only publish from `<branch>`\" and exit 0 without analyzing anything.\n- Pull requests from forks always receive a read-only `GITHUB_TOKEN`, so the `release-dry-run` job's push-access probe fails on fork PRs regardless of the `contents: write` permission block.\n- `@semantic-release/release-notes-generator`'s stable release ships `conventional-changelog-writer` 8.x, but the `conventionalcommits` preset major used here needs writer 9.x-shaped options; `releaseConfig.test.ts`'s \"release notes render under the shipped preset\" suite exists specifically to catch that drift by rendering real notes rather than only asserting the plugin list shape.\n- There are no tags in the repository until the `v1.0.0` baseline is manually pushed once; until then the `Release` workflow's baseline-guard step intentionally hard-fails every run rather than letting semantic-release compute `1.0.0` on its own.\n"
+    },
+    "tool_use_id": "toolu_0151LpiPiis7NeXh3PcQw9g7"
+  },
+  {
+    "session_id": "6bd1ccd4-44a1-44db-a725-023173134b01",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/6bd1ccd4-44a1-44db-a725-023173134b01.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e2e6892b-26a7-4e4d-a3d8-8bf93530b193",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Write",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/app_docs/ci-and-adw-config.md",
+      "content": "# CI Pipeline and ADW Guardrails Configuration\n\n## Overview\n\nGitHub Actions workflow definitions for this repository (`.github/workflows/*.yml`) plus the ADW guardrails toggle (`.github/adw.yml`) that lives outside `.adw/` so it survives ADW template regeneration.\n\n## Responsibilities\n\n- `.github/workflows/ci.yml` — runs on every `pull_request` and push to `main`:\n  - `check` — `bun install`, `bun run typecheck`, `bun run test:unit`.\n  - `package` — builds, `npm pack --dry-run`, and smoke-tests the tarball (`bun run smoke:package`) under Node + Bun.\n  - `release-dry-run` — `pull_request`-only; runs `bun run release:dry-run` so a commit-header configuration that would never trigger a release is caught before merge. See `app_docs/feature-9xqejz-release-automation.md` for the release logic this job exercises.\n- `.github/workflows/release.yml` — runs on push to `main` (and `workflow_dispatch`): verifies the `v1.0.0` baseline tag is reachable, then runs the real `semantic-release` binary. See `app_docs/feature-9xqejz-release-automation.md` for the release-config/parser details.\n- `.github/adw.yml` — toggles injection of the target-repo agent guardrails (`--settings` deny list + framework hooks) on every ADW agent spawn against this repository. Kept outside `.adw/` specifically so `/adw_init` regeneration never overwrites it.\n\n## Contracts & Invariants\n\n- The npm trusted publisher on npmjs.com is linked to this exact workflow filename (`release.yml`) — renaming it silently breaks OIDC trusted publishing.\n- `release.yml` hard-fails before running semantic-release if `refs/tags/v1.0.0` is not reachable after `fetch-tags: true`, so the hand-published `1.0.0` baseline can never be recomputed.\n- `release.yml` sets `concurrency: { group: release, cancel-in-progress: false }` so overlapping pushes to `main` queue rather than race or cancel a run mid-publish.\n- `release-dry-run` in `ci.yml` needs `permissions.contents: write` (not just `read`) because semantic-release probes push access with `git push --dry-run` even in dry-run mode; the job still publishes nothing since `release.config.js` drops the npm/github plugins under `SEMANTIC_RELEASE_DRY_RUN` and semantic-release skips tag creation in dry-run mode regardless.\n- `guardrails: true` in `.github/adw.yml` is the only setting; its absence/false disables guardrail injection for ADW agent spawns against this repo.\n\n## Configuration\n\n- Secrets consumed by `release.yml`: `GITHUB_TOKEN`, `NPM_TOKEN` (fallback only — OIDC trusted publishing via `permissions.id-token: write` is preferred).\n- Secrets consumed by `ci.yml`'s `release-dry-run` job: `GITHUB_TOKEN`.\n- `.github/adw.yml`: `guardrails: <bool>`.\n\n## Gotchas\n\n- Pull requests from forks always receive a read-only `GITHUB_TOKEN`, so `release-dry-run` fails its push-access probe on fork PRs regardless of the `contents: write` permission block — this is expected, not a bug to fix.\n- `.github/adw.yml` is intentionally outside `.adw/`; do not move ADW-guardrail configuration into `.adw/` or it will be silently clobbered on the next template regeneration.\n"
+    },
+    "tool_use_id": "toolu_014U5vffy5DZnFgdAPjzuUGE"
+  },
+  {
+    "session_id": "6bd1ccd4-44a1-44db-a725-023173134b01",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/6bd1ccd4-44a1-44db-a725-023173134b01.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e2e6892b-26a7-4e4d-a3d8-8bf93530b193",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/.adw/conditional_docs.md",
+      "old_string": "- app_docs/ci-and-adw-config.md\n  - Owns:\n    - .github/workflows/**\n    - .github/adw.yml\n  - Conditions:\n    - When working on the CI pipeline (typecheck/test workflow, release workflow) or on this\n      repository's ADW guardrails configuration",
+      "new_string": "- app_docs/ci-and-adw-config.md\n  - Owns:\n    - .github/workflows/**\n    - .github/adw.yml\n  - Conditions:\n    - When working on the CI pipeline (typecheck/test workflow, package build/pack/smoke-test job,\n      or the PR release-dry-run job) defined in `.github/workflows/ci.yml`, the real release\n      workflow's job orchestration (checkout, baseline-tag guard, concurrency, permissions) in\n      `.github/workflows/release.yml`, or this repository's ADW guardrails toggle\n      (`.github/adw.yml`)\n\n- app_docs/feature-9xqejz-release-automation.md\n  - Owns:\n    - release.config.js\n    - scripts/releaseDryRun.ts\n    - src/__tests__/releaseConfig.test.ts\n    - src/__tests__/releaseParser.test.ts\n    - src/__tests__/semantic-release-commit-analyzer.d.ts\n    - src/__tests__/semantic-release-release-notes-generator.d.ts\n  - Conditions:\n    - When working on the semantic-release configuration (`release.config.js`): the\n      agent-prefix-aware commit `parserOpts`, the dry-run plugin toggle, or the analyzer/notes\n      generator plugin list\n    - When working on the release dry-run script (`scripts/releaseDryRun.ts`, `bun run\n      release:dry-run`) or the CI/CD-visible next-version check it prints\n    - When working on the v1.0.0 baseline-never-recomputed guard or npm OIDC trusted publishing\n      with `NPM_TOKEN` fallback\n    - When troubleshooting why an agent-prefixed or plain conventional commit does or does not\n      trigger a release, or what release type (patch/minor/major/none) a commit computes to",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_01U3fvVHjoSemEqjkKdh2j3a"
+  }
+]

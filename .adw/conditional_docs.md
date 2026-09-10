@@ -49,8 +49,30 @@
     - .github/workflows/**
     - .github/adw.yml
   - Conditions:
-    - When working on the CI pipeline (typecheck/test workflow, release workflow) or on this
-      repository's ADW guardrails configuration
+    - When working on the CI pipeline (typecheck/test workflow, package build/pack/smoke-test job,
+      or the PR release-dry-run job) defined in `.github/workflows/ci.yml`, the real release
+      workflow's job orchestration (checkout, baseline-tag guard, concurrency, permissions) in
+      `.github/workflows/release.yml`, or this repository's ADW guardrails toggle
+      (`.github/adw.yml`)
+
+- app_docs/feature-9xqejz-release-automation.md
+  - Owns:
+    - release.config.js
+    - scripts/releaseDryRun.ts
+    - src/__tests__/releaseConfig.test.ts
+    - src/__tests__/releaseParser.test.ts
+    - src/__tests__/semantic-release-commit-analyzer.d.ts
+    - src/__tests__/semantic-release-release-notes-generator.d.ts
+  - Conditions:
+    - When working on the semantic-release configuration (`release.config.js`): the
+      agent-prefix-aware commit `parserOpts`, the dry-run plugin toggle, or the analyzer/notes
+      generator plugin list
+    - When working on the release dry-run script (`scripts/releaseDryRun.ts`, `bun run
+      release:dry-run`) or the CI/CD-visible next-version check it prints
+    - When working on the v1.0.0 baseline-never-recomputed guard or npm OIDC trusted publishing
+      with `NPM_TOKEN` fallback
+    - When troubleshooting why an agent-prefixed or plain conventional commit does or does not
+      trigger a release, or what release type (patch/minor/major/none) a commit computes to
 
 - app_docs/feature-wdjsgu-package-build-export-package-build.md
   - Owns:
