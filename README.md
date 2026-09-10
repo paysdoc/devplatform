@@ -98,7 +98,8 @@ See [UBIQUITOUS_LANGUAGE.md](./UBIQUITOUS_LANGUAGE.md) for the canonical terms u
 app_docs/                    Per-module documentation owned by conditional_docs.md routing (ADW-generated)
 UBIQUITOUS_LANGUAGE.md       Canonical domain glossary
 features/regression/vocabulary.md   Regression test vocabulary
-specs/                        Per-issue implementation plans (ADW-generated)
+logs/<session-id>/           Claude Code hook session logs (chat, pre/post-tool-use, stop transcripts)
+specs/                        Per-issue implementation plans (ADW-generated), plus specs/patch/ for patch plans
 release.config.js             semantic-release configuration: agent-prefix-aware commit parser, branches, plugin list
 scripts/
   smokePackage.ts             Builds, packs, and smoke-tests the tarball under Node + Bun (`bun run smoke:package`)

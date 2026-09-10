@@ -28,7 +28,11 @@
     },
     "./package.json": "./package.json"
   },
-  "files": ["dist", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "sideEffects": false,
   "publishConfig": {
     "access": "public"
@@ -40,6 +44,7 @@
     "typecheck": "tsc --noEmit",
     "lint:git-guard": "bunx tsx scripts/checkGitGhGuard.ts",
     "test:unit": "vitest run",
+    "test:e2e": "NODE_OPTIONS=\"--import tsx\" cucumber-js",
     "test": "tsc --noEmit",
     "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
     "build": "bun run clean && tsc -p tsconfig.build.json",
@@ -48,6 +53,7 @@
     "prepack": "bun run build"
   },
   "devDependencies": {
+    "@cucumber/cucumber": "^13.2.1",
     "@semantic-release/commit-analyzer": "^13.0.1",
     "@semantic-release/github": "^12.0.9",
     "@semantic-release/npm": "^13.1.5",
