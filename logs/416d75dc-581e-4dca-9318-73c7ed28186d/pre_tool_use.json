@@ -1,0 +1,1120 @@
+[
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/.github/workflows/release.yml"
+    },
+    "tool_use_id": "toolu_015Gwt9Mi1hneWBTXMNGpbmz"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/.github/workflows/ci.yml"
+    },
+    "tool_use_id": "toolu_01NAA1aWNdqeAcuz6QzveMM5"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/package.json"
+    },
+    "tool_use_id": "toolu_01QT3DSeXsmMKK9Shs2LKY7i"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/tsconfig.json"
+    },
+    "tool_use_id": "toolu_01TpEJJCAgPqWkfPpnwknLUB"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/tsconfig.build.json"
+    },
+    "tool_use_id": "toolu_01JSpXJ1aMkzHPpgbz3tjQxD"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/vitest.config.ts"
+    },
+    "tool_use_id": "toolu_01NUt7F2tNWSxmuPcJhWbs3J"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/src/__tests__/packageExports.test.ts"
+    },
+    "tool_use_id": "toolu_01BBpV3sEfBonreZiTkg7ccQ"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/src/__tests__/importGraph.test.ts"
+    },
+    "tool_use_id": "toolu_01KA6rNWvX7WCErdhASEMsiJ"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/scripts/smokePackage.ts"
+    },
+    "tool_use_id": "toolu_01HTxpjgvx5LipyLDGA3No5F"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/README.md"
+    },
+    "tool_use_id": "toolu_012miHieY8JXq8y7RDC6UXkj"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/app_docs/ci-and-adw-config.md"
+    },
+    "tool_use_id": "toolu_01GsSnBdEYqjYmMTsMgz52Nq"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/.adw/commands.md"
+    },
+    "tool_use_id": "toolu_01Juw1WqwrLHqCUc6BZEhEmS"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git ls-remote --tags origin",
+      "description": "List tags on the origin remote"
+    },
+    "tool_use_id": "toolu_01U848jUAiV7vofUa1CoFmwu"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "npm view @paysdoc/devplatform version 2>&1",
+      "description": "Check the published npm version"
+    },
+    "tool_use_id": "toolu_01633ob3k4tXCTvEn1ZuRqmv"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git log -1 --format='%H %s' fee68b9 2>&1 && echo --- && git log -1 --format='%H %s' main 2>&1 && echo --- && git branch -a | head -50",
+      "description": "Inspect commit fee68b9 and current main tip"
+    },
+    "tool_use_id": "toolu_01Mged8CFEFpCnJgS11wUQZF"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git fetch origin --quiet 2>&1; echo \"fetch exit: $?\"; echo \"---origin/main---\"; git log -1 --format='%H %s' origin/main; echo \"---is fee68b9 ancestor of origin/main?---\"; git merge-base --is-ancestor fee68b9 origin/main && echo yes || echo no; echo \"---is 1045f15 ancestor of origin/main?---\"; git merge-base --is-ancestor 1045f15 origin/main && echo yes || echo no; echo \"---local main vs origin/main---\"; git log -1 --format='%H %s' main",
+      "description": "Check origin/main tip and ancestry relationships"
+    },
+    "tool_use_id": "toolu_01LfQQX1JqW4iv9add3JN9Jp"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "cat .npmrc 2>/dev/null; echo \"---\"; npm whoami 2>&1; echo \"---\"; npm config get registry",
+      "description": "Check npm registry config and login state"
+    },
+    "tool_use_id": "toolu_01QtF1yPUXTkGiAsrHuhS2H4"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "bun add -d semantic-release @semantic-release/commit-analyzer @semantic-release/release-notes-generator @semantic-release/npm @semantic-release/github conventional-changelog-conventionalcommits 2>&1",
+      "description": "Add semantic-release toolchain as devDependencies"
+    },
+    "tool_use_id": "toolu_014jjbKgYiwPoQLfJikPa25e"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "cat package.json | grep -A 20 '\"devDependencies\"'; echo \"---dependencies check---\"; node -e \"const p=require('./package.json'); console.log('dependencies:', JSON.stringify(p.dependencies));\"",
+      "description": "Verify devDependencies and confirm no runtime dependencies added"
+    },
+    "tool_use_id": "toolu_019cwydDkeantqcYPeWAhzyt"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Write",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/release.config.js",
+      "content": "/**\n * semantic-release configuration.\n *\n * This repository's commits are produced by ADW agents and carry an agent\n * name before the conventional type, e.g. `build-agent: feat: add X` or\n * `plan-orchestrator: chore: expand README`. The stock conventional-commits\n * header pattern does not match that prefix, so every agent commit would\n * parse as `type: null` and never trigger a release. `parserOpts` below\n * extends the standard pattern with an optional `<agent-name>: ` prefix.\n *\n * The prefix is constrained to a hyphenated lowercase token\n * (`[a-z0-9]+(?:-[a-z0-9]+)+`) so it can never swallow a bare conventional\n * type (`feat`, `fix`, `chore`, ... contain no hyphen) — a header like\n * `feat: fix: something` still parses as type `feat`, not agent `feat`.\n * The prefix is a non-capturing group, so `headerCorrespondence` stays\n * identical to the `conventionalcommits` preset's and no downstream plugin\n * needs to know agents exist.\n */\nconst AGENT_PREFIX = '(?:[a-z0-9]+(?:-[a-z0-9]+)+: )?';\n\nconst parserOpts = {\n  headerPattern: new RegExp(`^${AGENT_PREFIX}(\\\\w*)(?:\\\\((.*)\\\\))?!?: (.*)$`),\n  breakingHeaderPattern: new RegExp(`^${AGENT_PREFIX}(\\\\w*)(?:\\\\((.*)\\\\))?!: (.*)$`),\n  headerCorrespondence: ['type', 'scope', 'subject'],\n};\n\nconst isDryRun = process.env.SEMANTIC_RELEASE_DRY_RUN === 'true';\n\nconst plugins = [\n  ['@semantic-release/commit-analyzer', { preset: 'conventionalcommits', parserOpts }],\n  ['@semantic-release/release-notes-generator', { preset: 'conventionalcommits', parserOpts }],\n];\n\nif (!isDryRun) {\n  plugins.push(\n    ['@semantic-release/npm', {}],\n    ['@semantic-release/github', { successComment: false, failComment: false }],\n  );\n}\n\nexport default {\n  branches: ['main'],\n  tagFormat: 'v${version}',\n  plugins,\n};\n"
+    },
+    "tool_use_id": "toolu_01DaoLUjPTXakcwzGGLS5tCW"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/tsconfig.json",
+      "old_string": "    \"module\": \"NodeNext\",\n    \"moduleResolution\": \"NodeNext\",\n    \"strict\": true,\n    \"esModuleInterop\": true,\n    \"skipLibCheck\": true,\n    \"isolatedModules\": true,\n    \"resolveJsonModule\": true,\n    \"noEmit\": true\n  },\n  \"include\": [\"src/**/*.ts\"],\n  \"exclude\": [\"node_modules\", \"dist\"]",
+      "new_string": "    \"module\": \"NodeNext\",\n    \"moduleResolution\": \"NodeNext\",\n    \"strict\": true,\n    \"esModuleInterop\": true,\n    \"skipLibCheck\": true,\n    \"isolatedModules\": true,\n    \"resolveJsonModule\": true,\n    \"allowJs\": true,\n    \"noEmit\": true\n  },\n  \"include\": [\"src/**/*.ts\", \"release.config.js\"],\n  \"exclude\": [\"node_modules\", \"dist\"]",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_015g63DTWarSYQYuMa5rxLFv"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "cat node_modules/@semantic-release/commit-analyzer/package.json | grep -E '\"main\"|\"exports\"|\"type\"'; echo \"---index---\"; cat node_modules/@semantic-release/commit-analyzer/index.js",
+      "description": "Inspect commit-analyzer package exports"
+    },
+    "tool_use_id": "toolu_01Fg2hgTNpKkfYbD5QmjSqXK"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "cat node_modules/@semantic-release/commit-analyzer/lib/load-parser-config.js",
+      "description": "Inspect load-parser-config to see required context fields"
+    },
+    "tool_use_id": "toolu_01TE8S7UZ2jRy3wkDwjX8EHp"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "cat node_modules/@semantic-release/commit-analyzer/lib/load-release-rules.js; echo \"---analyze-commit---\"; cat node_modules/@semantic-release/commit-analyzer/lib/analyze-commit.js; echo \"---default-release-rules---\"; cat node_modules/@semantic-release/commit-analyzer/lib/default-release-rules.js",
+      "description": "Inspect release rules and commit analysis logic"
+    },
+    "tool_use_id": "toolu_01V43XDXx1CqKd4p4Z2MCRHu"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "find node_modules/conventional-changelog-conventionalcommits -iname '*.js' | xargs grep -l \"breakingHeaderPattern\\|notes.push\\|BREAKING\" 2>/dev/null",
+      "description": "Locate breaking-change handling logic in the conventionalcommits preset"
+    },
+    "tool_use_id": "toolu_01CW2DdeL1pYQLNUUweDgdy1"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "cat node_modules/conventional-changelog-conventionalcommits/src/parser.js",
+      "description": "Read the conventionalcommits preset parser options"
+    },
+    "tool_use_id": "toolu_01C1fGQwQeMmxssyQC7fA2xf"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "cat node_modules/conventional-changelog-conventionalcommits/src/constants.js | grep -A3 BREAKING_HEADER_PATTERN; echo \"---parser lib---\"; grep -rn \"breakingHeaderPattern\" node_modules/conventional-commits-parser/dist/*.js 2>/dev/null | head -20",
+      "description": "Check breaking header pattern constant and its use in the commits parser"
+    },
+    "tool_use_id": "toolu_0182CSncnUc8wiTvf1amtnWB"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/release.config.js",
+      "old_string": "const AGENT_PREFIX = '(?:[a-z0-9]+(?:-[a-z0-9]+)+: )?';\n\nconst parserOpts = {\n  headerPattern: new RegExp(`^${AGENT_PREFIX}(\\\\w*)(?:\\\\((.*)\\\\))?!?: (.*)$`),\n  breakingHeaderPattern: new RegExp(`^${AGENT_PREFIX}(\\\\w*)(?:\\\\((.*)\\\\))?!: (.*)$`),\n  headerCorrespondence: ['type', 'scope', 'subject'],\n};",
+      "new_string": "const parserOpts = {\n  headerPattern: /^(?:[a-z0-9]+(?:-[a-z0-9]+)+: )?(\\w*)(?:\\((.*)\\))?!?: (.*)$/,\n  breakingHeaderPattern: /^(?:[a-z0-9]+(?:-[a-z0-9]+)+: )?(\\w*)(?:\\((.*)\\))?!: (.*)$/,\n  headerCorrespondence: ['type', 'scope', 'subject'],\n};",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_01NfqVugThzpWeuHsV9z3tb7"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Write",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/src/__tests__/releaseParser.test.ts",
+      "content": "/**\n * Asserts the agent-prefix-aware commit header pattern in `release.config.js`\n * matches both ADW agent-prefixed commits (`build-agent: feat: …`) and plain\n * conventional commits (`feat: …`), and that the pattern actually drives the\n * real `@semantic-release/commit-analyzer` to the release types the issue\n * specifies. Imports the shipped `parserOpts` object directly — never a copy\n * — so a change to `release.config.js` cannot silently diverge from what\n * these tests assert.\n */\nimport { describe, expect, it } from 'vitest';\nimport { analyzeCommits } from '@semantic-release/commit-analyzer';\nimport releaseConfig from '../../release.config.js';\n\ninterface AnalyzerPluginConfig {\n  preset: string;\n  parserOpts: {\n    headerPattern: RegExp;\n    breakingHeaderPattern: RegExp;\n    headerCorrespondence: string[];\n  };\n}\n\nconst [, analyzerEntry] = releaseConfig.plugins[0] as [string, AnalyzerPluginConfig];\nconst { parserOpts } = analyzerEntry;\n\nconst noopLogger = { log() {}, error() {} };\n\ninterface CommitFixture {\n  header: string;\n  body?: string;\n}\n\nfunction toCommit({ header, body }: CommitFixture): { hash: string; message: string } {\n  return { hash: '0'.repeat(40), message: body ? `${header}\\n\\n${body}` : header };\n}\n\nasync function analyze(fixtures: CommitFixture[]): Promise<string | null> {\n  return analyzeCommits(\n    { preset: 'conventionalcommits', parserOpts },\n    { commits: fixtures.map(toCommit), logger: noopLogger, cwd: process.cwd(), env: {}, options: {} },\n  );\n}\n\ndescribe('release.config.js — headerPattern', () => {\n  it.each([\n    ['build-agent: feat: add forgeProviders assembly', 'feat'],\n    ['review-patch-agent: fix: correct token resolution', 'fix'],\n    ['plan-orchestrator: chore: expand README', 'chore'],\n    ['document-agent: docs: document package build', 'docs'],\n    ['feat: add worktree probe', 'feat'],\n    ['fix: handle ENOENT', 'fix'],\n    ['chore: bump deps', 'chore'],\n    ['feat: fix: colon in the subject', 'feat'],\n  ])('%s -> type %s', (header, expectedType) => {\n    const match = header.match(parserOpts.headerPattern);\n    expect(match, `expected \"${header}\" to match headerPattern`).not.toBeNull();\n    expect(match?.[1]).toBe(expectedType);\n  });\n\n  it('captures an agent-prefixed scoped subject', () => {\n    const match = 'build-agent: feat(git): scoped subject'.match(parserOpts.headerPattern);\n    expect(match).not.toBeNull();\n    expect(match?.[1]).toBe('feat');\n    expect(match?.[2]).toBe('git');\n    expect(match?.[3]).toBe('scoped subject');\n  });\n\n  it('does not match a merge commit header', () => {\n    expect('Merge pull request #6 from paysdoc/branch'.match(parserOpts.headerPattern)).toBeNull();\n  });\n});\n\ndescribe('release.config.js — breakingHeaderPattern', () => {\n  it('matches an agent-prefixed breaking header', () => {\n    expect('build-agent: feat!: drop legacy layer'.match(parserOpts.breakingHeaderPattern)).not.toBeNull();\n  });\n\n  it('matches a plain scoped breaking header', () => {\n    expect('feat(git)!: rename export'.match(parserOpts.breakingHeaderPattern)).not.toBeNull();\n  });\n\n  it('does not match a non-breaking agent-prefixed header', () => {\n    expect('build-agent: feat: normal'.match(parserOpts.breakingHeaderPattern)).toBeNull();\n  });\n});\n\ndescribe('release.config.js — analyzeCommits release types', () => {\n  it('build-agent: feat: … -> minor', async () => {\n    expect(await analyze([{ header: 'build-agent: feat: add forgeProviders assembly' }])).toBe('minor');\n  });\n\n  it('review-patch-agent: fix: … -> patch', async () => {\n    expect(await analyze([{ header: 'review-patch-agent: fix: correct token resolution' }])).toBe('patch');\n  });\n\n  it('plan-orchestrator: chore: … -> null', async () => {\n    expect(await analyze([{ header: 'plan-orchestrator: chore: expand README' }])).toBeNull();\n  });\n\n  it('document-agent: docs: … -> null', async () => {\n    expect(await analyze([{ header: 'document-agent: docs: document package build' }])).toBeNull();\n  });\n\n  it('plain feat: … -> minor', async () => {\n    expect(await analyze([{ header: 'feat: add worktree probe' }])).toBe('minor');\n  });\n\n  it('plain fix: … -> patch', async () => {\n    expect(await analyze([{ header: 'fix: handle ENOENT' }])).toBe('patch');\n  });\n\n  it('plain chore: … -> null', async () => {\n    expect(await analyze([{ header: 'chore: bump deps' }])).toBeNull();\n  });\n\n  it('build-agent: feat!: … -> major', async () => {\n    expect(await analyze([{ header: 'build-agent: feat!: drop legacy layer' }])).toBe('major');\n  });\n\n  it('a BREAKING CHANGE footer under an agent-prefixed header -> major', async () => {\n    expect(\n      await analyze([\n        {\n          header: 'build-agent: feat: add forgeProviders assembly',\n          body: 'BREAKING CHANGE: assembly signature changed',\n        },\n      ]),\n    ).toBe('major');\n  });\n\n  it('a mixed set of all release types -> major (highest wins)', async () => {\n    expect(\n      await analyze([\n        { header: 'build-agent: feat: add forgeProviders assembly' },\n        { header: 'review-patch-agent: fix: correct token resolution' },\n        { header: 'plan-orchestrator: chore: expand README' },\n        { header: 'document-agent: docs: document package build' },\n        { header: 'build-agent: feat!: drop legacy layer' },\n      ]),\n    ).toBe('major');\n  });\n\n  it('an ADW-only housekeeping batch (chore + docs) -> null, i.e. no publish', async () => {\n    expect(\n      await analyze([\n        { header: 'plan-orchestrator: chore: expand README' },\n        { header: 'document-agent: docs: document package build' },\n      ]),\n    ).toBeNull();\n  });\n});\n"
+    },
+    "tool_use_id": "toolu_01AiBsyuhTfmCEDvCSCYscJk"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Write",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/src/__tests__/releaseConfig.test.ts",
+      "content": "/**\n * Configuration-contract test for `release.config.js`, mirroring\n * `packageExports.test.ts`'s style: asserts the shape of the manifest\n * itself rather than any build output. Confirms the dry-run mode switch\n * (`SEMANTIC_RELEASE_DRY_RUN=true`) drops both plugins that require a\n * credential, so the PR dry-run job can never accidentally publish.\n */\nimport { afterEach, describe, expect, it } from 'vitest';\nimport releaseConfig from '../../release.config.js';\n\ninterface PluginEntry {\n  0: string;\n  1?: unknown;\n}\n\nfunction pluginNames(plugins: unknown[]): string[] {\n  return (plugins as PluginEntry[]).map((entry) => entry[0]);\n}\n\ndescribe('release.config.js — configuration contract', () => {\n  it('branches is exactly [\"main\"]', () => {\n    expect(releaseConfig.branches).toEqual(['main']);\n  });\n\n  it('tagFormat is \"v${version}\"', () => {\n    expect(releaseConfig.tagFormat).toBe('v${version}');\n  });\n\n  it('normal mode plugin list is commit-analyzer, notes-generator, npm, github in order', () => {\n    expect(pluginNames(releaseConfig.plugins)).toEqual([\n      '@semantic-release/commit-analyzer',\n      '@semantic-release/release-notes-generator',\n      '@semantic-release/npm',\n      '@semantic-release/github',\n    ]);\n  });\n\n  it('the analyzer and the notes generator receive the same parserOpts object identity', () => {\n    const [, analyzerConfig] = releaseConfig.plugins[0] as [string, { parserOpts: unknown }];\n    const [, notesConfig] = releaseConfig.plugins[1] as [string, { parserOpts: unknown }];\n    expect(analyzerConfig.parserOpts).toBe(notesConfig.parserOpts);\n  });\n\n  it('parserOpts.headerCorrespondence is exactly [\"type\", \"scope\", \"subject\"]', () => {\n    const [, analyzerConfig] = releaseConfig.plugins[0] as [string, { parserOpts: { headerCorrespondence: string[] } }];\n    expect(analyzerConfig.parserOpts.headerCorrespondence).toEqual(['type', 'scope', 'subject']);\n  });\n});\n\ndescribe('release.config.js — dry-run mode', () => {\n  const originalEnv = process.env.SEMANTIC_RELEASE_DRY_RUN;\n\n  afterEach(() => {\n    if (originalEnv === undefined) {\n      delete process.env.SEMANTIC_RELEASE_DRY_RUN;\n    } else {\n      process.env.SEMANTIC_RELEASE_DRY_RUN = originalEnv;\n    }\n  });\n\n  it('drops the npm and github plugins, keeping only analyzer and notes-generator', async () => {\n    process.env.SEMANTIC_RELEASE_DRY_RUN = 'true';\n    const dryRunConfig = (await import('../../release.config.js?dryrun')).default;\n\n    expect(pluginNames(dryRunConfig.plugins)).toEqual([\n      '@semantic-release/commit-analyzer',\n      '@semantic-release/release-notes-generator',\n    ]);\n  });\n});\n"
+    },
+    "tool_use_id": "toolu_01RsMRMEVr4PjnLHSwT79ReB"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "bun run typecheck 2>&1",
+      "description": "Run TypeScript type-check"
+    },
+    "tool_use_id": "toolu_01Nqt1DXYLb3DFD25on8aRfK"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "find src -iname '*.d.ts' 2>/dev/null; echo \"---checking for @types/semantic-release__commit-analyzer---\"; npm view @types/semantic-release__commit-analyzer versions 2>&1 | tail -5",
+      "description": "Check for existing ambient declaration files and community types package"
+    },
+    "tool_use_id": "toolu_01UXjDMsoRqACPDWgYepufgY"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Write",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/src/__tests__/semantic-release-commit-analyzer.d.ts",
+      "content": "/**\n * `@semantic-release/commit-analyzer` ships no type declarations. This\n * covers only the `analyzeCommits` export shape exercised by\n * `releaseParser.test.ts`.\n */\ndeclare module '@semantic-release/commit-analyzer' {\n  interface AnalyzeCommitsCommit {\n    hash: string;\n    message: string;\n  }\n\n  interface AnalyzeCommitsLogger {\n    log(...args: unknown[]): void;\n    error(...args: unknown[]): void;\n  }\n\n  interface AnalyzeCommitsContext {\n    commits: AnalyzeCommitsCommit[];\n    logger: AnalyzeCommitsLogger;\n    cwd: string;\n    env: Record<string, string | undefined>;\n    options: Record<string, unknown>;\n  }\n\n  interface AnalyzeCommitsPluginConfig {\n    preset?: string;\n    parserOpts?: Record<string, unknown>;\n  }\n\n  export function analyzeCommits(\n    pluginConfig: AnalyzeCommitsPluginConfig,\n    context: AnalyzeCommitsContext,\n  ): Promise<string | null>;\n}\n"
+    },
+    "tool_use_id": "toolu_014KbYbkrWQQrNn4gP9WaBiz"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/src/__tests__/releaseConfig.test.ts",
+      "old_string": "  it('drops the npm and github plugins, keeping only analyzer and notes-generator', async () => {\n    process.env.SEMANTIC_RELEASE_DRY_RUN = 'true';\n    const dryRunConfig = (await import('../../release.config.js?dryrun')).default;",
+      "new_string": "  it('drops the npm and github plugins, keeping only analyzer and notes-generator', async () => {\n    process.env.SEMANTIC_RELEASE_DRY_RUN = 'true';\n    const dryRunModulePath: string = '../../release.config.js?dryrun';\n    const dryRunConfig = (await import(dryRunModulePath)).default;",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_01MuWRPkt8mrciRhwBV4pkzo"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "bun run typecheck 2>&1",
+      "description": "Re-run TypeScript type-check"
+    },
+    "tool_use_id": "toolu_01XzAtHeJLpDtTPMJ1ZB46KJ"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "bun run test:unit 2>&1",
+      "description": "Run the Vitest unit test suite"
+    },
+    "tool_use_id": "toolu_019LmxgTFh7dboV3rBXTkip6"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Write",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/.github/workflows/release.yml",
+      "content": "# The npm trusted publisher on npmjs.com must be linked to the\n# `paysdoc/devplatform` repository and this exact workflow filename\n# (release.yml) — renaming this file silently breaks OIDC trusted\n# publishing. `permissions.id-token: write` is what lets `@semantic-release/npm`\n# mint a short-lived OIDC token instead of requiring a long-lived npm\n# credential stored in the repository; `NPM_TOKEN` below is a fallback that\n# only engages when that secret is present.\nname: Release\n\non:\n  push:\n    branches: [main]\n  workflow_dispatch:\n\nconcurrency:\n  group: release\n  cancel-in-progress: false\n\npermissions:\n  contents: write\n  issues: write\n  pull-requests: write\n  id-token: write\n\njobs:\n  release:\n    name: Release\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n        with:\n          fetch-depth: 0\n          fetch-tags: true\n\n      - name: Verify the v1.0.0 baseline tag is reachable\n        run: |\n          if ! git rev-parse -q --verify refs/tags/v1.0.0 >/dev/null; then\n            echo \"::error::refs/tags/v1.0.0 is not reachable after fetching tags. The v1.0.0 baseline tag must exist before semantic-release can run, or it will recompute and try to republish 1.0.0.\" >&2\n            exit 1\n          fi\n\n      - uses: oven-sh/setup-bun@v2\n\n      - uses: actions/setup-node@v4\n        with:\n          node-version: 22\n          registry-url: 'https://registry.npmjs.org'\n\n      - name: Upgrade npm for OIDC trusted publishing support\n        run: |\n          npm install -g npm@latest\n          npm --version\n\n      - run: bun install --frozen-lockfile\n\n      - run: bun run typecheck\n      - run: bun run test:unit\n\n      - name: Run semantic-release\n        run: node node_modules/semantic-release/bin/semantic-release.js\n        env:\n          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}\n          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}\n"
+    },
+    "tool_use_id": "toolu_01GrU7NSZ64iTs99S83Uro4L"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Write",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/scripts/releaseDryRun.ts",
+      "content": "/**\n * Runs semantic-release in dry-run mode against a branch and prints the\n * computed next release version, so a PR that would never publish (or that\n * would recompute the hand-published 1.0.0 baseline) is caught before\n * merge. Dependency-free (Node built-ins only) so it runs on a bare CI\n * runner. Run via `bun run release:dry-run`.\n */\nimport { spawnSync } from 'node:child_process';\nimport * as path from 'node:path';\nimport { fileURLToPath } from 'node:url';\n\nconst REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');\n\nfunction fail(message: string): never {\n  console.error(`FAIL: ${message}`);\n  process.exit(1);\n}\n\nfunction resolveBranch(): string {\n  const envBranch = process.env.DRY_RUN_BRANCH;\n  if (envBranch && envBranch.trim()) return envBranch.trim();\n\n  const result = spawnSync('git', ['rev-parse', '--abbrev-ref', 'HEAD'], {\n    cwd: REPO_ROOT,\n    encoding: 'utf-8',\n  });\n  if (result.status !== 0 || !result.stdout.trim()) {\n    fail(`could not resolve current branch: ${result.stderr}`);\n  }\n  return result.stdout.trim();\n}\n\nfunction main(): void {\n  const branch = resolveBranch();\n  console.log(`==> semantic-release --dry-run against branch \"${branch}\"`);\n\n  const semanticReleaseBin = path.join(REPO_ROOT, 'node_modules', 'semantic-release', 'bin', 'semantic-release.js');\n  const result = spawnSync(\n    'node',\n    [semanticReleaseBin, '--dry-run', '--no-ci', '--branches', branch],\n    {\n      cwd: REPO_ROOT,\n      encoding: 'utf-8',\n      env: { ...process.env, SEMANTIC_RELEASE_DRY_RUN: 'true' },\n    },\n  );\n\n  const combinedOutput = `${result.stdout ?? ''}${result.stderr ?? ''}`;\n  process.stdout.write(result.stdout ?? '');\n  process.stderr.write(result.stderr ?? '');\n\n  if (result.status !== 0) {\n    fail(`semantic-release --dry-run exited with status ${result.status}`);\n  }\n\n  const versionMatch = combinedOutput.match(/The next release version is (\\d+\\.\\d+\\.\\d+)/);\n  if (!versionMatch) {\n    console.log('==> no release would be triggered by this branch');\n    process.exit(0);\n  }\n\n  const nextVersion = versionMatch[1];\n  if (nextVersion === '1.0.0') {\n    fail('computed next release version is 1.0.0 — the v1.0.0 baseline must never be recomputed. Verify the v1.0.0 tag is reachable.');\n  }\n\n  console.log(`==> next release version: ${nextVersion}`);\n}\n\nmain();\n"
+    },
+    "tool_use_id": "toolu_01FzzjDfcA17xWVFH3nxvQic"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/package.json",
+      "old_string": "    \"smoke:package\": \"bunx tsx scripts/smokePackage.ts\",",
+      "new_string": "    \"smoke:package\": \"bunx tsx scripts/smokePackage.ts\",\n    \"release:dry-run\": \"bunx tsx scripts/releaseDryRun.ts\",",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_01RY12ras7gTGLNT5heAVnvf"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/package.json"
+    },
+    "tool_use_id": "toolu_01LfQ54jyn1bLDx8FgHVAX8r"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/.github/workflows/ci.yml",
+      "old_string": "  package:\n    name: Build, pack and smoke-test\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: oven-sh/setup-bun@v2\n      - uses: actions/setup-node@v4\n        with:\n          node-version: 20\n      - run: bun install\n      - run: bun run build\n      - run: npm pack --dry-run\n      - run: bun run smoke:package",
+      "new_string": "  package:\n    name: Build, pack and smoke-test\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: oven-sh/setup-bun@v2\n      - uses: actions/setup-node@v4\n        with:\n          node-version: 20\n      - run: bun install\n      - run: bun run build\n      - run: npm pack --dry-run\n      - run: bun run smoke:package\n\n  release-dry-run:\n    name: Release dry-run\n    if: github.event_name == 'pull_request'\n    runs-on: ubuntu-latest\n    permissions:\n      contents: read\n    steps:\n      - uses: actions/checkout@v4\n        with:\n          fetch-depth: 0\n          fetch-tags: true\n          ref: ${{ github.event.pull_request.head.sha }}\n      - uses: oven-sh/setup-bun@v2\n      - uses: actions/setup-node@v4\n        with:\n          node-version: 22\n      - run: bun install\n      - run: bun run release:dry-run\n        env:\n          DRY_RUN_BRANCH: ${{ github.head_ref }}\n          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_01VsEeH75TVzLK7ZRs4eRdHF"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/README.md",
+      "old_string": "Extracted from [AI_Dev_Workflow](https://github.com/paysdoc/AI_Dev_Workflow) with history.\nRelease automation is tracked as a separate issue in this repository.",
+      "new_string": "Extracted from [AI_Dev_Workflow](https://github.com/paysdoc/AI_Dev_Workflow) with history.\nReleases are automated by semantic-release on every push to `main`.",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_01J8qiKtGsrHThw7f3kjY3mp"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/README.md",
+      "old_string": "- **Release workflow placeholder** — a `Release` GitHub Actions job reserved for future semantic-release automation (tracked as a separate issue).",
+      "new_string": "- **Automated releases via semantic-release** — a `Release` GitHub Actions job runs semantic-release on every push to `main`, using a commit parser that accepts an optional `<agent-name>: ` prefix before the conventional type (`build-agent: feat: …` → minor, `review-patch-agent: fix: …` → patch, `plan-orchestrator: chore: …` → no release), a PR `release-dry-run` job that prints the computed next version before merge, and npm OIDC trusted publishing with an `NPM_TOKEN` fallback.",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_01EfQ8HWAyHBBFLfdDMnGnLv"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/README.md",
+      "old_string": ".github/\n  workflows/ci.yml             Typecheck + unit test CI gate, plus build/pack/smoke-test package gate\n  workflows/release.yml        Release automation placeholder\n  adw.yml                      ADW guardrails toggle (outside .adw/, survives regeneration)\napp_docs/                    Generated per-feature documentation\nfeatures/regression/vocabulary.md   Regression test vocabulary\nspecs/                        Per-issue implementation plans (ADW-generated)\nscripts/\n  smokePackage.ts             Builds, packs, and smoke-tests the tarball under Node + Bun (`bun run smoke:package`)",
+      "new_string": ".github/\n  workflows/ci.yml             Typecheck + unit test CI gate, build/pack/smoke-test package gate, and a PR-only release-dry-run job\n  workflows/release.yml        Release automation: semantic-release on push to main (v1.0.0 baseline guard, OIDC + NPM_TOKEN fallback)\n  adw.yml                      ADW guardrails toggle (outside .adw/, survives regeneration)\napp_docs/                    Generated per-feature documentation\nfeatures/regression/vocabulary.md   Regression test vocabulary\nspecs/                        Per-issue implementation plans (ADW-generated)\nrelease.config.js             semantic-release configuration: agent-prefix-aware commit parser, branches, plugin list\nscripts/\n  smokePackage.ts             Builds, packs, and smoke-tests the tarball under Node + Bun (`bun run smoke:package`)\n  releaseDryRun.ts             Runs `semantic-release --dry-run` and prints the computed next version (`bun run release:dry-run`)",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_01PkVgoWjq7QhUM5h4PRD18b"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/README.md",
+      "old_string": "  __tests__/                  Import-graph and package-exports contract tests",
+      "new_string": "  __tests__/                  Import-graph, package-exports, and release-config contract tests",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_01YZWs32hHPPhiNvE7BxmK4t"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "grep -n '^## ' README.md",
+      "description": "List README section headers"
+    },
+    "tool_use_id": "toolu_01RZgnYH9Rd7vVhXVGyn197B"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/README.md",
+      "old_string": "5. Build: `bun run build`\n\n## Domain glossary",
+      "new_string": "5. Build: `bun run build`\n\n## Releasing\n\nReleases are computed by [semantic-release](https://semantic-release.gitbook.io/) from commit messages on\nevery push to `main` — see `release.config.js`. Commit headers must follow the conventional-commits format,\noptionally preceded by a hyphenated agent name:\n\n```\n[<agent-name>: ]<type>[(<scope>)][!]: <subject>\n```\n\n- `feat: …` / `<agent-name>: feat: …` → minor release\n- `fix: …` / `<agent-name>: fix: …` → patch release\n- `feat!: …`, or any commit with a `BREAKING CHANGE:` footer → major release\n- `chore: …`, `docs: …`, and other non-releasing types → no release\n\nThe agent-name prefix must be a lowercase, hyphenated token (e.g. `build-agent`, `plan-orchestrator`) so it\ncan never be confused with a conventional type. Every pull request runs a `release-dry-run` CI job that\nprints the version the merge would compute, without publishing anything.\n\nPublishing uses npm OIDC trusted publishing (no long-lived npm credential stored in the repository), falling\nback to an `NPM_TOKEN` secret if one is present. The release baseline is the `v1.0.0` git tag on the commit\nof the first manually published version; the release workflow hard-fails if that tag is not reachable, so it\ncan never recompute or republish `1.0.0`.\n\n## Domain glossary",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_013H1kF6bBoDqsr58DidoBsF"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "set -e\necho \"=== bun install ===\"\nbun install\necho \"=== bun run build ===\"\nbun run build\necho \"=== dist/ leak check ===\"\nnode -e \"const fs=require('node:fs'); if (fs.existsSync('dist/release.config.js')) { console.error('FAIL: release config leaked into dist/'); process.exit(1); } console.log('OK: dist/ is clean');\"\necho \"=== dist contents ===\"\nfind dist -maxdepth 1\n",
+      "description": "Run bun install, build, and verify release.config.js does not leak into dist/"
+    },
+    "tool_use_id": "toolu_01GgURZkvZcadN7DNxnHF2Zr"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "node --input-type=module -e \"const c=(await import('./release.config.js')).default; if(!Array.isArray(c.plugins)||c.plugins.length!==4){console.error('FAIL: plugin list');process.exit(1);} console.log('OK: release config loads,', c.plugins.length, 'plugins, branches', c.branches.join(','));\"",
+      "description": "Verify release.config.js loads as ESM with full plugin chain"
+    },
+    "tool_use_id": "toolu_01KYuryguULqyC4g7WCn49cx"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "bun run smoke:package 2>&1",
+      "description": "Run the packed-tarball smoke test"
+    },
+    "tool_use_id": "toolu_01SGLjEz6JXB14oCCkRkyXiU"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "bun run release:dry-run 2>&1; echo \"EXIT_CODE: $?\"",
+      "timeout": 60000,
+      "description": "Attempt local semantic-release dry run"
+    },
+    "tool_use_id": "toolu_01NmCZhFLRot6C9dDp6mMwVr"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "DRY_RUN_BRANCH=main bun run release:dry-run 2>&1; echo \"EXIT_CODE: $?\"",
+      "timeout": 60000,
+      "description": "Dry-run semantic-release against main to sanity-check the pipeline"
+    },
+    "tool_use_id": "toolu_01BnN2Ax4rvNJ4Q1x3Jj4hUe"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "grep -rn \"isPr\\|isCi\\|noCi\\|dryRun\" node_modules/semantic-release/index.js | head -40",
+      "description": "Inspect semantic-release's CI/PR/dry-run detection logic"
+    },
+    "tool_use_id": "toolu_015iz2fjoTYPWhWHWdRdrqgH"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/node_modules/semantic-release/index.js",
+      "offset": 30,
+      "limit": 75
+    },
+    "tool_use_id": "toolu_018P17iPbciTxCkGQMVoqiej"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "grep -rn \"next release version\\|nextRelease.version\" node_modules/semantic-release/index.js node_modules/semantic-release/lib/*.js 2>/dev/null",
+      "description": "Find the exact log phrasing for the computed next release version"
+    },
+    "tool_use_id": "toolu_01UuTKK1VSWomhX6u6y7TWYJ"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/scripts/releaseDryRun.ts",
+      "offset": 54,
+      "limit": 10
+    },
+    "tool_use_id": "toolu_015d68oGqVXsNqfp4vENbqej"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/scripts/releaseDryRun.ts",
+      "old_string": "  const versionMatch = combinedOutput.match(/The next release version is (\\d+\\.\\d+\\.\\d+)/);",
+      "new_string": "  const versionMatch = combinedOutput.match(/the next release version is (\\d+\\.\\d+\\.\\d+)/i);",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_01UW5xVXV7B2rTZL3Dc711Wm"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "node -e \"\nconst re = /the next release version is (\\d+\\.\\d+\\.\\d+)/i;\nconst cases = [\n  'There is no previous release, the next release version is 1.0.0',\n  '[semantic-release] The next release version is 1.2.3',\n];\nfor (const c of cases) {\n  const m = c.match(re);\n  console.log(JSON.stringify(c), '->', m ? m[1] : 'NO MATCH');\n}\n\"",
+      "description": "Verify the fixed version-extraction regex against both real semantic-release log phrasings"
+    },
+    "tool_use_id": "toolu_016XHLD49b33UM4ZgtmcG9gf"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "set -e\necho \"=== typecheck ===\"\nbun run typecheck\necho \"=== test:unit ===\"\nbun run test:unit 2>&1 | tail -15\n",
+      "description": "Re-run typecheck and unit tests after the dry-run script fix"
+    },
+    "tool_use_id": "toolu_01GAFghd2qes7etaMPRnG8pd"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git status",
+      "description": "Check overall git status"
+    },
+    "tool_use_id": "toolu_01NWuUfzG1AddTB8NphgqpLe"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git diff --stat bun.lock; echo \"---\"; git diff bun.lock | grep -E '^\\+' | grep -v '^\\+\\+\\+' | grep -oE '\"[a-zA-Z0-9@/._-]+\":' | sort -u | head -60",
+      "description": "Inspect bun.lock diff to confirm only the new devDependencies were added"
+    },
+    "tool_use_id": "toolu_01LXXxyn2Kfn7fxMb22q6S9F"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git diff bun.lock | grep '^+' | grep -oE '\"@?[a-zA-Z0-9._/-]+\":\\s*\\[' | sort -u | head -60",
+      "description": "List package names newly added in bun.lock diff"
+    },
+    "tool_use_id": "toolu_016Ms9KoLusU8wNR5y1eAsRD"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git diff --stat -- . ':!logs' | tail -20",
+      "description": "Show diff stat for all changes excluding unrelated logs directory"
+    },
+    "tool_use_id": "toolu_01DV5S1vVotm64kDetor2kZk"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "wc -l release.config.js scripts/releaseDryRun.ts src/__tests__/releaseConfig.test.ts src/__tests__/releaseParser.test.ts src/__tests__/semantic-release-commit-analyzer.d.ts",
+      "description": "Count lines in the new files for the report"
+    },
+    "tool_use_id": "toolu_01Suj4AU6PLNe2M4mYmt3p9i"
+  },
+  {
+    "session_id": "416d75dc-581e-4dca-9318-73c7ed28186d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/416d75dc-581e-4dca-9318-73c7ed28186d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "ea246fd1-0022-4c8f-9618-707c2b38e239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git add -- .github/workflows/ci.yml .github/workflows/release.yml README.md bun.lock package.json tsconfig.json release.config.js scripts/releaseDryRun.ts src/__tests__/releaseConfig.test.ts src/__tests__/releaseParser.test.ts src/__tests__/semantic-release-commit-analyzer.d.ts\ngit diff --cached --stat\ngit reset -- .github/workflows/ci.yml .github/workflows/release.yml README.md bun.lock package.json tsconfig.json release.config.js scripts/releaseDryRun.ts src/__tests__/releaseConfig.test.ts src/__tests__/releaseParser.test.ts src/__tests__/semantic-release-commit-analyzer.d.ts >/dev/null\ngit status --porcelain | grep -v '^.. logs/'",
+      "description": "Stage only this chore's files to compute a full diff --stat, then unstage to leave the working tree as-is"
+    },
+    "tool_use_id": "toolu_012H7RVeLvp1TCBSRknpNzeT"
+  }
+]

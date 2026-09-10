@@ -1,0 +1,17 @@
+[
+  {
+    "session_id": "a65fb38d-f73e-4e94-b621-6441651206e9",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/a65fb38d-f73e-4e94-b621-6441651206e9.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "cd53b915-c664-4b58-b30c-f38bd418ff3b",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "Stop",
+    "stop_hook_active": false,
+    "last_assistant_message": "plan-orchestrator: chore: expand README project structure docs",
+    "background_tasks": [],
+    "session_crons": []
+  }
+]

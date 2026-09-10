@@ -1,0 +1,26 @@
+[
+  {
+    "session_id": "82671816-a1f4-4575-b422-e1843fb52762",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/82671816-a1f4-4575-b422-e1843fb52762.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "5c500310-7f3e-44c5-af84-58b72fc2b239",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git diff HEAD --stat"
+    },
+    "tool_response": {
+      "stdout": " .github/workflows/ci.yml                           |  22 +\n .github/workflows/release.yml                      |  59 +-\n README.md                                          |  36 +-\n bun.lock                                           | 908 +++++++++++++++++++++\n .../post_tool_use.json                             |  31 +\n package.json                                       |   7 +\n tsconfig.json                                      |   3 +-\n 7 files changed, 1054 insertions(+), 12 deletions(-)",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_01PYEXFVngG6z3J3nPAS8rmS",
+    "duration_ms": 754
+  }
+]
