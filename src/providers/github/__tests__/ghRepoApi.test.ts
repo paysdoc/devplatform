@@ -1,6 +1,6 @@
 import { describe, it, expect, afterEach } from 'vitest';
-import { GitContext } from '../../../gitContext';
-import type { GitContextOptions, ExecFn } from '../../../gitContext';
+import { GitContext } from '../../../git';
+import type { GitContextOptions, ExecFn } from '../../../git';
 import { createGhRepoApi } from '../ghRepoApi';
 import { createLiteralTokenProvider } from '../githubTokenProvider';
 

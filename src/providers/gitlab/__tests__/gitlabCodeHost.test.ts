@@ -8,7 +8,7 @@ import { describe, it, expect } from 'vitest';
 import { createGitLabCodeHost } from '../gitlabCodeHost';
 import type { CurlResult, CurlRunner } from '../gitlabApiClient';
 import { Platform, type RepoIdentifier } from '../../types';
-import type { LogLevel } from '../../../gitContext/types';
+import type { LogLevel } from '../../../git/types';
 
 const REPO_ID: RepoIdentifier = { owner: 'acme', repo: 'widget', platform: Platform.GitLab };
 

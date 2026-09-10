@@ -11,7 +11,7 @@
  */
 
 import { resolveContextToken } from './tokenResolver';
-import type { CredentialRequest, TokenProvider } from '../../gitContext/types';
+import type { CredentialRequest, TokenProvider } from '../../git/types';
 
 export interface GitHubTokenProviderInput {
   /** Candidate in the resolution order, after the App mint. */

@@ -8,7 +8,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { JiraApiClient, type FetchFn, type JiraAuth } from '../jiraApiClient';
-import type { LogLevel } from '../../../gitContext/types';
+import type { LogLevel } from '../../../git/types';
 
 function makeRecordingFetch(body: unknown, status = 200): { fetchFn: FetchFn; calls: { url: string; init: RequestInit }[] } {
   const calls: { url: string; init: RequestInit }[] = [];

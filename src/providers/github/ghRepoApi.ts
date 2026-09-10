@@ -8,7 +8,7 @@
  * construction site the guard's `unsanctioned-construction` rule needs to see.
  */
 
-import type { GitContext } from '../../gitContext';
+import type { GitContext } from '../../git';
 import { createGhCommandRunner, type GhCommandRunner } from './ghCommandRunner';
 import { ghIssueApi, type GhIssueApi } from './ghIssueApi';
 import { ghPrApi, type GhPrApi } from './ghPrApi';

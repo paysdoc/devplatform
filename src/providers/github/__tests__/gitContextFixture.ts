@@ -5,8 +5,8 @@
  * rewritten port-class suites don't each redeclare it.
  */
 
-import { GitContext } from '../../../gitContext';
-import type { GitContextOptions, ExecFn, Logger, LogLevel } from '../../../gitContext';
+import { GitContext } from '../../../git';
+import type { GitContextOptions, ExecFn, Logger, LogLevel } from '../../../git';
 import { createLiteralTokenProvider } from '../githubTokenProvider';
 
 export const FRAMEWORK_ROOT = '/srv/adw/framework';

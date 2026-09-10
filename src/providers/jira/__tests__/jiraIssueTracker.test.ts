@@ -9,7 +9,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { createJiraIssueTracker } from '../jiraIssueTracker';
 import type { FetchFn, JiraAuth } from '../jiraApiClient';
 import { BoardStatus } from '../../types';
-import type { LogLevel } from '../../../gitContext/types';
+import type { LogLevel } from '../../../git/types';
 import type { JiraIssueResponse, JiraTransitionsResponse } from '../jiraTypes';
 
 function makeLoggerSpy(): { logger: (message: string, level?: LogLevel) => void; messages: { message: string; level?: LogLevel }[] } {

@@ -8,8 +8,8 @@
  */
 
 import { spawnSync } from 'child_process';
-import type { Logger } from '../../gitContext/types';
-import { consoleLogger } from '../../gitContext/consoleLogger';
+import type { Logger } from '../../git/types';
+import { consoleLogger } from '../../git/consoleLogger';
 import type {
   GitLabProject,
   GitLabMergeRequest,

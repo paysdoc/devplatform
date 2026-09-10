@@ -8,7 +8,7 @@
  * port instead of `adws/core`'s `log`.
  */
 
-import { consoleLogger, type GitContext, type Logger } from '../../gitContext';
+import { consoleLogger, type GitContext, type Logger } from '../../git';
 import { createGhRepoApi, type GhRepoApi } from './ghRepoApi';
 import { assertContextBoundTo } from './contextBinding';
 import {

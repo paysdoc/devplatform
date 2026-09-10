@@ -12,7 +12,7 @@
  * seams — the library itself never learns about Slack or about ADW's colours.
  */
 
-import { consoleLogger, type GitContext, type Logger } from '../../gitContext';
+import { consoleLogger, type GitContext, type Logger } from '../../git';
 import type { IssueTracker, RepoIdentifier, Issue, IssueComment, IssueSummary, IssueListQuery, IssueListEntry } from '../types';
 import { validateRepoIdentifier, BoardStatus } from '../types';
 import { createGhRepoApi, type GhRepoApi } from './ghRepoApi';

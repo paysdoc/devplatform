@@ -8,8 +8,8 @@
 
 import { type CodeHostForge, type IssueTrackerForge, type ForgeProvidersOptions } from '../forgeProviders';
 import { Platform, type RepoIdentifier } from '../types';
-import { GitContext } from '../../gitContext';
-import type { GitContextOptions, ExecFn } from '../../gitContext';
+import { GitContext } from '../../git';
+import type { GitContextOptions, ExecFn } from '../../git';
 import { createLiteralTokenProvider } from '../github/githubTokenProvider';
 
 export function makeRepoId(overrides: Partial<RepoIdentifier> = {}): RepoIdentifier {

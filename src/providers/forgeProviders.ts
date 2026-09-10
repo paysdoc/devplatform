@@ -19,7 +19,7 @@
  * environment variable.
  */
 
-import type { GitContext, Logger, TokenProvider } from '../gitContext';
+import type { GitContext, Logger, TokenProvider } from '../git';
 import { type BoardManager, type BoundProviders, type CodeHost, type IssueTracker, type RepoIdentifier, validateRepoIdentifier } from './types';
 import { assertContextBoundTo } from './github/contextBinding';
 import { createGitHubIssueTracker, type GitHubIssueTrackerDeps } from './github/githubIssueTracker';

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createGitHubTokenProvider, createLiteralTokenProvider } from '../githubTokenProvider';
 import type { GitHubTokenProviderInput } from '../githubTokenProvider';
-import type { CredentialRequest } from '../../../gitContext/types';
+import type { CredentialRequest } from '../../../git/types';
 
 // ---------------------------------------------------------------------------
 // Helpers

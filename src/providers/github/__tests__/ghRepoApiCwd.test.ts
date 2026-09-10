@@ -2,8 +2,8 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { describe, it, expect, afterEach } from 'vitest';
-import { GitContext } from '../../../gitContext';
-import type { GitContextOptions, ExecFn } from '../../../gitContext';
+import { GitContext } from '../../../git';
+import type { GitContextOptions, ExecFn } from '../../../git';
 import { createGhRepoApi, type GhRepoApi } from '../ghRepoApi';
 import { createLiteralTokenProvider } from '../githubTokenProvider';
 

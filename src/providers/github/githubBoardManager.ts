@@ -8,7 +8,7 @@
  * `Logger` port instead of `adws/core`'s `log`.
  */
 
-import { consoleLogger, type GitContext, type Logger } from '../../gitContext';
+import { consoleLogger, type GitContext, type Logger } from '../../git';
 import type { BoardManager, BoardColumnDefinition, RepoIdentifier } from '../types';
 import { BOARD_COLUMNS, validateRepoIdentifier } from '../types';
 import { assertContextBoundTo } from './contextBinding';

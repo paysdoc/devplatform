@@ -9,9 +9,9 @@
  * itself — after #792 only `adws/gitContext` may run a git command.
  */
 
-import type { GitIdentity } from '../../gitContext/types';
-import { readOriginRemoteUrl, readEnvGitIdentity, readGitConfigIdentity } from '../../gitContext/bootstrapIdentity';
-import type { GitConfigIdentityDeps } from '../../gitContext/bootstrapIdentity';
+import type { GitIdentity } from '../../git/types';
+import { readOriginRemoteUrl, readEnvGitIdentity, readGitConfigIdentity } from '../../git/bootstrapIdentity';
+import type { GitConfigIdentityDeps } from '../../git/bootstrapIdentity';
 import { Platform, type RepoIdentifier } from '../types';
 
 // ---------------------------------------------------------------------------

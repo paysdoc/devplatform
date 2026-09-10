@@ -8,7 +8,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { GitLabApiClient, type GitLabConfig, type CurlResult, type CurlRunner } from '../gitlabApiClient';
-import type { LogLevel } from '../../../gitContext/types';
+import type { LogLevel } from '../../../git/types';
 
 function makeRecordingCurl(stdout: string, status: number | null = 0): { runCurl: CurlRunner; calls: string[][] } {
   const calls: string[][] = [];

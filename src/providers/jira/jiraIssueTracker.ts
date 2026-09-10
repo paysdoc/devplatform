@@ -6,8 +6,8 @@
  * the `Logger` port, defaulting to `consoleLogger`.
  */
 
-import type { Logger } from '../../gitContext/types';
-import { consoleLogger } from '../../gitContext/consoleLogger';
+import type { Logger } from '../../git/types';
+import { consoleLogger } from '../../git/consoleLogger';
 import type { IssueTracker, Issue, IssueComment, IssueSummary, IssueListEntry } from '../types';
 import { BoardStatus } from '../types';
 import { JiraApiClient, isCloudAuth, type JiraAuth, type JiraApiClientDeps } from './jiraApiClient';

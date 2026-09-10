@@ -8,7 +8,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { forgeProviders } from '../forgeProviders';
 import { BoardStatus } from '../types';
-import type { ExecFn } from '../../gitContext';
+import type { ExecFn } from '../../git';
 import { makeCtx, makeSpyExec, baseOptions } from './forgeProvidersFixture';
 
 const PROJECT_RESPONSE = JSON.stringify({ data: { repository: { projectsV2: { nodes: [{ id: 'PVT_1' }] } } } });

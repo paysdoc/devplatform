@@ -10,7 +10,7 @@
  * issues reaches a process only through `GitContext.exec`.
  */
 
-import type { GitContext, CredentialPurpose } from '../../gitContext';
+import type { GitContext, CredentialPurpose } from '../../git';
 
 export interface GhCommandRunner {
   run(command: string, opts?: { input?: string; purpose?: CredentialPurpose }): string;
