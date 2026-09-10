@@ -1,5 +1,9 @@
 /**
- * Package-private commit/push operation orchestration for GitContext.
+ * Commit/push operation orchestration for GitContext. Exported from the
+ * `./git` entry point since issue #11 — alongside `isLeaseRejection` — so ADW's
+ * regression steps can drive it directly with their own runner. Every function
+ * still takes an injected `(command, cwd) => string` runner; nothing here
+ * spawns a process itself.
  */
 
 type Runner = (command: string, cwd: string) => string;

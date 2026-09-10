@@ -1,7 +1,9 @@
 /**
- * Package-private branch operation orchestration for GitContext.
- * Each function takes an injected runner (cmd, cwd) => string so GitContext
- * methods stay thin and this module is testable without a real context.
+ * Branch operation orchestration for GitContext. Exported from the `./git`
+ * entry point since issue #11. Each function takes an injected
+ * `(cmd, cwd) => string` runner so GitContext methods stay thin and this
+ * module is testable without a real context; the `PROTECTED_BRANCHES` guard
+ * is unchanged and stays off the public surface.
  */
 
 export const PROTECTED_BRANCHES = ['main', 'master', 'develop'] as const;

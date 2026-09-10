@@ -5,15 +5,15 @@
  * `forge.codeHost` the same way `forgeProviders()` dispatches for the
  * tracker, code host and board — the consumer never names GitHub or GitLab.
  *
- * The published barrels never carry the GitHub-named helpers that build
- * these values today (`createGitHubTokenProvider`, `resolveContextToken`,
- * `getInstallationToken`, `resolveBootstrapGitIdentity`, `ghAuthToken`, …):
- * putting them on a barrel would leak forge vocabulary into every consumer,
- * contradicting the forge-neutral contract `forgeProviders()` established.
- * This factory composes them internally and is the only new public runtime
- * name; only the `GitHubAppConfig`/`AppAuthDeps` *types* are re-exported, so
- * a typed consumer can build `deps.github` without importing an
- * adapter-internal module.
+ * Since issue #11, the GitHub barrel also re-exports the GitHub-named helpers
+ * that build these values (`createGitHubTokenProvider`, `resolveContextToken`,
+ * `getInstallationToken`, `isGitHubAppConfigured`, `resolveBootstrapGitIdentity`,
+ * `ghAuthToken`) so ADW's launch boundary can switch over to the published
+ * package with no behaviour change. This factory remains the forge-neutral,
+ * recommended route — it composes exactly those functions — and still
+ * re-exports only the `GitHubAppConfig`/`AppAuthDeps` *types*: the GitHub
+ * barrel must not re-export them too, or `src/providers/index.ts`'s `export *`
+ * over both barrels would collide (TS2308).
  *
  * Side-effect contract: construction never resolves a token — the returned
  * `TokenProvider` resolves per `credentialEnv` call, unmemoised, exactly as
