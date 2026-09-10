@@ -34,8 +34,15 @@ jobs:
     name: Release dry-run
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    # semantic-release verifies push access with `git push --dry-run` before it
+    # analyzes a single commit, even in dry-run mode, so GITHUB_TOKEN needs
+    # `contents: write` or the job fails with EGITNOPERMISSION. Nothing is pushed
+    # or published: release.config.js drops the npm/github plugins under
+    # SEMANTIC_RELEASE_DRY_RUN and semantic-release skips tag creation in
+    # dry-run mode. Pull requests from forks always receive a read-only token,
+    # so this job fails that probe on fork PRs regardless of this block.
     permissions:
-      contents: read
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:

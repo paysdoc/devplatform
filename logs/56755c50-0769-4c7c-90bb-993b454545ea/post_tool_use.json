@@ -1,0 +1,92 @@
+[
+  {
+    "session_id": "56755c50-0769-4c7c-90bb-993b454545ea",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/56755c50-0769-4c7c-90bb-993b454545ea.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "94901eff-3ad4-4d9c-9c38-2db747378dc4",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/.adw/commands.md"
+    },
+    "tool_response": {
+      "type": "text",
+      "file": {
+        "filePath": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/.adw/commands.md",
+        "content": "## Package Manager\nbun\n\n## Install Dependencies\nbun install\n\n## Run Linter\nN/A (no linter configured in this repo)\n\n## Type Check\nbun run typecheck\n\n## Run Tests\nbun run test:unit\n\nNote: `vitest.config.ts` already wires the JUnit reporter to `process.env.ADW_UNIT_TEST_REPORT_PATH`\nwhen that env var is set (`reporters: junitReportPath ? ['default', ['junit', { outputFile: junitReportPath }]] : ['default']`),\nso no `--reporter` flags are needed on the command line — just ensure `$ADW_UNIT_TEST_REPORT_PATH` is\nexported in the environment before running.\n\n## Run Build\nbun run build\n\n## Start Dev Server\nN/A (library/CLI package; no dev server)\n\n## Health Check Path\nN/A\n\n## Prepare App\nbun install\n\n## Additional Type Checks\nN/A\n\n## Library Install Command\nbun add <package>\nbun add -d <package>   # dev dependency\n\n## Script Execution\nbun run <script-name>   # e.g. bun run typecheck, bun run test:unit\nbunx tsx <file.ts>       # ad-hoc TypeScript script execution\n\n## Run Scenarios by Tag\ncucumber-js --tags \"@{tag}\"\n\n## Run Regression Scenarios\ncucumber-js --tags \"@regression\"\n",
+        "numLines": 49,
+        "startLine": 1,
+        "totalLines": 49
+      }
+    },
+    "tool_use_id": "toolu_01FW1xd7vbZrtsCkFNBT84VJ",
+    "duration_ms": 2
+  },
+  {
+    "session_id": "56755c50-0769-4c7c-90bb-993b454545ea",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/56755c50-0769-4c7c-90bb-993b454545ea.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "94901eff-3ad4-4d9c-9c38-2db747378dc4",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "bun run typecheck 2>&1",
+      "timeout": 300000
+    },
+    "tool_response": {
+      "stdout": "$ tsc --noEmit",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_01N3chPD2JzUgcZQVwKiQV7w",
+    "duration_ms": 1042
+  },
+  {
+    "session_id": "56755c50-0769-4c7c-90bb-993b454545ea",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/56755c50-0769-4c7c-90bb-993b454545ea.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "94901eff-3ad4-4d9c-9c38-2db747378dc4",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "bun run build 2>&1",
+      "timeout": 300000
+    },
+    "tool_response": {
+      "stdout": "$ bun run clean && tsc -p tsconfig.build.json\n$ node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_01UMr9jD7a7PJEAQV3sU5bMT",
+    "duration_ms": 575
+  },
+  {
+    "session_id": "56755c50-0769-4c7c-90bb-993b454545ea",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/56755c50-0769-4c7c-90bb-993b454545ea.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "94901eff-3ad4-4d9c-9c38-2db747378dc4",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "export ADW_UNIT_TEST_REPORT_PATH=\"/tmp/junit-report.xml\" && bun run test:unit 2>&1",
+      "timeout": 300000
+    },
+    "tool_response": {
+      "stdout": "$ vitest run\n\n RUN  v4.1.11 /Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser\n\n ✓ src/__tests__/releaseConfig.test.ts (6 tests) 10ms\n ✓ src/providers/jira/__tests__/jiraApiClient.test.ts (8 tests) 16ms\n ✓ src/providers/jira/__tests__/jiraIssueTracker.test.ts (12 tests) 16ms\n ✓ src/providers/github/__tests__/appAuth.test.ts (16 tests) 63ms\n ✓ src/git/__tests__/gitContext.test.ts (76 tests) 11ms\n ✓ src/git/__tests__/workingDirectoryGuard.test.ts (24 tests) 13ms\n ✓ src/git/__tests__/gitContextOperations.test.ts (107 tests) 14ms\n ✓ src/__tests__/importGraph.test.ts (3 tests) 12ms\n ✓ src/providers/github/__tests__/ghPrParsers.test.ts (40 tests) 7ms\n ✓ src/providers/github/__tests__/ghRepoApi.test.ts (63 tests) 10ms\n ✓ src/providers/github/__tests__/ghRepoApiCwd.test.ts (109 tests) 13ms\n ✓ src/git/__tests__/gitReadOps.test.ts (50 tests) 7ms\nstdout | src/providers/github/__tests__/githubIssueTracker.test.ts > GitHubIssueTracker — command strings > fetchLabels(42) spawns the exact gh issue view command from the bound framework root, with the context token\nfetchIssueLabels: failed to fetch labels on issue #42: SyntaxError: Unexpected end of JSON input\n\nstdout | src/providers/github/__tests__/githubIssueTracker.test.ts > GitHubIssueTracker — command strings > createIssue spawns gh issue create with the title and pipes the body via stdin\nCreated issue #101: title\n\nstdout | src/providers/github/__tests__/githubCodeHost.test.ts > GitHubCodeHost — command strings > approvePR carries the elevated credential (alternate literal)\nApproved PR #7 in acme/widget\n\nstdout | src/providers/github/__tests__/githubCodeHost.test.ts > GitHubCodeHost — command strings > mergePR spawns gh pr merge\nMerged PR #7 in acme/widget\n\nstdout | src/providers/github/__tests__/githubIssueTracker.test.ts > GitHubIssueTracker — closeIssue > open with comment: comments before closing, returns true, logs success\nCommented on issue #42\nClosed issue #42\n\nstdout | src/providers/github/__tests__/githubCodeHost.test.ts > GitHubCodeHost — parse and map > approvePullRequest/mergePullRequest report { success: false, error } carrying stderr, or String(error) otherwise\nFailed to approve PR #7: actual stderr text\nFailed to merge PR #7: Error: plain failure\n\nstdout | src/providers/github/__tests__/githubIssueTracker.test.ts > GitHubIssueTracker — applyLabel > persistent not-found: exactly one create, retry error propagates\napplyLabel: label \"adw:chore\" not found on repo, lazy-creating\n\n ✓ src/providers/github/__tests__/githubCodeHost.test.ts (20 tests) 8ms\nstdout | src/providers/github/__tests__/githubIssueTracker.test.ts > GitHubIssueTracker — applyLabel > with no resolveLabelDefinition injected, the create carries the ededed/empty-description default\napplyLabel: label \"adw:blocked\" not found on repo, lazy-creating\n\n ✓ src/providers/github/__tests__/githubIssueTracker.test.ts (31 tests) 12ms\n ✓ src/providers/__tests__/workspaceValidation.test.ts (15 tests) 4ms\n ✓ src/__tests__/releaseParser.test.ts (24 tests) 19ms\nerror: No such remote 'origin'\n ✓ src/git/__tests__/bootstrapIdentity.test.ts (13 tests) 294ms\n ✓ src/providers/__tests__/boardManager.test.ts (28 tests) 5ms\n ✓ src/providers/github/__tests__/ghIssueParsers.test.ts (15 tests) 3ms\n ✓ src/providers/github/__tests__/tokenResolver.test.ts (10 tests) 3ms\n ✓ src/git/__tests__/worktreeLogger.test.ts (7 tests) 4ms\n ✓ src/providers/github/__tests__/githubBoardManager.test.ts (7 tests) 5ms\n ✓ src/providers/gitlab/__tests__/gitlabApiClient.test.ts (12 tests) 4ms\n ✓ src/providers/gitlab/__tests__/gitlabCodeHost.test.ts (9 tests) 3ms\n ✓ src/providers/github/__tests__/githubTokenProvider.test.ts (18 tests) 4ms\nstdout | src/providers/__tests__/forgeProviders.test.ts > forgeProviders — github/github > every command the minted providers issue reaches the spy, named to the identity, carrying the token\nfetchIssueLabels: failed to fetch labels on issue #1: SyntaxError: Unexpected end of JSON input\n\n ✓ src/providers/github/__tests__/ghCommandRunner.test.ts (10 tests) 5ms\nstdout | src/providers/__tests__/forgeProviders.deps.test.ts > forgeProviders — deps.github seams > deps.github.resolveLabelDefinition is consulted on applyLabel's lazy-create path\napplyLabel: label \"adw:blocked\" not found on repo, lazy-creating\n\n ✓ src/providers/__tests__/forgeProviders.deps.test.ts (5 tests) 5ms\n ✓ src/providers/__tests__/forgeProviders.test.ts (11 tests) 5ms\n ✓ src/providers/github/__tests__/githubIdentity.test.ts (30 tests) 431ms\n ✓ src/git/__tests__/repoApiCwd.test.ts (9 tests) 4ms\n ✓ src/git/__tests__/commitOps.test.ts (17 tests) 3ms\n ✓ src/git/__tests__/repoWorkspace.test.ts (10 tests) 3ms\n ✓ src/git/__tests__/claimOps.test.ts (16 tests) 3ms\n ✓ src/__tests__/packageExports.test.ts (7 tests) 3ms\n ✓ src/git/__tests__/remoteOps.test.ts (12 tests) 3ms\nstdout | src/providers/github/__tests__/githubIssueTrackerLabelPolicy.test.ts > GitHubIssueTracker — label policy separation > addLabel swallows a throw from the underlying gh call (fail-open)\nFailed to add label \"hitl\" to issue #42: Error: gh api error: 500\n\nstdout | src/providers/github/__tests__/githubIssueTrackerLabelPolicy.test.ts > GitHubIssueTracker — label policy separation > applyLabel propagates a non-\"not found\" throw from the underlying gh call\napplyLabel: unexpected error adding label \"adw:blocked\" to issue #42: Error: gh api error: 500\n\n ✓ src/providers/github/__tests__/githubIssueTrackerLabelPolicy.test.ts (2 tests) 3ms\n ✓ src/providers/__tests__/forgeProviders.selection.test.ts (4 tests) 3ms\n ✓ src/providers/github/__tests__/cloneUrl.test.ts (9 tests) 2ms\n ✓ src/providers/__tests__/refusalStubs.test.ts (5 tests) 2ms\n ✓ src/providers/github/commands/__tests__/issueCommands.test.ts (4 tests) 2ms\n\n Test Files  40 passed (40)\n      Tests  874 passed (874)\n   Start at  13:33:03\n   Duration  739ms (transform 2.13s, setup 0ms, import 3.64s, tests 1.04s, environment 2ms)\n\nJUNIT report written to /tmp/junit-report.xml",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_01LA1chAsQM2V3bR14iQnPjn",
+    "duration_ms": 1077
+  }
+]

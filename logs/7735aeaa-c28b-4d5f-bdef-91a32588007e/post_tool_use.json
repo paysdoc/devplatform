@@ -1,0 +1,674 @@
+[
+  {
+    "session_id": "7735aeaa-c28b-4d5f-bdef-91a32588007e",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/7735aeaa-c28b-4d5f-bdef-91a32588007e.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e029d30d-7614-4433-8397-d0ba4cf90044",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "find specs/patch -type f -name \"*.md\" | head -20",
+      "description": "List patch plan files"
+    },
+    "tool_response": {
+      "stdout": "specs/patch/patch-adw-9xqejz-release-automation-w-pin-conventionalcommits-preset.md",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_018Ex3uV5nX2GsNPWnwD58Hg",
+    "duration_ms": 742
+  },
+  {
+    "session_id": "7735aeaa-c28b-4d5f-bdef-91a32588007e",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/7735aeaa-c28b-4d5f-bdef-91a32588007e.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e029d30d-7614-4433-8397-d0ba4cf90044",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/specs/patch/patch-adw-9xqejz-release-automation-w-pin-conventionalcommits-preset.md"
+    },
+    "tool_response": {
+      "type": "text",
+      "file": {
+        "filePath": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/specs/patch/patch-adw-9xqejz-release-automation-w-pin-conventionalcommits-preset.md",
+        "content": "# Patch: Pin the conventionalcommits preset to 9.x so `generateNotes` renders under the stable notes generator\n\n## Metadata\nadwId: `9xqejz-release-automation-w`\nreviewChangeRequest:\n```text\nIssue #1: The release pipeline aborts before publishing: conventional-changelog-conventionalcommits@10.4.0 (devDependency) refuses to render under conventional-changelog-writer@8.4.0, which is what @semantic-release/release-notes-generator@14.1.1 depends on (latest stable; only 15.0.0-beta.x targets a newer writer). Evidence: `bun run release:dry-run` under a simulated push-to-main GitHub Actions environment passed branch resolution and push-auth, analyzed 173 real commits (\"Analysis of 173 commits complete: minor release\", proving the agent-prefixed parser works on real history), then failed in step generateNotes with `Missing helper: \"conventional-changelog-conventionalcommits requires conventional-changelog-writer@9 or newer ...\"` and exited 1 (full log: /tmp/adw-review-expB.log). Reproduced offline by calling generateNotes from @semantic-release/release-notes-generator with the shipped plugin config from release.config.js. On a real push to main the Release job would fail at generateNotes after analyzeCommits and never reach publish, i.e. the never-publishing configuration the issue asks CI to catch. The unit tests do not catch this because they only exercise the analyzer.\nResolution: Pin `conventional-changelog-conventionalcommits` to `^9.3.1` in package.json devDependencies and refresh bun.lock (verified during review: with 9.3.1 installed, generateNotes renders agent-prefixed feat/fix commits under Features/Bug Fixes and all 874 unit tests still pass; the review restored the committed 10.4.0 afterwards). Add a unit test in src/__tests__/releaseConfig.test.ts that drives `generateNotes` from `@semantic-release/release-notes-generator` with the shipped release-notes-generator plugin config so preset/writer drift fails at unit level.\n```\n\n## Issue Summary\n**Original Spec:** `specs/issue-2-adw-9xqejz-release-automation-w-sdlc_planner-release-automation-agent-prefixed-parser.md`\n\n**Issue:** `package.json` pins `conventional-changelog-conventionalcommits@^10.4.0`, but the 10.x line of\nthat preset only renders under `conventional-changelog-writer@9`. The notes plugin actually shipped by\n`semantic-release@25` is `@semantic-release/release-notes-generator@14.1.1` (the latest stable; only\n`15.0.0-beta.x` targets writer 9), and it depends on `conventional-changelog-writer@^8.0.0` (8.4.0 is\ninstalled). The analyzer step succeeds (it only uses the preset's *parser* options), so the release\njob on `main` would get past `analyzeCommits` and then die in `generateNotes` with\n`Missing helper: \"conventional-changelog-conventionalcommits requires conventional-changelog-writer@9 or newer …\"`,\nnever reaching `publish`. That is exactly the never-publishing configuration the issue asks CI to\ncatch, and neither `releaseParser.test.ts` nor `releaseConfig.test.ts` exercises the notes generator,\nso the unit suite stays green.\n\nReproduced during patch planning against the committed tree (10.4.0): calling `generateNotes` from\n`@semantic-release/release-notes-generator` with `releaseConfig.plugins[1][1]` throws the\n`Missing helper` error. Re-run in a scratch install with `^9.3.1`: the same call resolves and renders\n`### Features` / `### Bug Fixes` sections, with the `build-agent: ` / `review-patch-agent: ` prefix\nstripped from the bullet subjects and the `chore:` commit omitted. The writer stays at 8.4.0.\n\n**Solution:** Downgrade the preset devDependency to `^9.3.1` (the last major that renders under\nwriter 8), refresh `bun.lock`, and add a unit test to `src/__tests__/releaseConfig.test.ts` that\ndrives the real `generateNotes` with the shipped notes-generator plugin config, so any future\npreset/writer drift (e.g. a dependency-bump PR moving the preset back to 10.x) fails at unit level\ninstead of on the first push to `main`. Because the notes generator ships no type declarations, a\nsmall ambient module shim is added next to the existing `semantic-release-commit-analyzer.d.ts`.\n\nApproaches considered and rejected (all larger or riskier than the pin):\n- Move to `@semantic-release/release-notes-generator@15.0.0-beta.x` (writer 9): pre-release, and\n  `semantic-release@25` would still bundle its own 14.x copy.\n- Force `conventional-changelog-writer@9` via a package-manager override: breaks the writer wrapper\n  inside the stable notes generator, which is written against the writer 8 API.\n- Switch `preset` to `angular`: changes the release-notes format and diverges from the spec.\n\n## Files to Modify\nUse these files to implement the patch:\n\n- `package.json` — change `\"conventional-changelog-conventionalcommits\": \"^10.4.0\"` to `\"^9.3.1\"`\n  in `devDependencies` (one line; nothing else in the manifest changes).\n- `bun.lock` — refreshed by the install: the workspace specifier moves to `^9.3.1`, the resolved\n  entry becomes `conventional-changelog-conventionalcommits@9.3.1` (dependency `compare-func`), and\n  the now-orphaned `@conventional-changelog/template` entry is pruned. Must be committed because\n  `release.yml` installs with `--frozen-lockfile`.\n- `src/__tests__/releaseConfig.test.ts` — add a `describe` block that renders release notes with the\n  real `generateNotes` and the shipped plugin config.\n- `src/__tests__/semantic-release-release-notes-generator.d.ts` (**new**) — ambient `declare module`\n  for `@semantic-release/release-notes-generator`, covering only the `generateNotes` shape the test\n  uses, mirroring the existing `semantic-release-commit-analyzer.d.ts`. Picked up by\n  `tsconfig.json`'s `src/**/*.ts` include; excluded from `dist/` by `tsconfig.build.json`'s\n  `__tests__` exclusion.\n\nDo **not** touch `release.config.js`, `conventional-changelog-writer`,\n`@semantic-release/release-notes-generator`, the workflows, or the README — none of them reference\nthe preset version, and the fix is entirely a dependency pin plus a guarding test.\n\n## Implementation Steps\nIMPORTANT: Execute every step in order, top to bottom.\n\n### Step 1: Pin the preset to 9.x and refresh the lockfile\n- Run `bun add -d conventional-changelog-conventionalcommits@^9.3.1` (the project's documented\n  dev-dependency install command). Confirm `package.json` now reads\n  `\"conventional-changelog-conventionalcommits\": \"^9.3.1\"` under `devDependencies` and that\n  `dependencies` still does not exist (the package must stay dependency-free at runtime).\n- Verify the resolution:\n  `node -p \"require('./node_modules/conventional-changelog-conventionalcommits/package.json').version\"`\n  prints `9.3.1` (or a later 9.x) and\n  `node -p \"require('./node_modules/conventional-changelog-writer/package.json').version\"` still\n  prints `8.4.0` — the writer is owned by `@semantic-release/release-notes-generator@14.1.1` and\n  must **not** be bumped.\n- Check `git diff bun.lock`: expect only the specifier line, the\n  `conventional-changelog-conventionalcommits` resolved entry (now `9.3.1` with `compare-func`), and\n  the removal of `@conventional-changelog/template`. Any other lockfile churn is unintended.\n\n### Step 2: Add the ambient type shim for the notes generator\n- Create `src/__tests__/semantic-release-release-notes-generator.d.ts` with the same file-header\n  style as `semantic-release-commit-analyzer.d.ts` (explain that the package ships no declarations\n  and this covers only what `releaseConfig.test.ts` exercises). Declare:\n\n```ts\ndeclare module '@semantic-release/release-notes-generator' {\n  interface GenerateNotesCommit {\n    hash: string;\n    message: string;\n  }\n\n  interface GenerateNotesLogger {\n    log(...args: unknown[]): void;\n    error(...args: unknown[]): void;\n  }\n\n  interface GenerateNotesRelease {\n    version?: string;\n    gitTag?: string;\n    gitHead?: string;\n    type?: string;\n  }\n\n  interface GenerateNotesContext {\n    commits: GenerateNotesCommit[];\n    logger: GenerateNotesLogger;\n    cwd: string;\n    env: Record<string, string | undefined>;\n    options: { repositoryUrl: string } & Record<string, unknown>;\n    lastRelease: GenerateNotesRelease;\n    nextRelease: GenerateNotesRelease;\n  }\n\n  interface GenerateNotesPluginConfig {\n    preset?: string;\n    parserOpts?: Record<string, unknown>;\n    writerOpts?: Record<string, unknown>;\n  }\n\n  export function generateNotes(\n    pluginConfig: GenerateNotesPluginConfig,\n    context: GenerateNotesContext,\n  ): Promise<string>;\n}\n```\n\n### Step 3: Add the `generateNotes` drift test to `src/__tests__/releaseConfig.test.ts`\n- Add `import { generateNotes } from '@semantic-release/release-notes-generator';` next to the\n  existing imports, and extend the file-header comment with one sentence: the notes-generator block\n  exists because the `conventionalcommits` preset major must match the writer major bundled by the\n  stable `@semantic-release/release-notes-generator` (preset 10.x needs writer 9; the stable plugin\n  ships writer 8), and only rendering real notes catches that drift.\n- Append a new `describe('release.config.js — release notes render under the shipped preset', …)`\n  block that pulls the notes-generator plugin config from `releaseConfig.plugins[1]` (the shipped\n  object, never a copy) and drives the real plugin:\n\n```ts\ndescribe('release.config.js — release notes render under the shipped preset', () => {\n  const [, notesConfig] = releaseConfig.plugins[1] as [string, { preset: string; parserOpts: Record<string, unknown> }];\n  const noopLogger = { log() {}, error() {} };\n\n  async function render(headers: string[]): Promise<string> {\n    return generateNotes(notesConfig, {\n      commits: headers.map((message, index) => ({ hash: String(index).repeat(40), message })),\n      logger: noopLogger,\n      cwd: process.cwd(),\n      env: {},\n      options: { repositoryUrl: 'https://github.com/paysdoc/devplatform.git' },\n      lastRelease: { version: '1.0.0', gitTag: 'v1.0.0', gitHead: '0'.repeat(40) },\n      nextRelease: { version: '1.1.0', gitTag: 'v1.1.0', gitHead: '1'.repeat(40), type: 'minor' },\n    });\n  }\n\n  it('generateNotes renders agent-prefixed feat/fix commits under Features and Bug Fixes', async () => {\n    const notes = await render([\n      'build-agent: feat: add forgeProviders assembly',\n      'review-patch-agent: fix: correct token resolution',\n      'feat: add worktree probe',\n    ]);\n\n    expect(notes).toContain('### Features');\n    expect(notes).toContain('* add forgeProviders assembly');\n    expect(notes).toContain('* add worktree probe');\n    expect(notes).toContain('### Bug Fixes');\n    expect(notes).toContain('* correct token resolution');\n  });\n\n  it('strips the agent prefix from rendered subjects and omits non-releasing chore commits', async () => {\n    const notes = await render([\n      'build-agent: feat: add forgeProviders assembly',\n      'plan-orchestrator: chore: expand README',\n    ]);\n\n    expect(notes).not.toContain('build-agent:');\n    expect(notes).not.toContain('plan-orchestrator:');\n    expect(notes).not.toContain('expand README');\n  });\n});\n```\n\n- Do not assert on the date or the compare-link line of the rendered header — both vary; the\n  section headings and bullet subjects are the stable contract.\n- Under the committed 10.4.0 preset this block rejects with the `Missing helper` error, which is the\n  drift signal; under 9.3.1 both cases pass.\n\n### Step 4: Run the validation commands below and confirm zero regressions\n- The unit suite must grow from 874 to 876 tests across 40 files, with no pre-existing test lost.\n- Confirm `git status` shows exactly four changed paths: `package.json`, `bun.lock`,\n  `src/__tests__/releaseConfig.test.ts`, and the new\n  `src/__tests__/semantic-release-release-notes-generator.d.ts`.\n\n## Validation\nExecute every command to validate the patch is complete with zero regressions.\n\n- `bun install` — must be a no-op after Step 1 (lockfile already refreshed); then\n  `node -p \"require('./node_modules/conventional-changelog-conventionalcommits/package.json').version + ' / writer ' + require('./node_modules/conventional-changelog-writer/package.json').version\"`\n  must print a `9.x` preset alongside writer `8.4.0`.\n- `bun run typecheck` — TypeScript strict-mode check across `src/**/*.ts` (including the new `.d.ts`\n  shim) plus `release.config.js`; must report zero errors (no linter is configured in this repo).\n- `bun run test:unit` — full Vitest suite; expect `Test Files 40 passed`, `Tests 876 passed`,\n  including the two new `generateNotes` cases in `src/__tests__/releaseConfig.test.ts`.\n- `node --input-type=module -e \"const { generateNotes } = await import('@semantic-release/release-notes-generator'); const cfg = (await import('./release.config.js')).default; const notes = await generateNotes(cfg.plugins[1][1], { commits: [{ hash: 'a'.repeat(40), message: 'build-agent: feat: add forgeProviders assembly' }, { hash: 'b'.repeat(40), message: 'review-patch-agent: fix: correct token resolution' }], logger: { log() {}, error() {} }, cwd: process.cwd(), env: {}, options: { repositoryUrl: 'https://github.com/paysdoc/devplatform.git' }, lastRelease: { version: '1.0.0', gitTag: 'v1.0.0', gitHead: '0'.repeat(40) }, nextRelease: { version: '1.1.0', gitTag: 'v1.1.0', gitHead: '1'.repeat(40), type: 'minor' } }); if (!notes.includes('### Features') || !notes.includes('### Bug Fixes')) { console.error('FAIL: notes missing sections\\n' + notes); process.exit(1); } console.log('OK: generateNotes renders under the shipped preset\\n' + notes);\"`\n  — the reviewer's offline reproduction, now expected to print the rendered notes instead of the\n  `Missing helper` error.\n- `bun run build` — `tsc -p tsconfig.build.json` must still emit `dist/` cleanly with no\n  `release.config.js` or `__tests__` content leaking in.\n- `bun run release:dry-run` — end-to-end `semantic-release --dry-run` against the current branch; it\n  must now get past `generateNotes` and print the computed next version (or the explicit\n  \"no release would be triggered\" line for a `chore:`-only branch). Requires network access and a\n  `GITHUB_TOKEN`; if unavailable locally, treat the CI `release-dry-run` job on the pull request as\n  the authoritative execution and say so explicitly rather than reporting it as passed.\n\n## Patch Scope\n**Lines of code to change:** ~100 (1 line in `package.json`, ~6 lines of `bun.lock` churn, ~45 lines\nof test, ~40-line `.d.ts` shim)\n**Risk level:** low\n**Testing required:** `bun run typecheck` and `bun run test:unit` (874 → 876 tests) are the gates;\nthe offline `generateNotes` one-liner confirms the reviewer's reproduction is fixed, and the CI\n`release-dry-run` job on the PR is the authoritative end-to-end proof that the pipeline now reaches\npast `generateNotes`.\n",
+        "numLines": 225,
+        "startLine": 1,
+        "totalLines": 225
+      }
+    },
+    "tool_use_id": "toolu_01QiiAdfEvNDEWqpoYDbYhd5",
+    "duration_ms": 1
+  },
+  {
+    "session_id": "7735aeaa-c28b-4d5f-bdef-91a32588007e",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/7735aeaa-c28b-4d5f-bdef-91a32588007e.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e029d30d-7614-4433-8397-d0ba4cf90044",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/package.json"
+    },
+    "tool_response": {
+      "type": "text",
+      "file": {
+        "filePath": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/package.json",
+        "content": "{\n  \"name\": \"@paysdoc/devplatform\",\n  \"version\": \"0.0.0-development\",\n  \"description\": \"Forge ports and adapters (GitHub, GitLab, Jira) over a forge-neutral git/worktree core\",\n  \"type\": \"module\",\n  \"license\": \"MIT\",\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/paysdoc/devplatform.git\"\n  },\n  \"main\": \"./dist/index.js\",\n  \"types\": \"./dist/index.d.ts\",\n  \"exports\": {\n    \".\": {\n      \"types\": \"./dist/index.d.ts\",\n      \"import\": \"./dist/index.js\",\n      \"default\": \"./dist/index.js\"\n    },\n    \"./providers\": {\n      \"types\": \"./dist/providers/index.d.ts\",\n      \"import\": \"./dist/providers/index.js\",\n      \"default\": \"./dist/providers/index.js\"\n    },\n    \"./git\": {\n      \"types\": \"./dist/git/index.d.ts\",\n      \"import\": \"./dist/git/index.js\",\n      \"default\": \"./dist/git/index.js\"\n    },\n    \"./package.json\": \"./package.json\"\n  },\n  \"files\": [\"dist\", \"README.md\", \"LICENSE\"],\n  \"sideEffects\": false,\n  \"publishConfig\": {\n    \"access\": \"public\"\n  },\n  \"engines\": {\n    \"node\": \">=20\"\n  },\n  \"scripts\": {\n    \"typecheck\": \"tsc --noEmit\",\n    \"test:unit\": \"vitest run\",\n    \"test\": \"tsc --noEmit\",\n    \"clean\": \"node -e \\\"require('node:fs').rmSync('dist',{recursive:true,force:true})\\\"\",\n    \"build\": \"bun run clean && tsc -p tsconfig.build.json\",\n    \"smoke:package\": \"bunx tsx scripts/smokePackage.ts\",\n    \"release:dry-run\": \"bunx tsx scripts/releaseDryRun.ts\",\n    \"prepack\": \"bun run build\"\n  },\n  \"devDependencies\": {\n    \"@semantic-release/commit-analyzer\": \"^13.0.1\",\n    \"@semantic-release/github\": \"^12.0.9\",\n    \"@semantic-release/npm\": \"^13.1.5\",\n    \"@semantic-release/release-notes-generator\": \"^14.1.1\",\n    \"@types/node\": \"^25.3.0\",\n    \"conventional-changelog-conventionalcommits\": \"^10.4.0\",\n    \"semantic-release\": \"^25.0.9\",\n    \"tsx\": \"^4.19.3\",\n    \"typescript\": \"^5.7.3\",\n    \"vitest\": \"^4.1.0\"\n  }\n}\n",
+        "numLines": 62,
+        "startLine": 1,
+        "totalLines": 62
+      }
+    },
+    "tool_use_id": "toolu_01S72w7CuJP2vQsdiUFeePhy",
+    "duration_ms": 1
+  },
+  {
+    "session_id": "7735aeaa-c28b-4d5f-bdef-91a32588007e",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/7735aeaa-c28b-4d5f-bdef-91a32588007e.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e029d30d-7614-4433-8397-d0ba4cf90044",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/src/__tests__/releaseConfig.test.ts"
+    },
+    "tool_response": {
+      "type": "text",
+      "file": {
+        "filePath": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/src/__tests__/releaseConfig.test.ts",
+        "content": "/**\n * Configuration-contract test for `release.config.js`, mirroring\n * `packageExports.test.ts`'s style: asserts the shape of the manifest\n * itself rather than any build output. Confirms the dry-run mode switch\n * (`SEMANTIC_RELEASE_DRY_RUN=true`) drops both plugins that require a\n * credential, so the PR dry-run job can never accidentally publish.\n */\nimport { afterEach, describe, expect, it } from 'vitest';\nimport releaseConfig from '../../release.config.js';\n\ninterface PluginEntry {\n  0: string;\n  1?: unknown;\n}\n\nfunction pluginNames(plugins: unknown[]): string[] {\n  return (plugins as PluginEntry[]).map((entry) => entry[0]);\n}\n\ndescribe('release.config.js — configuration contract', () => {\n  it('branches is exactly [\"main\"]', () => {\n    expect(releaseConfig.branches).toEqual(['main']);\n  });\n\n  it('tagFormat is \"v${version}\"', () => {\n    expect(releaseConfig.tagFormat).toBe('v${version}');\n  });\n\n  it('normal mode plugin list is commit-analyzer, notes-generator, npm, github in order', () => {\n    expect(pluginNames(releaseConfig.plugins)).toEqual([\n      '@semantic-release/commit-analyzer',\n      '@semantic-release/release-notes-generator',\n      '@semantic-release/npm',\n      '@semantic-release/github',\n    ]);\n  });\n\n  it('the analyzer and the notes generator receive the same parserOpts object identity', () => {\n    const [, analyzerConfig] = releaseConfig.plugins[0] as [string, { parserOpts: unknown }];\n    const [, notesConfig] = releaseConfig.plugins[1] as [string, { parserOpts: unknown }];\n    expect(analyzerConfig.parserOpts).toBe(notesConfig.parserOpts);\n  });\n\n  it('parserOpts.headerCorrespondence is exactly [\"type\", \"scope\", \"subject\"]', () => {\n    const [, analyzerConfig] = releaseConfig.plugins[0] as [string, { parserOpts: { headerCorrespondence: string[] } }];\n    expect(analyzerConfig.parserOpts.headerCorrespondence).toEqual(['type', 'scope', 'subject']);\n  });\n});\n\ndescribe('release.config.js — dry-run mode', () => {\n  const originalEnv = process.env.SEMANTIC_RELEASE_DRY_RUN;\n\n  afterEach(() => {\n    if (originalEnv === undefined) {\n      delete process.env.SEMANTIC_RELEASE_DRY_RUN;\n    } else {\n      process.env.SEMANTIC_RELEASE_DRY_RUN = originalEnv;\n    }\n  });\n\n  it('drops the npm and github plugins, keeping only analyzer and notes-generator', async () => {\n    process.env.SEMANTIC_RELEASE_DRY_RUN = 'true';\n    const dryRunModulePath: string = '../../release.config.js?dryrun';\n    const dryRunConfig = (await import(dryRunModulePath)).default;\n\n    expect(pluginNames(dryRunConfig.plugins)).toEqual([\n      '@semantic-release/commit-analyzer',\n      '@semantic-release/release-notes-generator',\n    ]);\n  });\n});\n",
+        "numLines": 72,
+        "startLine": 1,
+        "totalLines": 72
+      }
+    },
+    "tool_use_id": "toolu_01J4HvjSR8iKCDoH7KJrN9mN",
+    "duration_ms": 1
+  },
+  {
+    "session_id": "7735aeaa-c28b-4d5f-bdef-91a32588007e",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/7735aeaa-c28b-4d5f-bdef-91a32588007e.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e029d30d-7614-4433-8397-d0ba4cf90044",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "find /Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/src/__tests__ -name \"semantic-release-commit-analyzer.d.ts\"",
+      "description": "Locate the existing ambient type shim to mirror"
+    },
+    "tool_response": {
+      "stdout": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/src/__tests__/semantic-release-commit-analyzer.d.ts",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_0144edWfg5bdNYhLMTLssQvn",
+    "duration_ms": 28
+  },
+  {
+    "session_id": "7735aeaa-c28b-4d5f-bdef-91a32588007e",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/7735aeaa-c28b-4d5f-bdef-91a32588007e.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e029d30d-7614-4433-8397-d0ba4cf90044",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/src/__tests__/semantic-release-commit-analyzer.d.ts"
+    },
+    "tool_response": {
+      "type": "text",
+      "file": {
+        "filePath": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/src/__tests__/semantic-release-commit-analyzer.d.ts",
+        "content": "/**\n * `@semantic-release/commit-analyzer` ships no type declarations. This\n * covers only the `analyzeCommits` export shape exercised by\n * `releaseParser.test.ts`.\n */\ndeclare module '@semantic-release/commit-analyzer' {\n  interface AnalyzeCommitsCommit {\n    hash: string;\n    message: string;\n  }\n\n  interface AnalyzeCommitsLogger {\n    log(...args: unknown[]): void;\n    error(...args: unknown[]): void;\n  }\n\n  interface AnalyzeCommitsContext {\n    commits: AnalyzeCommitsCommit[];\n    logger: AnalyzeCommitsLogger;\n    cwd: string;\n    env: Record<string, string | undefined>;\n    options: Record<string, unknown>;\n  }\n\n  interface AnalyzeCommitsPluginConfig {\n    preset?: string;\n    parserOpts?: Record<string, unknown>;\n  }\n\n  export function analyzeCommits(\n    pluginConfig: AnalyzeCommitsPluginConfig,\n    context: AnalyzeCommitsContext,\n  ): Promise<string | null>;\n}\n",
+        "numLines": 35,
+        "startLine": 1,
+        "totalLines": 35
+      }
+    },
+    "tool_use_id": "toolu_01Lceo3VwvLmyGcWgPF45VnC",
+    "duration_ms": 1
+  },
+  {
+    "session_id": "7735aeaa-c28b-4d5f-bdef-91a32588007e",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/7735aeaa-c28b-4d5f-bdef-91a32588007e.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e029d30d-7614-4433-8397-d0ba4cf90044",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "bun add -d conventional-changelog-conventionalcommits@^9.3.1 2>&1",
+      "description": "Pin conventional-changelog-conventionalcommits to ^9.3.1"
+    },
+    "tool_response": {
+      "stdout": "[0.26ms] \".env\"\nbun add v1.3.6 (d530ed99)\nResolving dependencies\nResolved, downloaded and extracted [1]\nSaved lockfile\n\ninstalled conventional-changelog-conventionalcommits@9.3.1\n\n1 package installed [413.00ms]",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_01KMJiP2cM4Xhanu77N12uPE",
+    "duration_ms": 436
+  },
+  {
+    "session_id": "7735aeaa-c28b-4d5f-bdef-91a32588007e",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/7735aeaa-c28b-4d5f-bdef-91a32588007e.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e029d30d-7614-4433-8397-d0ba4cf90044",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "echo \"--- package.json devDependency line ---\"\ngrep -n \"conventional-changelog-conventionalcommits\" package.json\necho \"--- resolved versions ---\"\nnode -p \"require('./node_modules/conventional-changelog-conventionalcommits/package.json').version\"\nnode -p \"require('./node_modules/conventional-changelog-writer/package.json').version\"\necho \"--- dependencies key check ---\"\nnode -p \"Object.keys(require('./package.json')).includes('dependencies')\"",
+      "description": "Verify package.json pin and resolved preset/writer versions"
+    },
+    "tool_response": {
+      "stdout": "--- package.json devDependency line ---\n55:    \"conventional-changelog-conventionalcommits\": \"^9.3.1\",\n--- resolved versions ---\n9.3.1\n8.4.0\n--- dependencies key check ---\nfalse",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_01BZBSj95LDfzNv4c1vrBmEQ",
+    "duration_ms": 119
+  },
+  {
+    "session_id": "7735aeaa-c28b-4d5f-bdef-91a32588007e",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/7735aeaa-c28b-4d5f-bdef-91a32588007e.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e029d30d-7614-4433-8397-d0ba4cf90044",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git diff --stat bun.lock; echo \"---\"; git diff bun.lock",
+      "description": "Show bun.lock diff"
+    },
+    "tool_response": {
+      "stdout": " bun.lock | 6 ++----\n 1 file changed, 2 insertions(+), 4 deletions(-)\n---\ndiff --git a/bun.lock b/bun.lock\nindex bcb674c..2c228e6 100644\n--- a/bun.lock\n+++ b/bun.lock\n@@ -10,7 +10,7 @@\n         \"@semantic-release/npm\": \"^13.1.5\",\n         \"@semantic-release/release-notes-generator\": \"^14.1.1\",\n         \"@types/node\": \"^25.3.0\",\n-        \"conventional-changelog-conventionalcommits\": \"^10.4.0\",\n+        \"conventional-changelog-conventionalcommits\": \"^9.3.1\",\n         \"semantic-release\": \"^25.0.9\",\n         \"tsx\": \"^4.19.3\",\n         \"typescript\": \"^5.7.3\",\n@@ -33,8 +33,6 @@\n \n     \"@colors/colors\": [\"@colors/colors@1.5.0\", \"\", {}, \"sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==\"],\n \n-    \"@conventional-changelog/template\": [\"@conventional-changelog/template@1.4.0\", \"\", {}, \"sha512-aalGyl7dbB5PArRebDIX43ZvBlXrYm9uWzGJ26t+4SzJVPsOuvfILGGbw5X4yX7i50YEmJ8zvbiWnqH/AAnZqg==\"],\n-\n     \"@esbuild/aix-ppc64\": [\"@esbuild/aix-ppc64@0.28.2\", \"\", { \"os\": \"aix\", \"cpu\": \"ppc64\" }, \"sha512-XExcO+dvLKvVtNTibSTBej1NCAbaGhWn9Ww1ZPx80qsahhPFe/8jgWP0IchNe0F3HwkU7n8ejhH8bjonqht8mQ==\"],\n \n     \"@esbuild/android-arm\": [\"@esbuild/android-arm@0.28.2\", \"\", { \"os\": \"android\", \"cpu\": \"arm\" }, \"sha512-kXXoiPVVGQcnIYGOeaovwOURpniDBpSq4A03qkQ+BMQqtGG6HYap3xne9C1O1yo4TR3qxlCX5IqqmX6fFo2Lqg==\"],\n@@ -249,7 +247,7 @@\n \n     \"conventional-changelog-angular\": [\"conventional-changelog-angular@8.3.1\", \"\", { \"dependencies\": { \"compare-func\": \"^2.0.0\" } }, \"sha512-6gfI3otXK5Ph5DfCOI1dblr+kN3FAm5a97hYoQkqNZxOaYa5WKfXH+AnpsmS+iUH2mgVC2Cg2Qw9m5OKcmNrIg==\"],\n \n-    \"conventional-changelog-conventionalcommits\": [\"conventional-changelog-conventionalcommits@10.4.0\", \"\", { \"dependencies\": { \"@conventional-changelog/template\": \"^1.4.0\" } }, \"sha512-Rriac6ZrAlVm6cy9Bz4NSp+WMHpwNXoPIYex+HjCgduAVUSbnew29DQjQw0C4g9u3HtSYzGiGY+pdBXAZo+4aA==\"],\n+    \"conventional-changelog-conventionalcommits\": [\"conventional-changelog-conventionalcommits@9.3.1\", \"\", { \"dependencies\": { \"compare-func\": \"^2.0.0\" } }, \"sha512-dTYtpIacRpcZgrvBYvBfArMmK2xvIpv2TaxM0/ZI5CBtNUzvF2x0t15HsbRABWprS6UPmvj+PzHVjSx4qAVKyw==\"],\n \n     \"conventional-changelog-writer\": [\"conventional-changelog-writer@8.4.0\", \"\", { \"dependencies\": { \"@simple-libs/stream-utils\": \"^1.2.0\", \"conventional-commits-filter\": \"^5.0.0\", \"handlebars\": \"^4.7.7\", \"meow\": \"^13.0.0\", \"semver\": \"^7.5.2\" }, \"bin\": { \"conventional-changelog-writer\": \"dist/cli/index.js\" } }, \"sha512-HHBFkk1EECxxmCi4CTu091iuDpQv5/OavuCUAuZmrkWpmYfyD816nom1CvtfXJ/uYfAAjavgHvXHX291tSLK8g==\"],",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_01HGFfA2RJmPEsSW4RD1wX7A",
+    "duration_ms": 57
+  },
+  {
+    "session_id": "7735aeaa-c28b-4d5f-bdef-91a32588007e",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/7735aeaa-c28b-4d5f-bdef-91a32588007e.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e029d30d-7614-4433-8397-d0ba4cf90044",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Write",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/src/__tests__/semantic-release-release-notes-generator.d.ts",
+      "content": "/**\n * `@semantic-release/release-notes-generator` ships no type declarations.\n * This covers only the `generateNotes` export shape exercised by\n * `releaseConfig.test.ts`.\n */\ndeclare module '@semantic-release/release-notes-generator' {\n  interface GenerateNotesCommit {\n    hash: string;\n    message: string;\n  }\n\n  interface GenerateNotesLogger {\n    log(...args: unknown[]): void;\n    error(...args: unknown[]): void;\n  }\n\n  interface GenerateNotesRelease {\n    version?: string;\n    gitTag?: string;\n    gitHead?: string;\n    type?: string;\n  }\n\n  interface GenerateNotesContext {\n    commits: GenerateNotesCommit[];\n    logger: GenerateNotesLogger;\n    cwd: string;\n    env: Record<string, string | undefined>;\n    options: { repositoryUrl: string } & Record<string, unknown>;\n    lastRelease: GenerateNotesRelease;\n    nextRelease: GenerateNotesRelease;\n  }\n\n  interface GenerateNotesPluginConfig {\n    preset?: string;\n    parserOpts?: Record<string, unknown>;\n    writerOpts?: Record<string, unknown>;\n  }\n\n  export function generateNotes(\n    pluginConfig: GenerateNotesPluginConfig,\n    context: GenerateNotesContext,\n  ): Promise<string>;\n}\n"
+    },
+    "tool_response": {
+      "type": "create",
+      "filePath": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/src/__tests__/semantic-release-release-notes-generator.d.ts",
+      "content": "/**\n * `@semantic-release/release-notes-generator` ships no type declarations.\n * This covers only the `generateNotes` export shape exercised by\n * `releaseConfig.test.ts`.\n */\ndeclare module '@semantic-release/release-notes-generator' {\n  interface GenerateNotesCommit {\n    hash: string;\n    message: string;\n  }\n\n  interface GenerateNotesLogger {\n    log(...args: unknown[]): void;\n    error(...args: unknown[]): void;\n  }\n\n  interface GenerateNotesRelease {\n    version?: string;\n    gitTag?: string;\n    gitHead?: string;\n    type?: string;\n  }\n\n  interface GenerateNotesContext {\n    commits: GenerateNotesCommit[];\n    logger: GenerateNotesLogger;\n    cwd: string;\n    env: Record<string, string | undefined>;\n    options: { repositoryUrl: string } & Record<string, unknown>;\n    lastRelease: GenerateNotesRelease;\n    nextRelease: GenerateNotesRelease;\n  }\n\n  interface GenerateNotesPluginConfig {\n    preset?: string;\n    parserOpts?: Record<string, unknown>;\n    writerOpts?: Record<string, unknown>;\n  }\n\n  export function generateNotes(\n    pluginConfig: GenerateNotesPluginConfig,\n    context: GenerateNotesContext,\n  ): Promise<string>;\n}\n",
+      "structuredPatch": [],
+      "originalFile": null,
+      "userModified": false
+    },
+    "tool_use_id": "toolu_01GM7bmKhc7ogt1wKkS4u8tK",
+    "duration_ms": 2
+  },
+  {
+    "session_id": "7735aeaa-c28b-4d5f-bdef-91a32588007e",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/7735aeaa-c28b-4d5f-bdef-91a32588007e.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e029d30d-7614-4433-8397-d0ba4cf90044",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/src/__tests__/releaseConfig.test.ts",
+      "old_string": "/**\n * Configuration-contract test for `release.config.js`, mirroring\n * `packageExports.test.ts`'s style: asserts the shape of the manifest\n * itself rather than any build output. Confirms the dry-run mode switch\n * (`SEMANTIC_RELEASE_DRY_RUN=true`) drops both plugins that require a\n * credential, so the PR dry-run job can never accidentally publish.\n */\nimport { afterEach, describe, expect, it } from 'vitest';\nimport releaseConfig from '../../release.config.js';",
+      "new_string": "/**\n * Configuration-contract test for `release.config.js`, mirroring\n * `packageExports.test.ts`'s style: asserts the shape of the manifest\n * itself rather than any build output. Confirms the dry-run mode switch\n * (`SEMANTIC_RELEASE_DRY_RUN=true`) drops both plugins that require a\n * credential, so the PR dry-run job can never accidentally publish. The\n * notes-generator block exists because the `conventionalcommits` preset\n * major must match the writer major bundled by the stable\n * `@semantic-release/release-notes-generator` (preset 10.x needs writer 9;\n * the stable plugin ships writer 8), and only rendering real notes catches\n * that drift.\n */\nimport { afterEach, describe, expect, it } from 'vitest';\nimport { generateNotes } from '@semantic-release/release-notes-generator';\nimport releaseConfig from '../../release.config.js';",
+      "replace_all": false
+    },
+    "tool_response": {
+      "filePath": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/src/__tests__/releaseConfig.test.ts",
+      "oldString": "/**\n * Configuration-contract test for `release.config.js`, mirroring\n * `packageExports.test.ts`'s style: asserts the shape of the manifest\n * itself rather than any build output. Confirms the dry-run mode switch\n * (`SEMANTIC_RELEASE_DRY_RUN=true`) drops both plugins that require a\n * credential, so the PR dry-run job can never accidentally publish.\n */\nimport { afterEach, describe, expect, it } from 'vitest';\nimport releaseConfig from '../../release.config.js';",
+      "newString": "/**\n * Configuration-contract test for `release.config.js`, mirroring\n * `packageExports.test.ts`'s style: asserts the shape of the manifest\n * itself rather than any build output. Confirms the dry-run mode switch\n * (`SEMANTIC_RELEASE_DRY_RUN=true`) drops both plugins that require a\n * credential, so the PR dry-run job can never accidentally publish. The\n * notes-generator block exists because the `conventionalcommits` preset\n * major must match the writer major bundled by the stable\n * `@semantic-release/release-notes-generator` (preset 10.x needs writer 9;\n * the stable plugin ships writer 8), and only rendering real notes catches\n * that drift.\n */\nimport { afterEach, describe, expect, it } from 'vitest';\nimport { generateNotes } from '@semantic-release/release-notes-generator';\nimport releaseConfig from '../../release.config.js';",
+      "originalFile": "/**\n * Configuration-contract test for `release.config.js`, mirroring\n * `packageExports.test.ts`'s style: asserts the shape of the manifest\n * itself rather than any build output. Confirms the dry-run mode switch\n * (`SEMANTIC_RELEASE_DRY_RUN=true`) drops both plugins that require a\n * credential, so the PR dry-run job can never accidentally publish.\n */\nimport { afterEach, describe, expect, it } from 'vitest';\nimport releaseConfig from '../../release.config.js';\n\ninterface PluginEntry {\n  0: string;\n  1?: unknown;\n}\n\nfunction pluginNames(plugins: unknown[]): string[] {\n  return (plugins as PluginEntry[]).map((entry) => entry[0]);\n}\n\ndescribe('release.config.js — configuration contract', () => {\n  it('branches is exactly [\"main\"]', () => {\n    expect(releaseConfig.branches).toEqual(['main']);\n  });\n\n  it('tagFormat is \"v${version}\"', () => {\n    expect(releaseConfig.tagFormat).toBe('v${version}');\n  });\n\n  it('normal mode plugin list is commit-analyzer, notes-generator, npm, github in order', () => {\n    expect(pluginNames(releaseConfig.plugins)).toEqual([\n      '@semantic-release/commit-analyzer',\n      '@semantic-release/release-notes-generator',\n      '@semantic-release/npm',\n      '@semantic-release/github',\n    ]);\n  });\n\n  it('the analyzer and the notes generator receive the same parserOpts object identity', () => {\n    const [, analyzerConfig] = releaseConfig.plugins[0] as [string, { parserOpts: unknown }];\n    const [, notesConfig] = releaseConfig.plugins[1] as [string, { parserOpts: unknown }];\n    expect(analyzerConfig.parserOpts).toBe(notesConfig.parserOpts);\n  });\n\n  it('parserOpts.headerCorrespondence is exactly [\"type\", \"scope\", \"subject\"]', () => {\n    const [, analyzerConfig] = releaseConfig.plugins[0] as [string, { parserOpts: { headerCorrespondence: string[] } }];\n    expect(analyzerConfig.parserOpts.headerCorrespondence).toEqual(['type', 'scope', 'subject']);\n  });\n});\n\ndescribe('release.config.js — dry-run mode', () => {\n  const originalEnv = process.env.SEMANTIC_RELEASE_DRY_RUN;\n\n  afterEach(() => {\n    if (originalEnv === undefined) {\n      delete process.env.SEMANTIC_RELEASE_DRY_RUN;\n    } else {\n      process.env.SEMANTIC_RELEASE_DRY_RUN = originalEnv;\n    }\n  });\n\n  it('drops the npm and github plugins, keeping only analyzer and notes-generator', async () => {\n    process.env.SEMANTIC_RELEASE_DRY_RUN = 'true';\n    const dryRunModulePath: string = '../../release.config.js?dryrun';\n    const dryRunConfig = (await import(dryRunModulePath)).default;\n\n    expect(pluginNames(dryRunConfig.plugins)).toEqual([\n      '@semantic-release/commit-analyzer',\n      '@semantic-release/release-notes-generator',\n    ]);\n  });\n});\n",
+      "structuredPatch": [
+        {
+          "oldStart": 3,
+          "oldLines": 9,
+          "newStart": 3,
+          "newLines": 15,
+          "lines": [
+            "  * `packageExports.test.ts`'s style: asserts the shape of the manifest",
+            "  * itself rather than any build output. Confirms the dry-run mode switch",
+            "  * (`SEMANTIC_RELEASE_DRY_RUN=true`) drops both plugins that require a",
+            "- * credential, so the PR dry-run job can never accidentally publish.",
+            "+ * credential, so the PR dry-run job can never accidentally publish. The",
+            "+ * notes-generator block exists because the `conventionalcommits` preset",
+            "+ * major must match the writer major bundled by the stable",
+            "+ * `@semantic-release/release-notes-generator` (preset 10.x needs writer 9;",
+            "+ * the stable plugin ships writer 8), and only rendering real notes catches",
+            "+ * that drift.",
+            "  */",
+            " import { afterEach, describe, expect, it } from 'vitest';",
+            "+import { generateNotes } from '@semantic-release/release-notes-generator';",
+            " import releaseConfig from '../../release.config.js';",
+            " ",
+            " interface PluginEntry {"
+          ]
+        }
+      ],
+      "userModified": false,
+      "replaceAll": false
+    },
+    "tool_use_id": "toolu_01GstLTkrJLTRJRKeYtkRqeF",
+    "duration_ms": 3
+  },
+  {
+    "session_id": "7735aeaa-c28b-4d5f-bdef-91a32588007e",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/7735aeaa-c28b-4d5f-bdef-91a32588007e.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e029d30d-7614-4433-8397-d0ba4cf90044",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/src/__tests__/releaseConfig.test.ts",
+      "old_string": "    expect(pluginNames(dryRunConfig.plugins)).toEqual([\n      '@semantic-release/commit-analyzer',\n      '@semantic-release/release-notes-generator',\n    ]);\n  });\n});",
+      "new_string": "    expect(pluginNames(dryRunConfig.plugins)).toEqual([\n      '@semantic-release/commit-analyzer',\n      '@semantic-release/release-notes-generator',\n    ]);\n  });\n});\n\ndescribe('release.config.js — release notes render under the shipped preset', () => {\n  const [, notesConfig] = releaseConfig.plugins[1] as [string, { preset: string; parserOpts: Record<string, unknown> }];\n  const noopLogger = { log() {}, error() {} };\n\n  async function render(headers: string[]): Promise<string> {\n    return generateNotes(notesConfig, {\n      commits: headers.map((message, index) => ({ hash: String(index).repeat(40), message })),\n      logger: noopLogger,\n      cwd: process.cwd(),\n      env: {},\n      options: { repositoryUrl: 'https://github.com/paysdoc/devplatform.git' },\n      lastRelease: { version: '1.0.0', gitTag: 'v1.0.0', gitHead: '0'.repeat(40) },\n      nextRelease: { version: '1.1.0', gitTag: 'v1.1.0', gitHead: '1'.repeat(40), type: 'minor' },\n    });\n  }\n\n  it('generateNotes renders agent-prefixed feat/fix commits under Features and Bug Fixes', async () => {\n    const notes = await render([\n      'build-agent: feat: add forgeProviders assembly',\n      'review-patch-agent: fix: correct token resolution',\n      'feat: add worktree probe',\n    ]);\n\n    expect(notes).toContain('### Features');\n    expect(notes).toContain('* add forgeProviders assembly');\n    expect(notes).toContain('* add worktree probe');\n    expect(notes).toContain('### Bug Fixes');\n    expect(notes).toContain('* correct token resolution');\n  });\n\n  it('strips the agent prefix from rendered subjects and omits non-releasing chore commits', async () => {\n    const notes = await render([\n      'build-agent: feat: add forgeProviders assembly',\n      'plan-orchestrator: chore: expand README',\n    ]);\n\n    expect(notes).not.toContain('build-agent:');\n    expect(notes).not.toContain('plan-orchestrator:');\n    expect(notes).not.toContain('expand README');\n  });\n});",
+      "replace_all": false
+    },
+    "tool_response": {
+      "filePath": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/src/__tests__/releaseConfig.test.ts",
+      "oldString": "    expect(pluginNames(dryRunConfig.plugins)).toEqual([\n      '@semantic-release/commit-analyzer',\n      '@semantic-release/release-notes-generator',\n    ]);\n  });\n});",
+      "newString": "    expect(pluginNames(dryRunConfig.plugins)).toEqual([\n      '@semantic-release/commit-analyzer',\n      '@semantic-release/release-notes-generator',\n    ]);\n  });\n});\n\ndescribe('release.config.js — release notes render under the shipped preset', () => {\n  const [, notesConfig] = releaseConfig.plugins[1] as [string, { preset: string; parserOpts: Record<string, unknown> }];\n  const noopLogger = { log() {}, error() {} };\n\n  async function render(headers: string[]): Promise<string> {\n    return generateNotes(notesConfig, {\n      commits: headers.map((message, index) => ({ hash: String(index).repeat(40), message })),\n      logger: noopLogger,\n      cwd: process.cwd(),\n      env: {},\n      options: { repositoryUrl: 'https://github.com/paysdoc/devplatform.git' },\n      lastRelease: { version: '1.0.0', gitTag: 'v1.0.0', gitHead: '0'.repeat(40) },\n      nextRelease: { version: '1.1.0', gitTag: 'v1.1.0', gitHead: '1'.repeat(40), type: 'minor' },\n    });\n  }\n\n  it('generateNotes renders agent-prefixed feat/fix commits under Features and Bug Fixes', async () => {\n    const notes = await render([\n      'build-agent: feat: add forgeProviders assembly',\n      'review-patch-agent: fix: correct token resolution',\n      'feat: add worktree probe',\n    ]);\n\n    expect(notes).toContain('### Features');\n    expect(notes).toContain('* add forgeProviders assembly');\n    expect(notes).toContain('* add worktree probe');\n    expect(notes).toContain('### Bug Fixes');\n    expect(notes).toContain('* correct token resolution');\n  });\n\n  it('strips the agent prefix from rendered subjects and omits non-releasing chore commits', async () => {\n    const notes = await render([\n      'build-agent: feat: add forgeProviders assembly',\n      'plan-orchestrator: chore: expand README',\n    ]);\n\n    expect(notes).not.toContain('build-agent:');\n    expect(notes).not.toContain('plan-orchestrator:');\n    expect(notes).not.toContain('expand README');\n  });\n});",
+      "originalFile": "/**\n * Configuration-contract test for `release.config.js`, mirroring\n * `packageExports.test.ts`'s style: asserts the shape of the manifest\n * itself rather than any build output. Confirms the dry-run mode switch\n * (`SEMANTIC_RELEASE_DRY_RUN=true`) drops both plugins that require a\n * credential, so the PR dry-run job can never accidentally publish. The\n * notes-generator block exists because the `conventionalcommits` preset\n * major must match the writer major bundled by the stable\n * `@semantic-release/release-notes-generator` (preset 10.x needs writer 9;\n * the stable plugin ships writer 8), and only rendering real notes catches\n * that drift.\n */\nimport { afterEach, describe, expect, it } from 'vitest';\nimport { generateNotes } from '@semantic-release/release-notes-generator';\nimport releaseConfig from '../../release.config.js';\n\ninterface PluginEntry {\n  0: string;\n  1?: unknown;\n}\n\nfunction pluginNames(plugins: unknown[]): string[] {\n  return (plugins as PluginEntry[]).map((entry) => entry[0]);\n}\n\ndescribe('release.config.js — configuration contract', () => {\n  it('branches is exactly [\"main\"]', () => {\n    expect(releaseConfig.branches).toEqual(['main']);\n  });\n\n  it('tagFormat is \"v${version}\"', () => {\n    expect(releaseConfig.tagFormat).toBe('v${version}');\n  });\n\n  it('normal mode plugin list is commit-analyzer, notes-generator, npm, github in order', () => {\n    expect(pluginNames(releaseConfig.plugins)).toEqual([\n      '@semantic-release/commit-analyzer',\n      '@semantic-release/release-notes-generator',\n      '@semantic-release/npm',\n      '@semantic-release/github',\n    ]);\n  });\n\n  it('the analyzer and the notes generator receive the same parserOpts object identity', () => {\n    const [, analyzerConfig] = releaseConfig.plugins[0] as [string, { parserOpts: unknown }];\n    const [, notesConfig] = releaseConfig.plugins[1] as [string, { parserOpts: unknown }];\n    expect(analyzerConfig.parserOpts).toBe(notesConfig.parserOpts);\n  });\n\n  it('parserOpts.headerCorrespondence is exactly [\"type\", \"scope\", \"subject\"]', () => {\n    const [, analyzerConfig] = releaseConfig.plugins[0] as [string, { parserOpts: { headerCorrespondence: string[] } }];\n    expect(analyzerConfig.parserOpts.headerCorrespondence).toEqual(['type', 'scope', 'subject']);\n  });\n});\n\ndescribe('release.config.js — dry-run mode', () => {\n  const originalEnv = process.env.SEMANTIC_RELEASE_DRY_RUN;\n\n  afterEach(() => {\n    if (originalEnv === undefined) {\n      delete process.env.SEMANTIC_RELEASE_DRY_RUN;\n    } else {\n      process.env.SEMANTIC_RELEASE_DRY_RUN = originalEnv;\n    }\n  });\n\n  it('drops the npm and github plugins, keeping only analyzer and notes-generator', async () => {\n    process.env.SEMANTIC_RELEASE_DRY_RUN = 'true';\n    const dryRunModulePath: string = '../../release.config.js?dryrun';\n    const dryRunConfig = (await import(dryRunModulePath)).default;\n\n    expect(pluginNames(dryRunConfig.plugins)).toEqual([\n      '@semantic-release/commit-analyzer',\n      '@semantic-release/release-notes-generator',\n    ]);\n  });\n});\n",
+      "structuredPatch": [
+        {
+          "oldStart": 75,
+          "oldLines": 3,
+          "newStart": 75,
+          "newLines": 45,
+          "lines": [
+            "     ]);",
+            "   });",
+            " });",
+            "+",
+            "+describe('release.config.js — release notes render under the shipped preset', () => {",
+            "+  const [, notesConfig] = releaseConfig.plugins[1] as [string, { preset: string; parserOpts: Record<string, unknown> }];",
+            "+  const noopLogger = { log() {}, error() {} };",
+            "+",
+            "+  async function render(headers: string[]): Promise<string> {",
+            "+    return generateNotes(notesConfig, {",
+            "+      commits: headers.map((message, index) => ({ hash: String(index).repeat(40), message })),",
+            "+      logger: noopLogger,",
+            "+      cwd: process.cwd(),",
+            "+      env: {},",
+            "+      options: { repositoryUrl: 'https://github.com/paysdoc/devplatform.git' },",
+            "+      lastRelease: { version: '1.0.0', gitTag: 'v1.0.0', gitHead: '0'.repeat(40) },",
+            "+      nextRelease: { version: '1.1.0', gitTag: 'v1.1.0', gitHead: '1'.repeat(40), type: 'minor' },",
+            "+    });",
+            "+  }",
+            "+",
+            "+  it('generateNotes renders agent-prefixed feat/fix commits under Features and Bug Fixes', async () => {",
+            "+    const notes = await render([",
+            "+      'build-agent: feat: add forgeProviders assembly',",
+            "+      'review-patch-agent: fix: correct token resolution',",
+            "+      'feat: add worktree probe',",
+            "+    ]);",
+            "+",
+            "+    expect(notes).toContain('### Features');",
+            "+    expect(notes).toContain('* add forgeProviders assembly');",
+            "+    expect(notes).toContain('* add worktree probe');",
+            "+    expect(notes).toContain('### Bug Fixes');",
+            "+    expect(notes).toContain('* correct token resolution');",
+            "+  });",
+            "+",
+            "+  it('strips the agent prefix from rendered subjects and omits non-releasing chore commits', async () => {",
+            "+    const notes = await render([",
+            "+      'build-agent: feat: add forgeProviders assembly',",
+            "+      'plan-orchestrator: chore: expand README',",
+            "+    ]);",
+            "+",
+            "+    expect(notes).not.toContain('build-agent:');",
+            "+    expect(notes).not.toContain('plan-orchestrator:');",
+            "+    expect(notes).not.toContain('expand README');",
+            "+  });",
+            "+});"
+          ]
+        }
+      ],
+      "userModified": false,
+      "replaceAll": false
+    },
+    "tool_use_id": "toolu_01B7LYw6J3Bohv7rSeG9Ay6E",
+    "duration_ms": 3
+  },
+  {
+    "session_id": "7735aeaa-c28b-4d5f-bdef-91a32588007e",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/7735aeaa-c28b-4d5f-bdef-91a32588007e.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e029d30d-7614-4433-8397-d0ba4cf90044",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git status --porcelain=v1 -- package.json bun.lock src/__tests__/releaseConfig.test.ts src/__tests__/semantic-release-release-notes-generator.d.ts",
+      "description": "Confirm exactly four changed paths"
+    },
+    "tool_response": {
+      "stdout": " M bun.lock\n M package.json\n M src/__tests__/releaseConfig.test.ts\n?? src/__tests__/semantic-release-release-notes-generator.d.ts",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_01WQtxhwmJr6me8kHa69hZjh",
+    "duration_ms": 33
+  },
+  {
+    "session_id": "7735aeaa-c28b-4d5f-bdef-91a32588007e",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/7735aeaa-c28b-4d5f-bdef-91a32588007e.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e029d30d-7614-4433-8397-d0ba4cf90044",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git status --porcelain=v1",
+      "description": "Full git status to check for unintended changes"
+    },
+    "tool_response": {
+      "stdout": " M bun.lock\n M logs/82671816-a1f4-4575-b422-e1843fb52762/post_tool_use.json\n M package.json\n M src/__tests__/releaseConfig.test.ts\n?? logs/1ac9cdc6-4e0a-4f1f-872f-ab869dab85c9/\n?? logs/28130802-3b35-4f5e-93ec-e7bfb106e869/\n?? logs/56755c50-0769-4c7c-90bb-993b454545ea/\n?? logs/7735aeaa-c28b-4d5f-bdef-91a32588007e/\n?? logs/82671816-a1f4-4575-b422-e1843fb52762/chat.json\n?? logs/82671816-a1f4-4575-b422-e1843fb52762/stop.json\n?? logs/f26f5dd3-495f-48cf-a247-75c45bc6513b/\n?? specs/patch/\n?? src/__tests__/semantic-release-release-notes-generator.d.ts",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_01BP9PV26M67JsxcSSDeR1y9",
+    "duration_ms": 33
+  },
+  {
+    "session_id": "7735aeaa-c28b-4d5f-bdef-91a32588007e",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/7735aeaa-c28b-4d5f-bdef-91a32588007e.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e029d30d-7614-4433-8397-d0ba4cf90044",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "bun install 2>&1 | tail -20",
+      "description": "Confirm bun install is a no-op after the lockfile refresh"
+    },
+    "tool_response": {
+      "stdout": "[0.03ms] \".env\"\nbun install v1.3.6 (d530ed99)\n\nChecked 355 installs across 515 packages (no changes) [14.00ms]",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_01Cn1J5mjLkhy3UnhnskxXzC",
+    "duration_ms": 33
+  },
+  {
+    "session_id": "7735aeaa-c28b-4d5f-bdef-91a32588007e",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/7735aeaa-c28b-4d5f-bdef-91a32588007e.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e029d30d-7614-4433-8397-d0ba4cf90044",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "bun run typecheck 2>&1",
+      "description": "Run TypeScript strict-mode typecheck"
+    },
+    "tool_response": {
+      "stdout": "$ tsc --noEmit",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_011wLWGHzndxk8MreAD3yChz",
+    "duration_ms": 771
+  },
+  {
+    "session_id": "7735aeaa-c28b-4d5f-bdef-91a32588007e",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/7735aeaa-c28b-4d5f-bdef-91a32588007e.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e029d30d-7614-4433-8397-d0ba4cf90044",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "bun run test:unit 2>&1 | tail -60",
+      "description": "Run full Vitest unit suite"
+    },
+    "tool_response": {
+      "stdout": "stdout | src/providers/github/__tests__/githubIssueTracker.test.ts > GitHubIssueTracker — closeIssue > open with comment: comments before closing, returns true, logs success\nCommented on issue #42\nClosed issue #42\n\n ✓ src/providers/github/__tests__/githubCodeHost.test.ts (20 tests) 7ms\nstdout | src/providers/github/__tests__/githubIssueTracker.test.ts > GitHubIssueTracker — applyLabel > persistent not-found: exactly one create, retry error propagates\napplyLabel: label \"adw:chore\" not found on repo, lazy-creating\n\nstdout | src/providers/github/__tests__/githubIssueTracker.test.ts > GitHubIssueTracker — applyLabel > with no resolveLabelDefinition injected, the create carries the ededed/empty-description default\napplyLabel: label \"adw:blocked\" not found on repo, lazy-creating\n\n ✓ src/git/__tests__/repoApiCwd.test.ts (9 tests) 3ms\n ✓ src/providers/github/__tests__/githubIssueTracker.test.ts (31 tests) 13ms\n ✓ src/providers/github/__tests__/githubBoardManager.test.ts (7 tests) 5ms\n ✓ src/__tests__/releaseParser.test.ts (24 tests) 15ms\nerror: No such remote 'origin'\n ✓ src/git/__tests__/bootstrapIdentity.test.ts (13 tests) 274ms\n ✓ src/providers/gitlab/__tests__/gitlabApiClient.test.ts (12 tests) 5ms\nstdout | src/providers/__tests__/forgeProviders.test.ts > forgeProviders — github/github > every command the minted providers issue reaches the spy, named to the identity, carrying the token\nfetchIssueLabels: failed to fetch labels on issue #1: SyntaxError: Unexpected end of JSON input\n\n ✓ src/providers/__tests__/workspaceValidation.test.ts (15 tests) 6ms\n ✓ src/providers/__tests__/forgeProviders.test.ts (11 tests) 5ms\n ✓ src/providers/__tests__/boardManager.test.ts (28 tests) 6ms\n ✓ src/providers/github/__tests__/githubTokenProvider.test.ts (18 tests) 4ms\n ✓ src/providers/github/__tests__/ghCommandRunner.test.ts (10 tests) 4ms\n ✓ src/git/__tests__/worktreeLogger.test.ts (7 tests) 4ms\nstdout | src/providers/__tests__/forgeProviders.deps.test.ts > forgeProviders — deps.github seams > deps.github.resolveLabelDefinition is consulted on applyLabel's lazy-create path\napplyLabel: label \"adw:blocked\" not found on repo, lazy-creating\n\n ✓ src/providers/__tests__/forgeProviders.deps.test.ts (5 tests) 5ms\n ✓ src/providers/gitlab/__tests__/gitlabCodeHost.test.ts (9 tests) 6ms\n ✓ src/providers/github/__tests__/ghIssueParsers.test.ts (15 tests) 3ms\n ✓ src/providers/github/__tests__/tokenResolver.test.ts (10 tests) 4ms\n ✓ src/__tests__/releaseConfig.test.ts (8 tests) 45ms\n ✓ src/git/__tests__/commitOps.test.ts (17 tests) 4ms\n ✓ src/git/__tests__/repoWorkspace.test.ts (10 tests) 3ms\nstdout | src/providers/github/__tests__/githubIssueTrackerLabelPolicy.test.ts > GitHubIssueTracker — label policy separation > addLabel swallows a throw from the underlying gh call (fail-open)\nFailed to add label \"hitl\" to issue #42: Error: gh api error: 500\n\nstdout | src/providers/github/__tests__/githubIssueTrackerLabelPolicy.test.ts > GitHubIssueTracker — label policy separation > applyLabel propagates a non-\"not found\" throw from the underlying gh call\napplyLabel: unexpected error adding label \"adw:blocked\" to issue #42: Error: gh api error: 500\n\n ✓ src/providers/github/__tests__/githubIssueTrackerLabelPolicy.test.ts (2 tests) 3ms\n ✓ src/providers/__tests__/forgeProviders.selection.test.ts (4 tests) 3ms\n ✓ src/__tests__/packageExports.test.ts (7 tests) 2ms\n ✓ src/git/__tests__/claimOps.test.ts (16 tests) 3ms\n ✓ src/providers/github/__tests__/githubIdentity.test.ts (30 tests) 417ms\n ✓ src/git/__tests__/remoteOps.test.ts (12 tests) 2ms\n ✓ src/providers/github/__tests__/cloneUrl.test.ts (9 tests) 2ms\n ✓ src/providers/github/commands/__tests__/issueCommands.test.ts (4 tests) 1ms\n ✓ src/providers/__tests__/refusalStubs.test.ts (5 tests) 2ms\n\n Test Files  40 passed (40)\n      Tests  876 passed (876)\n   Start at  13:52:13\n   Duration  626ms (transform 1.57s, setup 0ms, import 2.94s, tests 997ms, environment 2ms)\n\nJUNIT report written to /Users/martin/projects/paysdoc/AI_Dev_Workflow/logs/9xqejz-release-automation-w/junit-unit.xml",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_01WTekSMKX36527TKgjzVyP4",
+    "duration_ms": 1024
+  },
+  {
+    "session_id": "7735aeaa-c28b-4d5f-bdef-91a32588007e",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/7735aeaa-c28b-4d5f-bdef-91a32588007e.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e029d30d-7614-4433-8397-d0ba4cf90044",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "node --input-type=module -e \"const { generateNotes } = await import('@semantic-release/release-notes-generator'); const cfg = (await import('./release.config.js')).default; const notes = await generateNotes(cfg.plugins[1][1], { commits: [{ hash: 'a'.repeat(40), message: 'build-agent: feat: add forgeProviders assembly' }, { hash: 'b'.repeat(40), message: 'review-patch-agent: fix: correct token resolution' }], logger: { log() {}, error() {} }, cwd: process.cwd(), env: {}, options: { repositoryUrl: 'https://github.com/paysdoc/devplatform.git' }, lastRelease: { version: '1.0.0', gitTag: 'v1.0.0', gitHead: '0'.repeat(40) }, nextRelease: { version: '1.1.0', gitTag: 'v1.1.0', gitHead: '1'.repeat(40), type: 'minor' } }); if (!notes.includes('### Features') || !notes.includes('### Bug Fixes')) { console.error('FAIL: notes missing sections\\n' + notes); process.exit(1); } console.log('OK: generateNotes renders under the shipped preset\\n' + notes);\"",
+      "description": "Run the reviewer's offline generateNotes reproduction"
+    },
+    "tool_response": {
+      "stdout": "OK: generateNotes renders under the shipped preset\n## [1.1.0](https://github.com/paysdoc/devplatform/compare/v1.0.0...v1.1.0) (2026-09-10)\n\n### Features\n\n* add forgeProviders assembly ([aaaaaaa](https://github.com/paysdoc/devplatform/commit/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa))\n\n### Bug Fixes\n\n* correct token resolution ([bbbbbbb](https://github.com/paysdoc/devplatform/commit/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb))",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_01PxrM8gSXzihmSnT2aLDkRZ",
+    "duration_ms": 178
+  },
+  {
+    "session_id": "7735aeaa-c28b-4d5f-bdef-91a32588007e",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/7735aeaa-c28b-4d5f-bdef-91a32588007e.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e029d30d-7614-4433-8397-d0ba4cf90044",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "bun run build 2>&1",
+      "description": "Run the build (tsc -p tsconfig.build.json)"
+    },
+    "tool_response": {
+      "stdout": "$ bun run clean && tsc -p tsconfig.build.json\n$ node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_01QKhT9VSfZdTDwfSJPJv2fF",
+    "duration_ms": 528
+  },
+  {
+    "session_id": "7735aeaa-c28b-4d5f-bdef-91a32588007e",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/7735aeaa-c28b-4d5f-bdef-91a32588007e.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e029d30d-7614-4433-8397-d0ba4cf90044",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "find dist -maxdepth 3 -type f | sort\necho \"--- confirm no test/config leakage ---\"\nfind dist -iname \"*releaseConfig*\" -o -iname \"*__tests__*\" -o -iname \"*release.config*\"",
+      "description": "Verify build output has no test or release.config leakage"
+    },
+    "tool_response": {
+      "stdout": "dist/git/bootstrapIdentity.d.ts\ndist/git/bootstrapIdentity.d.ts.map\ndist/git/bootstrapIdentity.js\ndist/git/bootstrapIdentity.js.map\ndist/git/branchOps.d.ts\ndist/git/branchOps.d.ts.map\ndist/git/branchOps.js\ndist/git/branchOps.js.map\ndist/git/claimOps.d.ts\ndist/git/claimOps.d.ts.map\ndist/git/claimOps.js\ndist/git/claimOps.js.map\ndist/git/commitOps.d.ts\ndist/git/commitOps.d.ts.map\ndist/git/commitOps.js\ndist/git/commitOps.js.map\ndist/git/consoleLogger.d.ts\ndist/git/consoleLogger.d.ts.map\ndist/git/consoleLogger.js\ndist/git/consoleLogger.js.map\ndist/git/gitContext.d.ts\ndist/git/gitContext.d.ts.map\ndist/git/gitContext.js\ndist/git/gitContext.js.map\ndist/git/gitReadOps.d.ts\ndist/git/gitReadOps.d.ts.map\ndist/git/gitReadOps.js\ndist/git/gitReadOps.js.map\ndist/git/index.d.ts\ndist/git/index.d.ts.map\ndist/git/index.js\ndist/git/index.js.map\ndist/git/processCleanup.d.ts\ndist/git/processCleanup.d.ts.map\ndist/git/processCleanup.js\ndist/git/processCleanup.js.map\ndist/git/remoteOps.d.ts\ndist/git/remoteOps.d.ts.map\ndist/git/remoteOps.js\ndist/git/remoteOps.js.map\ndist/git/repoWorkspace.d.ts\ndist/git/repoWorkspace.d.ts.map\ndist/git/repoWorkspace.js\ndist/git/repoWorkspace.js.map\ndist/git/types.d.ts\ndist/git/types.d.ts.map\ndist/git/types.js\ndist/git/types.js.map\ndist/git/workingDirectoryGuard.d.ts\ndist/git/workingDirectoryGuard.d.ts.map\ndist/git/workingDirectoryGuard.js\ndist/git/workingDirectoryGuard.js.map\ndist/git/worktreeCreateOps.d.ts\ndist/git/worktreeCreateOps.d.ts.map\ndist/git/worktreeCreateOps.js\ndist/git/worktreeCreateOps.js.map\ndist/git/worktreeProbeOps.d.ts\ndist/git/worktreeProbeOps.d.ts.map\ndist/git/worktreeProbeOps.js\ndist/git/worktreeProbeOps.js.map\ndist/git/worktreeQueryOps.d.ts\ndist/git/worktreeQueryOps.d.ts.map\ndist/git/worktreeQueryOps.js\ndist/git/worktreeQueryOps.js.map\ndist/git/worktreeRemoveOps.d.ts\ndist/git/worktreeRemoveOps.d.ts.map\ndist/git/worktreeRemoveOps.js\ndist/git/worktreeRemoveOps.js.map\ndist/git/worktreeResetOps.d.ts\ndist/git/worktreeResetOps.d.ts.map\ndist/git/worktreeResetOps.js\ndist/git/worktreeResetOps.js.map\ndist/index.d.ts\ndist/index.d.ts.map\ndist/index.js\ndist/index.js.map\ndist/providers/forgeProviders.d.ts\ndist/providers/forgeProviders.d.ts.map\ndist/providers/forgeProviders.js\ndist/providers/forgeProviders.js.map\ndist/providers/github/appAuth.d.ts\ndist/providers/github/appAuth.d.ts.map\ndist/providers/github/appAuth.js\ndist/providers/github/appAuth.js.map\ndist/providers/github/cloneUrl.d.ts\ndist/providers/github/cloneUrl.d.ts.map\ndist/providers/github/cloneUrl.js\ndist/providers/github/cloneUrl.js.map\ndist/providers/github/contextBinding.d.ts\ndist/providers/github/contextBinding.d.ts.map\ndist/providers/github/contextBinding.js\ndist/providers/github/contextBinding.js.map\ndist/providers/github/ghAuthToken.d.ts\ndist/providers/github/ghAuthToken.d.ts.map\ndist/providers/github/ghAuthToken.js\ndist/providers/github/ghAuthToken.js.map\ndist/providers/github/ghCommandRunner.d.ts\ndist/providers/github/ghCommandRunner.d.ts.map\ndist/providers/github/ghCommandRunner.js\ndist/providers/github/ghCommandRunner.js.map\ndist/providers/github/ghIssueApi.d.ts\ndist/providers/github/ghIssueApi.d.ts.map\ndist/providers/github/ghIssueApi.js\ndist/providers/github/ghIssueApi.js.map\ndist/providers/github/ghIssueParsers.d.ts\ndist/providers/github/ghIssueParsers.d.ts.map\ndist/providers/github/ghIssueParsers.js\ndist/providers/github/ghIssueParsers.js.map\ndist/providers/github/ghPrApi.d.ts\ndist/providers/github/ghPrApi.d.ts.map\ndist/providers/github/ghPrApi.js\ndist/providers/github/ghPrApi.js.map\ndist/providers/github/ghPrParsers.d.ts\ndist/providers/github/ghPrParsers.d.ts.map\ndist/providers/github/ghPrParsers.js\ndist/providers/github/ghPrParsers.js.map\ndist/providers/github/ghRepoApi.d.ts\ndist/providers/github/ghRepoApi.d.ts.map\ndist/providers/github/ghRepoApi.js\ndist/providers/github/ghRepoApi.js.map\ndist/providers/github/githubBoardManager.d.ts\ndist/providers/github/githubBoardManager.d.ts.map\ndist/providers/github/githubBoardManager.js\ndist/providers/github/githubBoardManager.js.map\ndist/providers/github/githubCodeHost.d.ts\ndist/providers/github/githubCodeHost.d.ts.map\ndist/providers/github/githubCodeHost.js\ndist/providers/github/githubCodeHost.js.map\ndist/providers/github/githubIdentity.d.ts\ndist/providers/github/githubIdentity.d.ts.map\ndist/providers/github/githubIdentity.js\ndist/providers/github/githubIdentity.js.map\ndist/providers/github/githubIssueTracker.d.ts\ndist/providers/github/githubIssueTracker.d.ts.map\ndist/providers/github/githubIssueTracker.js\ndist/providers/github/githubIssueTracker.js.map\ndist/providers/github/githubTokenProvider.d.ts\ndist/providers/github/githubTokenProvider.d.ts.map\ndist/providers/github/githubTokenProvider.js\ndist/providers/github/githubTokenProvider.js.map\ndist/providers/github/index.d.ts\ndist/providers/github/index.d.ts.map\ndist/providers/github/index.js\ndist/providers/github/index.js.map\ndist/providers/github/mappers.d.ts\ndist/providers/github/mappers.d.ts.map\ndist/providers/github/mappers.js\ndist/providers/github/mappers.js.map\ndist/providers/github/tokenResolver.d.ts\ndist/providers/github/tokenResolver.d.ts.map\ndist/providers/github/tokenResolver.js\ndist/providers/github/tokenResolver.js.map\ndist/providers/gitlab/gitlabApiClient.d.ts\ndist/providers/gitlab/gitlabApiClient.d.ts.map\ndist/providers/gitlab/gitlabApiClient.js\ndist/providers/gitlab/gitlabApiClient.js.map\ndist/providers/gitlab/gitlabBoardManager.d.ts\ndist/providers/gitlab/gitlabBoardManager.d.ts.map\ndist/providers/gitlab/gitlabBoardManager.js\ndist/providers/gitlab/gitlabBoardManager.js.map\ndist/providers/gitlab/gitlabCodeHost.d.ts\ndist/providers/gitlab/gitlabCodeHost.d.ts.map\ndist/providers/gitlab/gitlabCodeHost.js\ndist/providers/gitlab/gitlabCodeHost.js.map\ndist/providers/gitlab/gitlabTypes.d.ts\ndist/providers/gitlab/gitlabTypes.d.ts.map\ndist/providers/gitlab/gitlabTypes.js\ndist/providers/gitlab/gitlabTypes.js.map\ndist/providers/gitlab/index.d.ts\ndist/providers/gitlab/index.d.ts.map\ndist/providers/gitlab/index.js\ndist/providers/gitlab/index.js.map\ndist/providers/gitlab/mappers.d.ts\ndist/providers/gitlab/mappers.d.ts.map\ndist/providers/gitlab/mappers.js\ndist/providers/gitlab/mappers.js.map\ndist/providers/index.d.ts\ndist/providers/index.d.ts.map\ndist/providers/index.js\ndist/providers/index.js.map\ndist/providers/jira/adfConverter.d.ts\ndist/providers/jira/adfConverter.d.ts.map\ndist/providers/jira/adfConverter.js\ndist/providers/jira/adfConverter.js.map\ndist/providers/jira/index.d.ts\ndist/providers/jira/index.d.ts.map\ndist/providers/jira/index.js\ndist/providers/jira/index.js.map\ndist/providers/jira/jiraApiClient.d.ts\ndist/providers/jira/jiraApiClient.d.ts.map\ndist/providers/jira/jiraApiClient.js\ndist/providers/jira/jiraApiClient.js.map\ndist/providers/jira/jiraBoardManager.d.ts\ndist/providers/jira/jiraBoardManager.d.ts.map\ndist/providers/jira/jiraBoardManager.js\ndist/providers/jira/jiraBoardManager.js.map\ndist/providers/jira/jiraIssueTracker.d.ts\ndist/providers/jira/jiraIssueTracker.d.ts.map\ndist/providers/jira/jiraIssueTracker.js\ndist/providers/jira/jiraIssueTracker.js.map\ndist/providers/jira/jiraTypes.d.ts\ndist/providers/jira/jiraTypes.d.ts.map\ndist/providers/jira/jiraTypes.js\ndist/providers/jira/jiraTypes.js.map\ndist/providers/types.d.ts\ndist/providers/types.d.ts.map\ndist/providers/types.js\ndist/providers/types.js.map\ndist/providers/workspaceValidation.d.ts\ndist/providers/workspaceValidation.d.ts.map\ndist/providers/workspaceValidation.js\ndist/providers/workspaceValidation.js.map\n--- confirm no test/config leakage ---",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_01AqDq4a2wjsuNgZHZKavgc4",
+    "duration_ms": 29
+  },
+  {
+    "session_id": "7735aeaa-c28b-4d5f-bdef-91a32588007e",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/7735aeaa-c28b-4d5f-bdef-91a32588007e.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e029d30d-7614-4433-8397-d0ba4cf90044",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "bun run release:dry-run 2>&1 | tail -60",
+      "timeout": 180000,
+      "description": "Run the end-to-end semantic-release dry run"
+    },
+    "tool_response": {
+      "stdout": "$ bunx tsx scripts/releaseDryRun.ts\n==> semantic-release --dry-run against branch \"chore-issue-2-release-automation-agent-prefixed-parser\"\n[13:52:28] [semantic-release] › ℹ  Running semantic-release version 25.0.9\n[13:52:28] [semantic-release] › ✔  Loaded plugin \"analyzeCommits\" from \"@semantic-release/commit-analyzer\"\n[13:52:28] [semantic-release] › ✔  Loaded plugin \"generateNotes\" from \"@semantic-release/release-notes-generator\"\n[13:52:30] [semantic-release] › ✘  ERELEASEBRANCHES The release branches are invalid in the `branches` configuration.\nA minimum of 1 and a maximum of 3 release branches are required in the branches configuration (https://semantic-release.org/usage/configuration#branches). These branches must exist on the remote repository.\n\nThis may occur if your repository does not have a release branch, such as master or main.\n\nYour configuration for the problematic branches is [].\n\nAggregateError: \n    SemanticReleaseError: The release branches are invalid in the `branches` configuration.\n        at default (file:///Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/node_modules/semantic-release/lib/get-error.js:6:10)\n        at file:///Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/node_modules/semantic-release/lib/branches/index.js:45:19\n        at Array.reduce (<anonymous>)\n        at default (file:///Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/node_modules/semantic-release/lib/branches/index.js:35:46)\n        at async run (file:///Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/node_modules/semantic-release/index.js:68:22)\n        at async Module.default (file:///Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/node_modules/semantic-release/index.js:278:22)\n        at async default (file:///Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/node_modules/semantic-release/cli.js:55:5)\n    at default \u001b[90m(file:///Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/\u001b[39mnode_modules/\u001b[4msemantic-release\u001b[24m/lib/branches/index.js:67:11\u001b[90m)\u001b[39m\n    at async run \u001b[90m(file:///Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/\u001b[39mnode_modules/\u001b[4msemantic-release\u001b[24m/index.js:68:22\u001b[90m)\u001b[39m\n    at async Module.default \u001b[90m(file:///Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/\u001b[39mnode_modules/\u001b[4msemantic-release\u001b[24m/index.js:278:22\u001b[90m)\u001b[39m\n    at async default \u001b[90m(file:///Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/\u001b[39mnode_modules/\u001b[4msemantic-release\u001b[24m/cli.js:55:5\u001b[90m)\u001b[39mFAIL: semantic-release --dry-run exited with status 1\nerror: script \"release:dry-run\" exited with code 1",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_01EeMpZE2FHzZ4LXjo2Xhh1W",
+    "duration_ms": 3047
+  },
+  {
+    "session_id": "7735aeaa-c28b-4d5f-bdef-91a32588007e",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/7735aeaa-c28b-4d5f-bdef-91a32588007e.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e029d30d-7614-4433-8397-d0ba4cf90044",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "echo \"GITHUB_TOKEN set: $([ -n \"$GITHUB_TOKEN\" ] && echo yes || echo no)\"\ngit remote -v\ngit ls-remote --heads origin 2>&1 | head -5",
+      "description": "Check for GITHUB_TOKEN and remote reachability"
+    },
+    "tool_response": {
+      "stdout": "GITHUB_TOKEN set: no\norigin\tgit@github.com:paysdoc/devplatform.git (fetch)\norigin\tgit@github.com:paysdoc/devplatform.git (push)\n109a2ac178211488ea85fc62c9452e137775fb59\trefs/heads/adw-upgrade-58ba295455740726331f43cb118c3c17a6f95d844c794cc6ab9b96cc97d203d0\ndcbfdf69aeacee8a0fe91d260128d6a1d24ca1c5\trefs/heads/main",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_01Yb6tnUgbwvsFgXTocZgjBv",
+    "duration_ms": 2554
+  },
+  {
+    "session_id": "7735aeaa-c28b-4d5f-bdef-91a32588007e",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/7735aeaa-c28b-4d5f-bdef-91a32588007e.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e029d30d-7614-4433-8397-d0ba4cf90044",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git add -N src/__tests__/semantic-release-release-notes-generator.d.ts\ngit diff --stat -- package.json bun.lock src/__tests__/releaseConfig.test.ts src/__tests__/semantic-release-release-notes-generator.d.ts",
+      "description": "Show diff stat for the four changed files (including new untracked file)"
+    },
+    "tool_response": {
+      "stdout": " bun.lock                                           |  6 +--\n package.json                                       |  2 +-\n src/__tests__/releaseConfig.test.ts                | 50 +++++++++++++++++++++-\n .../semantic-release-release-notes-generator.d.ts  | 44 +++++++++++++++++++\n 4 files changed, 96 insertions(+), 6 deletions(-)",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_01YDHAWCnzakd6aGJnbDjHhs",
+    "duration_ms": 52
+  }
+]

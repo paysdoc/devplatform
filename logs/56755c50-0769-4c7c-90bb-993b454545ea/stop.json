@@ -1,0 +1,14 @@
+[
+  {
+    "session_id": "56755c50-0769-4c7c-90bb-993b454545ea",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/56755c50-0769-4c7c-90bb-993b454545ea.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "94901eff-3ad4-4d9c-9c38-2db747378dc4",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false,
+    "last_assistant_message": "```json\n[\n  {\n    \"test_name\": \"typescript_check\",\n    \"passed\": true,\n    \"execution_command\": \"bun run typecheck\",\n    \"test_purpose\": \"Validates TypeScript type correctness for the application without generating output files, catching type errors, missing imports, and incorrect function signatures\"\n  },\n  {\n    \"test_name\": \"app_build\",\n    \"passed\": true,\n    \"execution_command\": \"bun run build\",\n    \"test_purpose\": \"Validates the complete build process including bundling, asset optimization, and production compilation\"\n  },\n  {\n    \"test_name\": \"app_tests\",\n    \"passed\": true,\n    \"execution_command\": \"bun run test:unit\",\n    \"test_purpose\": \"Validates the full application unit-test suite as configured in .adw/commands.md\"\n  }\n]\n```",
+    "background_tasks": [],
+    "session_crons": []
+  }
+]

@@ -41,7 +41,18 @@ function main(): void {
     {
       cwd: REPO_ROOT,
       encoding: 'utf-8',
-      env: { ...process.env, SEMANTIC_RELEASE_DRY_RUN: 'true' },
+      env: {
+        ...process.env,
+        SEMANTIC_RELEASE_DRY_RUN: 'true',
+        // On GitHub Actions `pull_request` events GITHUB_REF is `refs/pull/<n>/merge`,
+        // and env-ci hands that to semantic-release as the current branch. `--no-ci`
+        // only skips the pull-request early return, not branch detection, so the run
+        // would end with "configured to only publish from <branch>" and exit 0 without
+        // analyzing anything. Steer env-ci at the branch actually being dry-run instead.
+        // Outside GitHub Actions env-ci ignores both variables and asks git.
+        GITHUB_EVENT_NAME: 'push',
+        GITHUB_REF: `refs/heads/${branch}`,
+      },
     },
   );
 
