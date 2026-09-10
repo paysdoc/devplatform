@@ -43,9 +43,11 @@ barrel's existing convention of pairing every exported factory with its deps typ
 Alongside the exports, the feature (1) refreshes every docblock and doc that currently promises
 these names are deep-import only or "never on a barrel", (2) turns the packed-tarball smoke check
 into a table-driven **dynamic-import key check** over every public name under Node and Bun, and
-(3) adds `@adw-11` BDD scenarios — hermetic ones driving the names through the public entry
-points, and `@packaging` ones proving every name resolves at runtime and in the emitted `.d.ts`
-of the real tarball.
+(3) implements the step definitions for the `@adw-11` BDD scenarios in
+`features/per-issue/feature-11.feature` (29 hermetic scenarios driving every name through the
+public entry points and asserting what it returns, plus 4 `@packaging` scenarios proving every
+name resolves at runtime and in the emitted `.d.ts` of the real tarball and driving one name from
+each entry point).
 
 It also covers the release half of the issue: the change lands as a `feat:` commit so
 semantic-release computes **v1.2.0** from the tagged-but-unpublished v1.1.0 (v1.2.0 therefore also
@@ -98,13 +100,17 @@ re-export `GitHubAppConfig`/`AppAuthDeps` from the GitHub barrel: `forgeCredenti
 re-exports them, and two `export *` sources for one name would make `src/providers/index.ts` fail
 typecheck with TS2308. Rewrite the docblocks that pinned the old decision so the source tells the
 truth. Convert the smoke script's static import check into a table-driven dynamic-import key
-check (one `Record<subpath, names[]>`, so the next widening is a one-line change), and drive the
-same table through `@adw-11` scenarios: hermetic scenarios call each name through
-`src/providers/index.ts` / `src/git/index.ts` and assert observable outputs (a resolved token, a
-`GH_TOKEN` overlay, a resolved identity, a lease-rejection verdict, a stubbed-runner result, a
-named refusal); `@packaging` scenarios pack the real tarball into a clean consumer, run a module
-that dynamically imports both subpaths and reports missing keys, and type-check a consumer module
-that uses every name including `GhRepoApi`. Update README, app docs, glossary and `.adw/project.md`.
+check (one `Record<subpath, names[]>`, so the next widening is a one-line change), and implement
+the steps for the `@adw-11` scenarios: hermetic scenarios resolve each name through
+`src/providers/index.ts` / `src/git/index.ts` and assert observable outputs (a `GH_TOKEN` overlay,
+a resolved token or identity, a named refusal, an installation token minted against a stubbed
+GitHub API, a token read from a stub `gh` on the `PATH`, a command recorded by an injected
+executor, a commit/branch/push outcome in a throwaway git repository, a lease-rejection verdict);
+`@packaging` scenarios pack the real tarball into a clean consumer, run a module that dynamically
+imports every widened name and reports each name's kind, type-check a consumer module that uses
+every name including the `GhRepoApi` and `GitHubAppConfig` types, and drive one name from each
+entry point (`createGitHubTokenProvider`, `isLeaseRejection`) so a re-export pointing at the wrong
+implementation cannot pass. Update README, app docs, glossary and `.adw/project.md`.
 Land as `build-agent: feat: …`; clear the npm trusted-publisher blocker (maintainer action, with
 the `NPM_TOKEN` fallback) and verify `npm view @paysdoc/devplatform version` reports the new
 minor.
@@ -129,18 +135,32 @@ Use these files to implement the feature:
   `BootstrapIdentityDeps` (`readLocalRepoInfo`, `parseGitHubRemoteUrl`, `ADW_BOT_FALLBACK_IDENTITY`
   stay deep-import only — dropped from the ADW plan).
 - `src/providers/github/tokenResolver.ts` — `resolveContextToken`, type `ResolveContextTokenInput`.
-- `src/providers/github/ghAuthToken.ts` — `ghAuthToken()`; spawns `gh auth token` when called
-  (never call it in a hermetic scenario — assert its type only).
-- `src/providers/github/appAuth.ts` — `isGitHubAppConfigured`, `getInstallationToken`
-  (`getInstallationToken({}, o, r)` throws a *named* "not configured" error before any I/O —
-  the observable behaviour a hermetic scenario can assert).
+- `src/providers/github/ghAuthToken.ts` — `ghAuthToken()`; spawns `gh auth token` through the
+  shell (`execSync`) when called and returns `''` on any failure. The two hermetic reader
+  scenarios call it with a stub `gh` executable placed first on `PATH` for the scenario's
+  duration (restored afterwards); the smoke script and the packaged-consumer modules never call
+  it (type check / injected seam only).
+- `src/providers/github/appAuth.ts` — `isGitHubAppConfigured` (true only when `appId`, `appSlug`
+  and `privateKeyPath` are all present) and `getInstallationToken(config, owner, repo, deps?)`,
+  whose `AppAuthDeps` bag (`runCurl`, `apiBaseUrl`) is the hermetic seam: the mint scenario
+  injects a recording `runCurl` stub and a freshly generated RSA key file, so the JWT is really
+  signed and the installation lookup + token exchange are answered without `curl` or the network;
+  a config missing `privateKeyPath` is refused with a *named* error (`missing privateKeyPath`)
+  before any I/O. The module-level per-repository token cache is why the mint scenario names a
+  repository no other scenario mints for (`paysdoc/devplatform-mint`); `clearAppAuthCaches` stays
+  off the barrel.
 - `src/providers/github/ghRepoApi.ts` — `createGhRepoApi`, type `GhRepoApi`; docblock lines 5–8
   ("Deep-import only: never added to `./index.ts`") must be rewritten.
 - `src/providers/github/ghIssueApi.ts`, `ghPrApi.ts`, `ghCommandRunner.ts` — read-only; they
   remain deep-import only (their docblocks stay true).
 - `src/git/commitOps.ts` — `commitOps` namespace + `isLeaseRejection`; header comment
-  "Package-private …" (line 2) must be rewritten.
+  "Package-private …" (line 2) must be rewritten. The hermetic scenarios drive `commitChanges`
+  and `pushBranch` with a real `execSync`-backed `(command, cwd) => string` runner inside
+  throwaway repositories; `pushBranch`'s lease refusal names the branch and the manual remedy
+  `git push --force-with-lease origin <branch>`.
 - `src/git/branchOps.ts` — `branchOps` namespace; header comment (lines 1–5) likewise.
+  `getCurrentBranch` and `deleteLocalBranch` are driven the same way (`deleteLocalBranch('main')`
+  returns `false` without running `git branch -D`).
 - `src/git/gitContext.ts` — read-only; already imports `branchOps`/`commitOps` (lines 54–55), which
   is why the git barrel's reachable set does not change.
 - `src/providers/forgeCredentials.ts` — docblock lines 8–16 ("The published barrels never carry
@@ -157,16 +177,29 @@ Use these files to implement the feature:
   becomes the table-driven dynamic-import key check.
 
 **BDD scenario suite (`bun run test:e2e`):**
+- `features/per-issue/feature-11.feature` — the `@adw-11` contract (committed with this plan and
+  refined by the scenario-fidelity pass): 29 hermetic scenarios and 4 `@packaging` scenarios.
+  Read its header first — it records the fixture decisions (per-repository mint cache, real local
+  remote for the push rejection, stub `gh` on `PATH`, seam-injecting packaged consumers).
 - `features/per-issue/feature-9.feature` — the precedent for `@packaging` scenarios and the
   hermetic-scenario style (read-only).
 - `features/step_definitions/packagedConsumer.steps.ts`, `features/support/packagedConsumer.ts` —
   `installedConsumer()`, `runInConsumer()`, `typeCheckInConsumer()`; reuse them for the new
   packaging steps. The existing `When the consumer runs a module importing {string} from {string}
-  and {string} from {string}` step is shaped for exactly two names — add a new multi-name step
-  rather than bending it.
+  and {string} from {string}` step is shaped for exactly two names — the new data-table steps
+  (`the consumer runs a module that dynamically imports the following names`, `the consumer
+  type-checks a module importing the following names`) live alongside it rather than bending it.
 - `features/step_definitions/forgeCredentials.steps.ts`, `features/support/world.ts` — the
-  dynamic-`import()` loading pattern and the shared World (managed `process.env` keys, structural
-  stand-in types); extend the World only if a new scenario needs state it lacks.
+  dynamic-`import()` loading pattern, the shared World (managed `process.env` keys, structural
+  stand-in types) and the Given/Then phrases `feature-11.feature` reuses verbatim (`the GitHub App
+  is configured with app id {string} and slug {string}`, `the GitHub App cannot mint an
+  installation token`, `a GitHub personal access token {string}`, `the GitHub CLI reports the
+  token {string}`, `the credential environment sets {string} to {string}`, `the bootstrap git
+  identity is {string} with email {string}`, the refusal phrases, …). Reuse those step
+  definitions where the phrase already exists — cucumber forbids two definitions for one phrase —
+  and extend the World with the state the new scenarios need (throwaway repository paths, the
+  executor recorder, the stub-`gh` `PATH` entry, the GitHub API stub's recorded calls, the last
+  mint/read/classification result).
 - `features/regression/vocabulary.md` — reuse `the subprocess exits {int}` and `the library
   tarball is installed into a clean consumer project`; novel phrases are allowed (no
   `## Vocabulary Registry` is configured) but must assert observable outputs, never source files.
@@ -209,13 +242,17 @@ Use these files to implement the feature:
   domain term is introduced.
 
 ### New Files
-- `features/per-issue/feature-11.feature` — the `@adw-11` scenarios (written by the scenario
-  writer in the ADW flow; the build agent creates it only if it is absent when implementation
-  starts). Contents described under Testing Strategy → BDD Scenarios.
 - `features/step_definitions/publicSurface.steps.ts` (name is a suggestion; the step-definition
-  generator may choose another) — steps for the hermetic scenarios (dynamic `import()` of
-  `../../src/providers/index.js` / `../../src/git/index.js`) and the multi-name packaging steps
-  (dynamic-import key report; type-check module using every name).
+  generator may choose another, or split by entry point to stay under the 300-line cap) — steps
+  for the hermetic scenarios (dynamic `import()` of `../../src/providers/index.js` /
+  `../../src/git/index.js` inside the `When` step) and the multi-name packaging steps
+  (data-table dynamic-import kind report; type-check module using every name; the two driven
+  consumer modules).
+- `features/support/` fixture helpers as needed — a throwaway-repository helper (temp dir, `git
+  init -b <branch>`, local `user.name`/`user.email`, bare local remote, second clone) and a
+  stub-`gh` helper (temp dir with an executable `gh` script, prepended to `PATH` for the scenario
+  and restored in an `After` hook).
+- `features/per-issue/feature-11.feature` already exists — never create or rewrite it; see Step 6.
 
 ## Implementation Plan
 
@@ -236,11 +273,12 @@ no `export *` collision on `src/providers/index.ts`; the untouched import-graph 
 `dist/git/index.d.ts` to confirm the type side.
 
 ### Phase 3: Integration
-Make the packed-tarball proof exhaustive and table-driven (`scripts/smokePackage.ts`), add the
-`@adw-11` scenarios and their steps (hermetic through the public entry points; `@packaging`
-against the real tarball, including a `.d.ts` type-check that uses `GhRepoApi`), update the
-documentation set, commit as `feat:`, and clear the npm publish blocker so the PR's merge actually
-ships v1.2.0.
+Make the packed-tarball proof exhaustive and table-driven (`scripts/smokePackage.ts`), implement
+the step definitions for the committed `@adw-11` scenarios (hermetic through the public entry
+points — including real throwaway git repositories, a stub `gh` on the `PATH` and a stubbed
+GitHub API; `@packaging` against the real tarball, including a `.d.ts` type-check that uses
+`GhRepoApi`/`GitHubAppConfig` and two driven consumer modules), update the documentation set,
+commit as `feat:`, and clear the npm publish blocker so the PR's merge actually ships v1.2.0.
 
 ## Step by Step Tasks
 Execute every step in order, top to bottom.
@@ -251,13 +289,16 @@ Execute every step in order, top to bottom.
   exactly one (`src/providers/forgeProviders.ts`).
 - `bun run test:unit` → **45 files / 961 tests** green (verified 2026-09-11). This count must be
   unchanged at the end — this plan adds no unit-test files.
-- `bun run test:e2e --tags "not @packaging"` → **13 scenarios passed** (`@adw-9`). If a
-  `features/per-issue/feature-11.feature` already exists, also run
-  `bun run test:e2e --tags "@adw-11 and not @packaging"` and record which scenarios are RED —
-  they should be exactly the ones that need a name not yet on a barrel.
-- Note the pre-existing uncommitted `README.md` edit in the worktree (Setup section: removes the
-  nonexistent `.env.sample` step and explains that configuration is injected). Keep it; commit it
-  with this feature's docs changes; never revert it.
+- `bun run test:e2e --tags "@adw-9 and not @packaging"` → **13 scenarios passed**.
+  `features/per-issue/feature-11.feature` is already on the branch, so
+  `bun run test:e2e --tags "@adw-11"` reports all **33** of its scenarios (29 hermetic + 4
+  `@packaging`) as undefined and exits non-zero under `strict: true` — that is the RED baseline,
+  and it is why CI's `check` job (`--tags "not @packaging"`) is red on this branch until Step 6
+  lands. Once Step 6's steps exist and before Steps 3–4 land, the scenarios that need a name not
+  yet on a barrel fail at their `When` step with the legible "expected … to be exported" message.
+- The `README.md` Setup edit from an earlier step of this ADW run (removes the nonexistent
+  `.env.sample` step and explains that configuration is injected) is already committed on this
+  branch (`9e5ab44`); never revert it.
 
 ### 2. Rewrite the docblocks that pin the old "deep-import only" decision
 - `src/git/commitOps.ts` line 2: replace "Package-private commit/push operation orchestration for
@@ -342,31 +383,81 @@ Execute every step in order, top to bottom.
   passed`. Sanity-check the check is not vacuous by temporarily adding a bogus name to the table
   and watching it fail, then removing it.
 
-### 6. Add the `@adw-11` scenarios and their step definitions
-- If `features/per-issue/feature-11.feature` was generated by the scenario writer, treat it as the
-  contract: implement steps for it and fix the implementation, not the scenario, when one stays
-  red (report a genuine step bug rather than editing Gherkin silently). If it is absent, create it
-  with the scenarios listed under Testing Strategy → BDD Scenarios, tag `@adw-11`, and tag the two
-  tarball scenarios `@packaging`.
-- Step definitions (new module under `features/step_definitions/`): load the barrels with dynamic
-  `import('../../src/providers/index.js')` / `import('../../src/git/index.js')` inside the `When`
-  step (missing export fails only that scenario, as `forgeCredentials.steps.ts` does); every
-  assertion reads an *output* — never a source file. Hermetic steps never spawn `gh`
-  (`ghAuthToken` is `typeof`-checked only), never touch the network
-  (`getInstallationToken` is exercised only on the "not configured" refusal path, which throws
-  before any I/O), and stub every git runner (`(command, cwd) => string`).
-- Packaging steps: reuse `installedConsumer()` / `runInConsumer()` / `typeCheckInConsumer()` from
-  `features/support/packagedConsumer.ts`. The runtime step writes a module that dynamically
-  imports a subpath and prints a JSON report `{ missing: string[] }` for a comma-separated list of
-  names; the type-check step writes a `.ts` module importing every runtime name plus
-  `import type { GhRepoApi }` and using them in typed positions (e.g. `const api: GhRepoApi =
-  createGhRepoApi(ctx)` under a `GitContext` built with `createLiteralTokenProvider`, a typed
-  `resolveContextToken({...})` call, `const ops: typeof commitOps = commitOps`), then `tsc -p`
-  must exit 0.
-- Run `bun run test:e2e --tags "@adw-11 and not @packaging"` → all green;
-  `bun run test:e2e --tags "@packaging"` → the `@adw-9` pair plus the new `@adw-11` pair green;
-  `bun run test:e2e` → everything green with no undefined/pending steps (`strict: true`).
-- `bun run typecheck` must stay clean — `tsconfig.json` includes `features/**/*.ts`.
+### 6. Implement the step definitions for the `@adw-11` scenarios
+- `features/per-issue/feature-11.feature` is the contract (29 hermetic scenarios + 4
+  `@packaging`; two of the hermetic ones are outlines with 4 and 3 example rows). Implement steps
+  for it and fix the implementation, not the scenario, when one stays red; report a genuine step
+  or Gherkin bug rather than editing the feature file silently. Reuse the step definitions from
+  `forgeCredentials.steps.ts` for every phrase the file shares with `feature-9.feature` (cucumber
+  rejects duplicate definitions); the new `When … through the providers entry point` steps store
+  their result where those shared `Then` steps read it (`world.credentials`'s
+  `tokenProvider`/`gitIdentity`, or a World slot both paths use).
+- Loading: every `When` step resolves the name it needs through a dynamic
+  `import('../../src/providers/index.js')` / `import('../../src/git/index.js')`, throwing a
+  legible "expected `<name>` to be exported from `@paysdoc/devplatform/<subpath>`" so a missing
+  re-export fails only that scenario (as `forgeCredentials.steps.ts` does). Every assertion reads
+  an *output* — never a source file.
+- `createGitHubTokenProvider` / `resolveContextToken`: all seams injected (`pat`,
+  `alternateIdentityPat`, `isAppConfigured`, `mintInstallationToken`, `ghAuthToken`); "the GitHub
+  App mints the installation token" is an injected `mintInstallationToken` returning that token,
+  "cannot mint" composes `getInstallationToken` over the unreadable key path (or throws directly)
+  — no `gh`, no network either way.
+- `resolveBootstrapGitIdentity`: `env` and `exec` come from the World; the three `appConfig`
+  states map onto the shared Givens (`configured with app id … and slug …` → complete config with
+  an unreadable key path, `not configured` → `null`, `no GitHub App configuration is injected` →
+  leave `appConfig` undefined so the `GITHUB_APP_*` triple decides).
+- `isGitHubAppConfigured`: build the config from the outline row (empty cell → `''`).
+- `getInstallationToken`: the mint scenario writes a freshly generated RSA private key
+  (`crypto.generateKeyPairSync('rsa', …)`) to a temp file and injects `deps.runCurl`, a stub that
+  reads the `url = "…"` line from the `--config` stdin payload, records it, and answers
+  `<json body>\n<status>` — `{ "id": 4711 }` for `/repos/paysdoc/devplatform-mint/installation`
+  and `{ "token": "ghs_minted", "expires_at": <future ISO> }` for
+  `/app/installations/4711/access_tokens`. It mints for `paysdoc/devplatform-mint` only, because
+  the adapter caches per repository. The refusal scenario passes `privateKeyPath: ''` and asserts
+  the error names `privateKeyPath`.
+- `ghAuthToken`: write an executable `gh` script into a temp dir (`printf` the token, or
+  `exit 1`), prepend that dir to `process.env.PATH` for the scenario, call `ghAuthToken()`, and
+  restore `PATH` in an `After` hook (`PATH` is not one of the World's managed keys — add it or
+  restore it explicitly).
+- `createGhRepoApi`: construct a `GitContext` (`selfHost: false`, temp `frameworkRepoRoot`/
+  `targetReposDir`, any complete `gitIdentity`, `tokenProvider:
+  createLiteralTokenProvider('fixed-token')`) with `deps.exec` set to a recorder that captures
+  `(command, { cwd, env })` and returns `"main"`; `createGhRepoApi(ctx).defaultBranch()` must
+  yield `main`, exactly one recorded command containing `paysdoc/devplatform`, and
+  `env.GH_TOKEN === 'fixed-token'`.
+- `commitOps` / `branchOps`: real throwaway repositories under `os.tmpdir()`, removed in `After`.
+  The runner is `(command, cwd) => execSync(command, { cwd, encoding: 'utf-8', stdio: ['ignore',
+  'pipe', 'pipe'], env })` with an `env` that isolates the developer's git configuration
+  (`GIT_CONFIG_GLOBAL=/dev/null`, `GIT_CONFIG_NOSYSTEM=1`) — the World already clears the `GIT_*`
+  identity keys, so set a local `user.name`/`user.email` (and `commit.gpgsign=false`) in each
+  repository. `git init -b <branch>` plus one committed file; the local remote is a bare
+  repository the branch is pushed to with `-u`; "gains a commit the local repository has never
+  seen" is a second clone (`git clone -b feature/switchover`) that commits and pushes; then
+  `commitOps.pushBranch` fetches, and `git push --force-with-lease --force-if-includes` is
+  rejected with `remote ref updated since checkout`, which `pushBranch` rewraps into the message
+  naming the branch and `git push --force-with-lease origin feature/switchover`. Assert the
+  remote's tip afterwards with `git rev-parse` in the bare repository.
+- `isLeaseRejection`: pass `{ stderr }` built from the outline row.
+- Packaging steps: reuse `installedConsumer()` / `runInConsumer()` / `typeCheckInConsumer()`.
+  The runtime data-table step writes a module that `await import()`s each distinct `from`
+  subpath and prints a JSON report of `typeof` per name; the `Then the consumer reports every
+  imported name with its declared kind` step compares each against the `kind` column (a missing
+  name reports `undefined` and fails). The type-check data-table step writes a `.ts` module that
+  imports every `value` row and `import type`s every `type` row (`GhRepoApi`, `GitHubAppConfig`)
+  and uses them in typed positions (e.g. `const api: GhRepoApi = createGhRepoApi(ctx)` under a
+  `GitContext` built with `createLiteralTokenProvider`, a typed `resolveContextToken({...})`
+  call, `const cfg: GitHubAppConfig = {...}`, `const ops: typeof commitOps = commitOps`); `tsc -p`
+  must exit 0. The two driven scenarios write a consumer module that (a) builds
+  `createGitHubTokenProvider` with every seam injected (`isAppConfigured: () => false`,
+  `ghAuthToken: () => ''`, a throwing `mintInstallationToken`) and prints the `credentialEnv`
+  overlay, and (b) prints `isLeaseRejection({ stderr })` for the given text — the consumer
+  subprocess never spawns `gh` or reaches the network.
+- Run `bun run test:e2e --tags "@adw-11 and not @packaging"` → 29 scenarios green;
+  `bun run test:e2e --tags "@packaging"` → the 2 `@adw-9` plus the 4 `@adw-11` packaging
+  scenarios green; `bun run test:e2e` → everything green with no undefined/pending steps
+  (`strict: true`).
+- `bun run typecheck` must stay clean — `tsconfig.json` includes `features/**/*.ts`. Keep every
+  step module under the 300-line cap (split by entry point if needed).
 
 ### 7. Update the documentation set
 - `README.md`: in "What it does", extend the git-core bullet ("Branch, commit, and remote
@@ -458,45 +549,69 @@ Execute every step in order, top to bottom.
 
 ### BDD Scenarios (`features/per-issue/feature-11.feature`, tag `@adw-11`)
 
-Hermetic (no build; run in the `check` CI job):
-- **GitHub token provider is reachable from the providers entry point** — `createGitHubTokenProvider`
-  built with `pat: 'ghp_from_pat'`, `isAppConfigured: () => false`, `ghAuthToken: () => ''`;
-  `credentialEnv({ owner, repo, purpose: 'default' })` sets `GH_TOKEN` to `ghp_from_pat`.
-- **Token resolution is reachable and refuses by repository name** — `resolveContextToken` returns
-  the PAT when no App is configured; with no PAT and an empty CLI seam it is refused with a
-  message naming `owner/repo` (never reads ambient `GH_TOKEN` — set a sentinel via the World's
-  managed keys and assert it is not returned).
-- **Bootstrap identity is reachable** — `resolveBootstrapGitIdentity({ env: { GIT_AUTHOR_NAME,
-  GIT_AUTHOR_EMAIL }, appConfig: null })` yields that identity; with a complete `appConfig`
-  (`appId`, `appSlug`, absent key path) and an empty environment yields `<slug>[bot]` /
-  `<id>+<slug>[bot]@users.noreply.github.com`.
-- **GitHub App helpers are reachable** — `isGitHubAppConfigured({})` is false and
-  `isGitHubAppConfigured({ appId, appSlug, privateKeyPath })` is true; `getInstallationToken({},
-  'acme', 'webapp')` is refused with a message naming "not configured" (no network, no file read).
-- **`ghAuthToken` is reachable** — it is a function (not invoked: it spawns `gh`).
-- **The bound repo API is reachable** — `createGhRepoApi` over a `GitContext` built with
-  `createLiteralTokenProvider('fixed-token')` and a spy `exec`; calling `defaultBranch()` records a
-  `gh repo view acme/webapp …` command and returns the spy's stdout.
-- **Commit and branch operations are reachable from the git entry point** — with a stub runner:
-  `commitOps.hasUncommittedChanges` reports true for `' M file'` output and false for empty;
-  `commitOps.commitChanges` returns false and records no `git add`/`git commit` when status is
-  clean; `branchOps.getCurrentBranch` returns the runner's output;
-  `branchOps.deleteLocalBranch(run, 'main', cwd)` returns false without running `git branch -D`.
-- **Lease rejections are recognised** — `isLeaseRejection({ stderr: '… stale info …' })` and
-  `({ message: 'remote ref updated since checkout' })` are true; `({ stderr: 'boom' })` is false.
+The feature file is the contract; this section mirrors it (29 hermetic scenarios in the `check`
+CI job, 4 `@packaging` scenarios in the `package` job). Every scenario resolves its name from the
+barrel and asserts an output of that name — never a source file, never a bare "is exported" check.
 
-`@packaging` (real tarball; run in the `package` CI job):
-- **A packaged consumer resolves every widened name at runtime** — Given the tarball is installed
-  into a clean consumer; When the consumer runs a module that dynamically imports
-  `@paysdoc/devplatform/providers` and `@paysdoc/devplatform/git` and reports missing names for the
-  Step-5 lists; Then the subprocess exits 0 and reports no missing names.
-- **The emitted type declarations expose every widened name to a TypeScript consumer** — When the
-  consumer type-checks a module importing every runtime name plus `type GhRepoApi` and using them
-  in typed positions; Then the subprocess exits 0.
+Hermetic (no build; `bun run test:e2e --tags "@adw-11 and not @packaging"`):
+- **`createGitHubTokenProvider`** (3) — created through the providers entry point: serves the
+  PAT ahead of the CLI token (`GH_TOKEN` = `ghp_from_pat`); serves the alternate-identity PAT only
+  for `alternateIdentity` requests and the PAT for `default`; refuses rather than substituting
+  the PAT when the configured App's mint fails.
+- **`resolveContextToken`** (3) — returns the App's minted token ahead of PAT and CLI; falls
+  through to the CLI token when neither App nor PAT is configured; refuses with a message naming
+  `paysdoc/devplatform` when no source resolves.
+- **`resolveBootstrapGitIdentity`** (5) — bot identity `adw-bot[bot]` /
+  `12345+adw-bot[bot]@users.noreply.github.com` from an injected complete App configuration, and
+  from the environment's `GITHUB_APP_*` triple when no configuration is injected; the environment
+  triple is ignored once the caller passes `appConfig: null`; the `GIT_AUTHOR_*` environment wins
+  over `git config`; `git config` is the fallback when the environment carries no identity.
+- **`isGitHubAppConfigured`** (outline, 4 rows) — `configured` only when app id, slug and private
+  key path are all present.
+- **`getInstallationToken`** (2) — with a freshly generated signing key and a GitHub API stub
+  answering the installation lookup for `paysdoc/devplatform-mint` (installation `4711`) and the
+  token exchange, the minted token is `ghs_minted` and the stub recorded the lookup followed by
+  the exchange; a configuration without a private key path is refused naming `privateKeyPath`.
+- **`ghAuthToken`** (2) — with a stub `gh` first on the `PATH`, returns what the CLI prints
+  (`gho_from_stub`); returns an empty token when the CLI exits with an error.
+- **`createGhRepoApi`** (1) — composed over a `GitContext` for `paysdoc/devplatform` with the
+  literal credential `fixed-token` and a recording executor answering `main`: `defaultBranch()`
+  reports `main`, exactly one command was captured, and it names `paysdoc/devplatform` and
+  carries `GH_TOKEN=fixed-token`.
+- **`commitOps`** (3) — in a fresh repository: commits a dirty working tree (reports a commit,
+  latest message matches, tree clean); reports nothing committed on a clean tree (still exactly
+  one commit); pushing a branch whose local remote was moved underneath it is refused naming the
+  branch and the remedy `git push --force-with-lease origin feature/switchover`, leaving the
+  remote untouched.
+- **`isLeaseRejection`** (outline, 3 rows) — `stale info` and `remote ref updated since checkout`
+  stderr are lease rejections; an authentication failure is not.
+- **`branchOps`** (3) — reports the checked-out branch after `checkout -b feature/switchover`;
+  refuses to delete the protected `main` (branch still exists); deletes an unprotected
+  `feature/stale` (branch gone).
 
-Step vocabulary: reuse `Given the library tarball is installed into a clean consumer project` and
-`Then the subprocess exits {int}`; new phrases are fine (no registry configured) but must assert
-outputs, never inspect `src/` (`features/regression/vocabulary.md` rot rules).
+`@packaging` (real tarball; `bun run test:e2e --tags "@packaging"`):
+- **A packaged consumer resolves every widened name at runtime** — the consumer dynamically
+  imports the data table's 12 names (the issue's 10 runtime names plus the unreleased v1.1.0
+  `createForgeCredentials` and `createLiteralTokenProvider`) from their subpaths; exit 0 and every
+  name reports its declared kind (`function`/`object`).
+- **The emitted type declarations expose every widened name, including the types** — the
+  consumer type-checks a module importing those 12 values plus the types `GhRepoApi` and
+  `GitHubAppConfig`; `tsc` exits 0.
+- **A packaged consumer serves a PAT through `createGitHubTokenProvider`** built from
+  `@paysdoc/devplatform/providers` with every seam injected — exit 0 and the reported overlay sets
+  `GH_TOKEN` to `ghp_from_tarball`.
+- **A packaged consumer classifies a push failure with `isLeaseRejection`** from
+  `@paysdoc/devplatform/git` — exit 0 and the report says the `stale info` failure is a lease
+  rejection.
+
+Deliberately not scenario-covered (per the feature file's header): the `./git` layering proof
+stays with `src/__tests__/importGraph.test.ts`; the `feat:` commit and the npm publication are
+release-process outcomes verified in Steps 8–9.
+
+Step vocabulary: reuse `Given the library tarball is installed into a clean consumer project`,
+`Then the subprocess exits {int}` and the `feature-9` credential/identity phrases; new phrases are
+fine (no registry configured) but must assert outputs, never inspect `src/`
+(`features/regression/vocabulary.md` rot rules).
 
 ### Edge Cases
 - **`export *` name collision on `src/providers/index.ts`**: `GitHubAppConfig`/`AppAuthDeps` are
@@ -506,9 +621,20 @@ outputs, never inspect `src/` (`features/regression/vocabulary.md` rot rules).
   (providers via `forgeCredentials.ts`/`githubCodeHost.ts`; git via `gitContext.ts`), so the
   import-graph walker's reachable sets are identical before and after — the `./git` layering
   assertion cannot regress and needs no edit.
-- **`ghAuthToken()` spawns `gh`** when called; scenarios and smoke checks assert its type only.
-- **`getInstallationToken` with an unconfigured `GitHubAppConfig`** throws a named error before any
-  file or network I/O — the only safe path to exercise hermetically.
+- **`ghAuthToken()` spawns `gh` through the shell** when called; the two hermetic reader scenarios
+  make that safe by putting a stub `gh` first on `PATH` (restored afterwards — `PATH` is not a
+  World-managed key), while the smoke script asserts its type only and the packaged-consumer
+  modules inject the seam instead of calling it.
+- **`getInstallationToken` is hermetic only through its `AppAuthDeps` seam**: the mint scenario
+  injects `runCurl` (no `curl`, no network) and a temp RSA key; the "not configured" refusal
+  throws a named error before any file or network I/O. The module-level per-repository cache is
+  never cleared by the scenarios (`clearAppAuthCaches` stays off the barrel), so the mint
+  scenario uses a repository name (`paysdoc/devplatform-mint`) no other scenario mints for.
+- **Real git in the hermetic suite**: the `commitOps`/`branchOps` scenarios run real `git` in
+  throwaway repositories (no network — the remote is a local bare repository). Isolate the runner
+  from the developer's global config, set a local identity (the World clears `GIT_*`), disable
+  commit signing, and rely on `--force-if-includes` (git ≥ 2.30; CI's runner and the local 2.50
+  both qualify) for the genuine `remote ref updated since checkout` rejection.
 - **`isLeaseRejection(null)`** throws a `TypeError` (pre-existing: it property-reads the argument);
   scenarios pass object-shaped errors. No behaviour change is in scope.
 - **`.d.ts` for `commitOps`/`branchOps`** carries a non-exported local `type Runner` alias; tsc
@@ -539,9 +665,11 @@ outputs, never inspect `src/` (`features/regression/vocabulary.md` rot rules).
   `./dist/providers/index.js` and `./dist/git/index.js` exposes every key in the Step-5 table.
 - `bun run smoke:package` performs the table-driven dynamic-import key check for every name under
   both Node and Bun against the packed tarball and passes; a deliberately bogus name makes it fail.
-- All `@adw-11` scenarios pass (`bun run test:e2e --tags "@adw-11"`), including the two
-  `@packaging` scenarios proving runtime resolution and `.d.ts` coverage (with `GhRepoApi`) of the
-  real tarball; the 13 `@adw-9` scenarios still pass.
+- All 33 `@adw-11` scenarios pass (`bun run test:e2e --tags "@adw-11"`) with no undefined or
+  pending steps, including the four `@packaging` scenarios proving runtime resolution of every
+  widened name with its kind, `.d.ts` coverage (with the `GhRepoApi` and `GitHubAppConfig` types)
+  of the real tarball, and one name driven from each entry point; the `@adw-9` scenarios
+  (13 hermetic + 2 `@packaging`) still pass.
 - `src/__tests__/importGraph.test.ts` is unmodified and green: `src/git/index.ts` reaches no module
   under `src/providers/`.
 - `bun run typecheck`, `bun run lint:git-guard`, `bun run test:unit` (45 files / 961 tests, count
@@ -566,8 +694,9 @@ Execute every command to validate the feature works correctly with zero regressi
 - `bun run test:unit` — 45 files / 961 tests green, count unchanged.
 - `bunx vitest run src/__tests__/importGraph.test.ts src/__tests__/packageExports.test.ts` — the
   untouched layering and manifest proofs in isolation.
-- `bun run test:e2e --tags "@adw-11 and not @packaging"` — every hermetic #11 scenario passes.
-- `bun run test:e2e --tags "not @packaging"` — the 13 `@adw-9` scenarios plus the new ones pass.
+- `bun run test:e2e --tags "@adw-11 and not @packaging"` — all 29 hermetic #11 scenarios pass.
+- `bun run test:e2e --tags "not @packaging"` — the 13 `@adw-9` hermetic scenarios plus the 29 new
+  ones pass (42).
 - `bun run build && for f in dist/git/index.d.ts dist/providers/github/index.d.ts; do echo "== $f"; grep -nE "commitOps|isLeaseRejection|branchOps|createGitHubTokenProvider|resolveBootstrapGitIdentity|resolveContextToken|ghAuthToken|isGitHubAppConfigured|getInstallationToken|createGhRepoApi|GhRepoApi" "$f"; done && test ! -d dist/features && echo "d.ts OK"` —
   the emitted declarations carry every name through the barrels; `features/` never reaches `dist/`.
 - `node --input-type=module -e "const p = await import('./dist/providers/index.js'); const g = await import('./dist/git/index.js'); const want = { providers: ['createForgeCredentials','forgeProviders','createGitHubTokenProvider','resolveBootstrapGitIdentity','resolveContextToken','ghAuthToken','isGitHubAppConfigured','getInstallationToken','createGhRepoApi'], git: ['GitContext','createLiteralTokenProvider','commitOps','branchOps','isLeaseRejection'] }; const missing = [...want.providers.filter(k => p[k] === undefined).map(k => 'providers.' + k), ...want.git.filter(k => g[k] === undefined).map(k => 'git.' + k)]; if (missing.length) { console.error('MISSING', missing); process.exit(1); } console.log('dynamic-import key check OK');"` —
@@ -579,8 +708,9 @@ Execute every command to validate the feature works correctly with zero regressi
 - `npm pack --dry-run` — the tarball still lists only `dist/`, `README.md`, `LICENSE`.
 - `bun run smoke:package` — builds, packs, installs into a fresh consumer, runs the table-driven
   dynamic-import key check under Node and Bun.
-- `bun run test:e2e --tags "@packaging"` — the `@adw-9` and `@adw-11` packaging scenarios pass
-  (runtime key report + `.d.ts` type-check). Needs `node` and `npm`; slowest step.
+- `bun run test:e2e --tags "@packaging"` — the 2 `@adw-9` and 4 `@adw-11` packaging scenarios
+  pass (runtime kind report, `.d.ts` type-check, and the two driven consumer modules). Needs
+  `node` and `npm`; slowest step.
 - `bun run test:e2e` — the whole suite passes with no undefined or pending steps.
 - `bun run release:dry-run` — prints `next release version: 1.2.0` (needs push access to
   `origin`; the PR's `release-dry-run` job is the authoritative run).
@@ -626,9 +756,9 @@ Execute every command to validate the feature works correctly with zero regressi
   exchange succeeded in `verifyConditions` and the `PUT` was denied with "OIDC permission denied
   for this action". The build agent must not attempt to publish, create tokens, or delete tags;
   Step 9 is a documented maintainer procedure whose completion is verified with `npm view`.
-- **Pre-existing uncommitted change**: the worktree already carries an edit to `README.md`
-  (Setup section) from an earlier step of this ADW run; it is correct (there is no `.env.sample`)
-  and belongs on this branch — commit it with the docs changes, do not revert it.
+- **Earlier `README.md` edit on this branch**: the Setup-section edit from an earlier step of this
+  ADW run (there is no `.env.sample`) is already committed (`9e5ab44`) together with this plan and
+  the feature file; it is correct — do not revert it.
 - Out of scope: any change to `resolveContextToken`, `appAuth.ts`, `commitOps.ts`/`branchOps.ts`
   behaviour; a new `package.json` subpath; re-exporting the GitLab-internal helpers; changing
   `release.yml` (the optional `NPM_CONFIG_PROVENANCE` note in Step 9 is a separate, maintainer-led

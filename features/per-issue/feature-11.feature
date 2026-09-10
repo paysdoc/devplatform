@@ -11,13 +11,20 @@
 # stub, a git artefact in a throwaway repository, or a consumer subprocess's
 # exit code and printed report. No scenario inspects a source file; a bare
 # "the name is exported" check is never the whole assertion, because a
-# re-export that points at the wrong implementation would pass it.
+# re-export that points at the wrong implementation would pass it — which is
+# also why two `@packaging` scenarios drive a name from each entry point of the
+# tarball rather than only resolving it.
 #
 # The issue leaves open whether `createForgeCredentials` becomes the documented
 # route for the four `launchGitContext.ts` helpers. These scenarios pin the
 # direct re-exports ADW's plan assumes (PRD story 29: no behaviour change at the
 # switchover), so each helper is shown behaving exactly as the factory path in
-# `feature-9.feature` already does. The factory scenarios there are untouched.
+# `feature-9.feature` already does — including the two properties the factory
+# never exercises on its own: a token provider whose App mint fails must refuse
+# rather than serve the personal access token, and the bootstrap identity
+# resolver's three `appConfig` states (injected, `null`, not injected) must
+# each resolve as documented. The factory scenarios in `feature-9.feature` are
+# untouched.
 #
 # Deliberately NOT covered here:
 #   * "`./git` pulls no `src/providers/` module" is a static property of the
@@ -35,6 +42,12 @@
 #   * The push-rejection scenario uses a real local remote: a second clone
 #     pushes a commit the first has never seen, so `git push --force-with-lease
 #     --force-if-includes` is genuinely rejected rather than stubbed.
+#   * The GitHub CLI token reader spawns `gh auth token` through the shell, so
+#     the two reader scenarios put a stub `gh` executable first on the PATH
+#     for the duration of the scenario and restore the PATH afterwards.
+#   * Packaged-consumer modules that build a token provider inject every
+#     credential seam (no App, no CLI) so the consumer subprocess never spawns
+#     `gh` or reaches the network.
 
 @adw-11
 Feature: Widened public surface for the ADW switchover
@@ -64,6 +77,13 @@ Feature: Widened public surface for the ADW switchover
     Then the credential environment sets "GH_TOKEN" to "ghp_reviewer"
     When a credential is requested for "paysdoc/devplatform" with purpose "default"
     Then the credential environment sets "GH_TOKEN" to "ghp_from_pat"
+
+  Scenario: A GitHub token provider created through the providers entry point refuses rather than substituting the personal access token when the App's mint fails
+    Given the GitHub App is configured with app id "12345" and slug "adw-bot"
+    And the GitHub App cannot mint an installation token
+    And a GitHub personal access token "ghp_must_not_be_substituted"
+    When a GitHub token provider is created through the providers entry point
+    Then requesting a credential for "paysdoc/devplatform" with purpose "default" is refused without serving the personal access token
 
   # -------------------------------------------------------------------------
   # @paysdoc/devplatform/providers — resolveContextToken
@@ -100,6 +120,28 @@ Feature: Widened public surface for the ADW switchover
     And the environment carries no git author identity
     When the bootstrap git identity is resolved through the providers entry point
     Then the bootstrap git identity is "adw-bot[bot]" with email "12345+adw-bot[bot]@users.noreply.github.com"
+
+  Scenario: The bootstrap identity resolver served through the providers entry point derives the App bot identity from the environment's GitHub App triple when no App configuration is injected
+    Given no GitHub App configuration is injected
+    And the environment advertises a GitHub App with app id "12345" and slug "adw-bot"
+    And the environment carries no git author identity
+    When the bootstrap git identity is resolved through the providers entry point
+    Then the bootstrap git identity is "adw-bot[bot]" with email "12345+adw-bot[bot]@users.noreply.github.com"
+
+  Scenario: The bootstrap identity resolver served through the providers entry point ignores a GitHub App advertised by the environment once the caller has established there is no App
+    Given the GitHub App is not configured
+    And the environment advertises a GitHub App with app id "12345" and slug "adw-bot"
+    And the environment carries no git author identity
+    And git config reports user "Local Dev" with email "local-dev@example.com"
+    When the bootstrap git identity is resolved through the providers entry point
+    Then the bootstrap git identity is "Local Dev" with email "local-dev@example.com"
+
+  Scenario: The bootstrap identity resolver served through the providers entry point prefers the git author environment over git config when no App is configured
+    Given the GitHub App is not configured
+    And the environment sets the git author to "Release Bot" with email "release-bot@example.com"
+    And git config reports user "Local Dev" with email "local-dev@example.com"
+    When the bootstrap git identity is resolved through the providers entry point
+    Then the bootstrap git identity is "Release Bot" with email "release-bot@example.com"
 
   Scenario: The bootstrap identity resolver served through the providers entry point falls back to git config when no App is configured and the environment carries no identity
     Given the GitHub App is not configured
@@ -183,7 +225,7 @@ Feature: Widened public surface for the ADW switchover
     Given a fresh git repository on branch "main" with one committed file
     When the commit operations from the git entry point commit the working tree with message "adw: nothing to commit"
     Then the commit operations report nothing was committed
-    And the repository's latest commit message is "initial"
+    And the repository still has exactly one commit
 
   Scenario: Pushing through the git entry point a branch whose remote was moved underneath it is refused with the manual remedy and leaves the remote untouched
     Given a fresh git repository on branch "feature/switchover" with one committed file
@@ -241,7 +283,7 @@ Feature: Widened public surface for the ADW switchover
   @packaging
   Scenario: A packaged consumer resolves every widened name at runtime from its published entry point
     Given the library tarball is installed into a clean consumer project
-    When the consumer runs a module importing the following names
+    When the consumer runs a module that dynamically imports the following names
       | name                        | from                           | kind     |
       | createGitHubTokenProvider   | @paysdoc/devplatform/providers | function |
       | resolveBootstrapGitIdentity | @paysdoc/devplatform/providers | function |
@@ -278,3 +320,21 @@ Feature: Widened public surface for the ADW switchover
       | isLeaseRejection            | @paysdoc/devplatform/git       | value |
       | createLiteralTokenProvider  | @paysdoc/devplatform/git       | value |
     Then the subprocess exits 0
+
+  # -------------------------------------------------------------------------
+  # The packed tarball — a name from each entry point driven, not merely resolved
+  # -------------------------------------------------------------------------
+
+  @packaging
+  Scenario: A packaged consumer serves a personal access token through a GitHub token provider built from the providers entry point
+    Given the library tarball is installed into a clean consumer project
+    When the consumer runs a module that builds a GitHub token provider from "@paysdoc/devplatform/providers" with the personal access token "ghp_from_tarball" and requests a credential for "paysdoc/devplatform"
+    Then the subprocess exits 0
+    And the consumer reports the credential environment sets "GH_TOKEN" to "ghp_from_tarball"
+
+  @packaging
+  Scenario: A packaged consumer classifies a push failure with the lease-rejection check from the git entry point
+    Given the library tarball is installed into a clean consumer project
+    When the consumer runs a module that classifies the push failure "! [rejected] feature/x -> feature/x (stale info)" with the lease-rejection check from "@paysdoc/devplatform/git"
+    Then the subprocess exits 0
+    And the consumer reports the failure is a lease rejection
