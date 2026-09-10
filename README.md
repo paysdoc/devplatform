@@ -68,6 +68,7 @@ See [UBIQUITOUS_LANGUAGE.md](./UBIQUITOUS_LANGUAGE.md) for the canonical terms u
   workflows/release.yml        Release automation placeholder
   adw.yml                      ADW guardrails toggle (outside .adw/, survives regeneration)
 features/regression/vocabulary.md   Regression test vocabulary
+specs/                        Per-issue implementation plans (ADW-generated)
 scripts/
   smokePackage.ts             Builds, packs, and smoke-tests the tarball under Node + Bun (`bun run smoke:package`)
 src/

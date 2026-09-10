@@ -51,3 +51,18 @@
   - Conditions:
     - When working on the CI pipeline (typecheck/test workflow, release workflow) or on this
       repository's ADW guardrails configuration
+
+- app_docs/feature-wdjsgu-package-build-export-package-build.md
+  - Owns:
+    - package.json
+    - tsconfig.json
+    - tsconfig.build.json
+    - src/index.ts
+    - scripts/smokePackage.ts
+    - src/__tests__/importGraph.test.ts
+    - src/__tests__/packageExports.test.ts
+  - Conditions:
+    - When working on the package build pipeline (`tsc` → `dist/`), the `exports`/`files` map,
+      the root `src/index.ts` entry point, the NodeNext/`.js`-extension import discipline, the
+      import-graph layering test, the package-manifest contract test, or the packed-tarball
+      consumer smoke check (`scripts/smokePackage.ts`, `bun run smoke:package`)
