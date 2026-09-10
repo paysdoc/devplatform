@@ -68,11 +68,13 @@ describe('import graph — public entry-point layering', () => {
   it('positive control: the walker actually traverses, so the assertions above are not vacuous', () => {
     const reachedProviders = walkImportGraph('src/providers/index.ts');
     expect(reachedProviders.has('src/providers/forgeProviders.ts')).toBe(true);
+    expect(reachedProviders.has('src/providers/forgeCredentials.ts')).toBe(true);
     expect([...reachedProviders].some((p) => p.startsWith('src/providers/github/'))).toBe(true);
     expect([...reachedProviders].some((p) => p.startsWith('src/providers/gitlab/'))).toBe(true);
     expect([...reachedProviders].some((p) => p.startsWith('src/providers/jira/'))).toBe(true);
 
     const reachedGit = walkImportGraph('src/git/index.ts');
     expect(reachedGit.size).toBeGreaterThan(1);
+    expect(reachedGit.has('src/git/literalTokenProvider.ts')).toBe(true);
   });
 });
