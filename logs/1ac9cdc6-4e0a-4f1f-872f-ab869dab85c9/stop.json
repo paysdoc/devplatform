@@ -1,0 +1,17 @@
+[
+  {
+    "session_id": "1ac9cdc6-4e0a-4f1f-872f-ab869dab85c9",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/1ac9cdc6-4e0a-4f1f-872f-ab869dab85c9.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "99ef66ff-1b09-4e1a-96bb-a34b5fb02656",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "Stop",
+    "stop_hook_active": false,
+    "last_assistant_message": "No `.feature` files exist anywhere in this repository — this issue is a chore (release automation with an agent-prefixed commit parser) validated entirely through Vitest unit tests (`src/__tests__/releaseParser.test.ts`, `src/__tests__/releaseConfig.test.ts`), with no BDD scenarios written for it. The `chore` planning workflow doesn't produce `.feature` files, so there's nothing tagged `@adw-2` to generate step definitions for.\n\n```json\n{\n  \"generatedFiles\": [],\n  \"removedScenarios\": [],\n  \"vocabularyViolations\": []\n}\n```",
+    "background_tasks": [],
+    "session_crons": []
+  }
+]

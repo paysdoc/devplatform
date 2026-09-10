@@ -1,0 +1,425 @@
+[
+  {
+    "session_id": "04aa6b9f-ba56-46b3-ba1b-2c748f91e95b",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/04aa6b9f-ba56-46b3-ba1b-2c748f91e95b.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "0b8a7534-8c08-4640-b69a-9671c612f09a",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "ls -la; cat .env.sample 2>/dev/null | head -100",
+      "description": "List root and view .env.sample"
+    },
+    "tool_response": {
+      "stdout": "total 152\ndrwxr-xr-x@ 23 martin  staff    736 Sep 10 13:14 .\ndrwxr-xr-x@  6 martin  staff    192 Sep 10 13:13 ..\ndrwxr-xr-x@  8 martin  staff    256 Sep 10 13:13 .adw\n-rw-r--r--@  1 martin  staff     65 Sep 10 13:13 .adw-version\ndrwxr-xr-x@  6 martin  staff    192 Sep 10 13:13 .claude\n-rw-r--r--@  1 martin  staff    172 Sep 10 13:13 .env\n-rw-r--r--@  1 martin  staff    121 Sep 10 13:13 .git\ndrwxr-xr-x@  4 martin  staff    128 Sep 10 13:13 .github\n-rw-r--r--@  1 martin  staff   1395 Sep 10 13:13 .gitignore\ndrwxr-xr-x@  3 martin  staff     96 Sep 10 13:13 app_docs\n-rw-r--r--@  1 martin  staff  24247 Sep 10 13:13 bun.lock\ndrwxr-xr-x@  3 martin  staff     96 Sep 10 13:13 features\n-rw-r--r--@  1 martin  staff   1070 Sep 10 13:13 LICENSE\ndrwxr-xr-x@  3 martin  staff     96 Sep 10 13:14 logs\n-rw-r--r--@  1 martin  staff   1506 Sep 10 13:13 package.json\n-rw-r--r--@  1 martin  staff   7021 Sep 10 13:13 README.md\ndrwxr-xr-x@  3 martin  staff     96 Sep 10 13:13 scripts\ndrwxr-xr-x@  3 martin  staff     96 Sep 10 13:13 specs\ndrwxr-xr-x@  6 martin  staff    192 Sep 10 13:13 src\n-rw-r--r--@  1 martin  staff    295 Sep 10 13:13 tsconfig.build.json\n-rw-r--r--@  1 martin  staff    386 Sep 10 13:13 tsconfig.json\n-rw-r--r--@  1 martin  staff   6415 Sep 10 13:13 UBIQUITOUS_LANGUAGE.md\n-rw-r--r--@  1 martin  staff    324 Sep 10 13:13 vitest.config.ts",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_015wUr3mKsyGgYv8gyYoyLAU",
+    "duration_ms": 357
+  },
+  {
+    "session_id": "04aa6b9f-ba56-46b3-ba1b-2c748f91e95b",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/04aa6b9f-ba56-46b3-ba1b-2c748f91e95b.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "0b8a7534-8c08-4640-b69a-9671c612f09a",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/.claude/commands/prime.md"
+    },
+    "tool_response": {
+      "type": "text",
+      "file": {
+        "filePath": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/.claude/commands/prime.md",
+        "content": "---\ntarget: true\n---\n# Prime\n> Execute the following sections to understand the codebase then summarize your understanding.\n\n## Run\ngit ls-files\n\n## Read\nREADME.md\nadws/README.md\n.claude/commands/conditional_docs.md - this is a guide for you to determine which documentation to read based on the upcoming task.",
+        "numLines": 13,
+        "startLine": 1,
+        "totalLines": 13
+      }
+    },
+    "tool_use_id": "toolu_012ktcRpzD1Y5vmvfEcecfxL",
+    "duration_ms": 2
+  },
+  {
+    "session_id": "04aa6b9f-ba56-46b3-ba1b-2c748f91e95b",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/04aa6b9f-ba56-46b3-ba1b-2c748f91e95b.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "0b8a7534-8c08-4640-b69a-9671c612f09a",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/.claude/skills/ubiquitous-language/SKILL.md"
+    },
+    "tool_response": {
+      "type": "text",
+      "file": {
+        "filePath": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/.claude/skills/ubiquitous-language/SKILL.md",
+        "content": "---\nname: ubiquitous-language\ndescription: Extract a DDD-style ubiquitous language glossary from the current conversation, flagging ambiguities and proposing canonical terms. Saves to UBIQUITOUS_LANGUAGE.md. Use when user wants to define domain terms, build a glossary, harden terminology, create a ubiquitous language, or mentions \"domain model\" or \"DDD\".\ntarget: true\n---\n\n# Ubiquitous Language\n\nExtract and formalize domain terminology from the current conversation into a consistent glossary, saved to a local file.\n\n## Process\n\n1. **Scan the conversation** for domain-relevant nouns, verbs, and concepts\n2. **Identify problems**:\n   - Same word used for different concepts (ambiguity)\n   - Different words used for the same concept (synonyms)\n   - Vague or overloaded terms\n3. **Propose a canonical glossary** with opinionated term choices\n4. **Write to `UBIQUITOUS_LANGUAGE.md`** in the working directory using the format below\n5. **Output a summary** inline in the conversation\n\n## Output Format\n\nWrite a `UBIQUITOUS_LANGUAGE.md` file with this structure:\n\n```md\n# Ubiquitous Language\n\n## Order lifecycle\n\n| Term | Definition | Aliases to avoid |\n|------|-----------|-----------------|\n| **Order** | A customer's request to purchase one or more items | Purchase, transaction |\n| **Invoice** | A request for payment sent to a customer after delivery | Bill, payment request |\n\n## People\n\n| Term | Definition | Aliases to avoid |\n|------|-----------|-----------------|\n| **Customer** | A person or organization that places orders | Client, buyer, account |\n| **User** | An authentication identity in the system | Login, account |\n\n## Relationships\n\n- An **Invoice** belongs to exactly one **Customer**\n- An **Order** produces one or more **Invoices**\n\n## Example dialogue\n\n> **Dev:** \"When a **Customer** places an **Order**, do we create the **Invoice** immediately?\"\n> **Domain expert:** \"No — an **Invoice** is only generated once a **Fulfillment** is confirmed. A single **Order** can produce multiple **Invoices** if items ship in separate **Shipments**.\"\n> **Dev:** \"So if a **Shipment** is cancelled before dispatch, no **Invoice** exists for it?\"\n> **Domain expert:** \"Exactly. The **Invoice** lifecycle is tied to the **Fulfillment**, not the **Order**.\"\n\n## Flagged ambiguities\n\n- \"account\" was used to mean both **Customer** and **User** — these are distinct concepts: a **Customer** places orders, while a **User** is an authentication identity that may or may not represent a **Customer**.\n```\n\n## Rules\n\n- **Be opinionated.** When multiple words exist for the same concept, pick the best one and list the others as aliases to avoid.\n- **Flag conflicts explicitly.** If a term is used ambiguously in the conversation, call it out in the \"Flagged ambiguities\" section with a clear recommendation.\n- **Keep definitions tight.** One sentence max. Define what it IS, not what it does.\n- **Show relationships.** Use bold term names and express cardinality where obvious.\n- **Only include domain terms.** Skip generic programming concepts (array, function, endpoint) unless they have domain-specific meaning.\n- **Group terms into multiple tables** when natural clusters emerge (e.g. by subdomain, lifecycle, or actor). Each group gets its own heading and table. If all terms belong to a single cohesive domain, one table is fine — don't force groupings.\n- **Write an example dialogue.** A short conversation (3-5 exchanges) between a dev and a domain expert that demonstrates how the terms interact naturally. The dialogue should clarify boundaries between related concepts and show terms being used precisely.\n\n## Re-running\n\nWhen invoked again in the same conversation:\n\n1. Read the existing `UBIQUITOUS_LANGUAGE.md`\n2. Incorporate any new terms from subsequent discussion\n3. Update definitions if understanding has evolved\n4. Mark changed entries with \"(updated)\" and new entries with \"(new)\"\n5. Re-flag any new ambiguities\n6. Rewrite the example dialogue to incorporate new terms\n\n## Sync mode (invoked from /install or without conversation context)\n\nWhen invoked without prior conversation (e.g., from `/install`):\n\n1. Read the existing `UBIQUITOUS_LANGUAGE.md`\n2. Scan all of `adws/` (types, phases, agents, triggers, core, providers, cost) for domain types, interfaces, enums, and constants\n3. Compare glossary terms against code reality\n4. **Report drift only -- do NOT auto-update the file.** Output a summary:\n   - `NEW in code, missing from glossary`: types/concepts found in code but not in glossary\n   - `RENAMED in code`: glossary term no longer matches code (e.g., type was renamed)\n   - `REMOVED from code`: glossary references a type/concept that no longer exists\n   - `No drift`: count of terms that match\n5. If no `UBIQUITOUS_LANGUAGE.md` exists, fall back to the standard Process above using the codebase as source material instead of conversation\n\n## Post-output instruction\n\nAfter writing or syncing the file, state:\n\n> I've written/updated/synced `UBIQUITOUS_LANGUAGE.md`. From this point forward I will use these terms consistently. If I drift from this language or you notice a term that should be added, let me know.\n",
+        "numLines": 100,
+        "startLine": 1,
+        "totalLines": 100
+      }
+    },
+    "tool_use_id": "toolu_01KfDaEFpWUQH3foC9VQsMu3",
+    "duration_ms": 1
+  },
+  {
+    "session_id": "04aa6b9f-ba56-46b3-ba1b-2c748f91e95b",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/04aa6b9f-ba56-46b3-ba1b-2c748f91e95b.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "0b8a7534-8c08-4640-b69a-9671c612f09a",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "find . -maxdepth 1 -iname \".env.sample\"; git ls-files | head -100",
+      "description": "Find .env.sample and list tracked files"
+    },
+    "tool_response": {
+      "stdout": ".adw-version\n.adw/commands.md\n.adw/conditional_docs.md\n.adw/project.md\n.adw/providers.md\n.adw/review_proof.md\n.adw/scenarios.md\n.claude/commands/install.md\n.claude/commands/prime.md\n.claude/hooks/notification.ts\n.claude/hooks/post-tool-use.ts\n.claude/hooks/pre-tool-use.ts\n.claude/hooks/stop.ts\n.claude/hooks/subagent-stop.ts\n.claude/hooks/utils/constants.ts\n.claude/settings.json\n.claude/skills/grill-me/SKILL.md\n.claude/skills/implement-tdd/SKILL.md\n.claude/skills/implement-tdd/deep-modules.md\n.claude/skills/implement-tdd/interface-design.md\n.claude/skills/implement-tdd/mocking.md\n.claude/skills/implement-tdd/refactoring.md\n.claude/skills/implement-tdd/tests.md\n.claude/skills/improve-codebase-architecture/REFERENCE.md\n.claude/skills/improve-codebase-architecture/SKILL.md\n.claude/skills/prd-to-issues/SKILL.md\n.claude/skills/tdd/SKILL.md\n.claude/skills/tdd/deep-modules.md\n.claude/skills/tdd/interface-design.md\n.claude/skills/tdd/mocking.md\n.claude/skills/tdd/refactoring.md\n.claude/skills/tdd/tests.md\n.claude/skills/ubiquitous-language/SKILL.md\n.claude/skills/write-a-prd/SKILL.md\n.github/adw.yml\n.github/workflows/ci.yml\n.github/workflows/release.yml\n.gitignore\nLICENSE\nREADME.md\nUBIQUITOUS_LANGUAGE.md\napp_docs/feature-wdjsgu-package-build-export-package-build.md\nbun.lock\nfeatures/regression/vocabulary.md\npackage.json\nscripts/smokePackage.ts\nspecs/issue-1-adw-wdjsgu-package-build-export-sdlc_planner-package-build-exports-ci.md\nsrc/__tests__/importGraph.test.ts\nsrc/__tests__/packageExports.test.ts\nsrc/git/__tests__/bootstrapIdentity.test.ts\nsrc/git/__tests__/claimOps.test.ts\nsrc/git/__tests__/commitOps.test.ts\nsrc/git/__tests__/gitContext.test.ts\nsrc/git/__tests__/gitContextOperations.test.ts\nsrc/git/__tests__/gitReadOps.test.ts\nsrc/git/__tests__/remoteOps.test.ts\nsrc/git/__tests__/repoApiCwd.test.ts\nsrc/git/__tests__/repoWorkspace.test.ts\nsrc/git/__tests__/workingDirectoryGuard.test.ts\nsrc/git/__tests__/worktreeLogger.test.ts\nsrc/git/bootstrapIdentity.ts\nsrc/git/branchOps.ts\nsrc/git/claimOps.ts\nsrc/git/commitOps.ts\nsrc/git/consoleLogger.ts\nsrc/git/gitContext.ts\nsrc/git/gitReadOps.ts\nsrc/git/index.ts\nsrc/git/processCleanup.ts\nsrc/git/remoteOps.ts\nsrc/git/repoWorkspace.ts\nsrc/git/types.ts\nsrc/git/workingDirectoryGuard.ts\nsrc/git/worktreeCreateOps.ts\nsrc/git/worktreeProbeOps.ts\nsrc/git/worktreeQueryOps.ts\nsrc/git/worktreeRemoveOps.ts\nsrc/git/worktreeResetOps.ts\nsrc/index.ts\nsrc/providers/__tests__/boardManager.test.ts\nsrc/providers/__tests__/forgeProviders.deps.test.ts\nsrc/providers/__tests__/forgeProviders.selection.test.ts\nsrc/providers/__tests__/forgeProviders.test.ts\nsrc/providers/__tests__/forgeProvidersFixture.ts\nsrc/providers/__tests__/refusalStubs.test.ts\nsrc/providers/__tests__/workspaceValidation.test.ts\nsrc/providers/forgeProviders.ts\nsrc/providers/github/__tests__/appAuth.test.ts\nsrc/providers/github/__tests__/cloneUrl.test.ts\nsrc/providers/github/__tests__/ghCommandRunner.test.ts\nsrc/providers/github/__tests__/ghIssueParsers.test.ts\nsrc/providers/github/__tests__/ghPrParsers.test.ts\nsrc/providers/github/__tests__/ghRepoApi.test.ts\nsrc/providers/github/__tests__/ghRepoApiCwd.test.ts\nsrc/providers/github/__tests__/gitContextFixture.ts\nsrc/providers/github/__tests__/githubBoardManager.test.ts\nsrc/providers/github/__tests__/githubCodeHost.test.ts\nsrc/providers/github/__tests__/githubIdentity.test.ts\nsrc/providers/github/__tests__/githubIssueTracker.test.ts\nsrc/providers/github/__tests__/githubIssueTrackerLabelPolicy.test.ts",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_01A8jw27Ptfza7TvFiDy2C58",
+    "duration_ms": 42
+  },
+  {
+    "session_id": "04aa6b9f-ba56-46b3-ba1b-2c748f91e95b",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/04aa6b9f-ba56-46b3-ba1b-2c748f91e95b.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "0b8a7534-8c08-4640-b69a-9671c612f09a",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/README.md"
+    },
+    "tool_response": {
+      "type": "text",
+      "file": {
+        "filePath": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/README.md",
+        "content": "# @paysdoc/devplatform\n\nA TypeScript library of forge-neutral git/worktree primitives plus GitHub, GitLab, and Jira adapters for building dev-workflow automation.\n\nExtracted from [AI_Dev_Workflow](https://github.com/paysdoc/AI_Dev_Workflow) with history.\nRelease automation is tracked as a separate issue in this repository.\n\n## Install\n\n```\nbun add @paysdoc/devplatform\n# or\nnpm i @paysdoc/devplatform\n```\n\nThe package ships three entry points:\n\n```ts\nimport { BoardStatus, type Issue, type RepoContext } from '@paysdoc/devplatform';         // forge ports + domain model\nimport { forgeProviders } from '@paysdoc/devplatform/providers';                          // adapter assembly + GitHub/GitLab/Jira adapters\nimport { GitContext, consoleLogger } from '@paysdoc/devplatform/git';                     // forge-neutral git/worktree core\n```\n\n## What it does\n\n- **Forge-neutral git executor** — `GitContext.exec()` is the single spawn site, env merge, cwd resolution, and ENOENT rewrap for every git command; no forge semantics leak into it.\n- **Identity-bound context construction** — a `GitContext` is built from a mandatory owner/repo/selfHost/tokenProvider/gitIdentity; incomplete identity fails at construction rather than at first use.\n- **Worktree lifecycle management** — create/ensure, list, remove, probe (health: `healthy`/`locked`/`prunable`/`missing`), and reset (takeover) operations for git worktrees under `.worktrees/`.\n- **Branch, commit, and remote operations** — branch creation/switching, commits, and remote push/fetch helpers layered on the shared executor.\n- **Working-directory guard** — turns a spawn ENOENT caused by a missing cwd into a diagnostic naming the path and repo identity, keyed off the OS-independent error `code`.\n- **Distributed-lock claim primitives** — detached-worktree add/remove, empty-commit nonce marking, and a never-forced push used to implement an atomic winner/loser election (e.g. for upgrade claims).\n- **Process cleanup** — kills processes still running inside a worktree directory before it is removed.\n- **Pluggable credential and logging ports** — `TokenProvider` (credential-purpose-scoped) and `Logger` ports let a consumer supply auth and logging without the core depending on either.\n- **Bootstrap-only git reads** — a narrow, structurally-exempt set of pre-context reads (origin remote URL, env/git-config identity) for use before a full `GitContext` exists.\n- **Forge-neutral provider interfaces** — `IssueTracker`, `CodeHost`, and `BoardManager` ports abstract issue tracking, PR/code hosting, and project boards across platforms.\n- **`forgeProviders()` assembly function** — binds one `RepoIdentifier` to a full provider triple, validating identity, token provider shape, and context binding before constructing any adapter; rejects unknown or wrong-port forge names via `UnknownForgeError`.\n- **GitHub adapter** — issue tracker, code host, and Projects V2 board manager built on the `gh` CLI, including issue/PR read and write operations, label management, GitHub App authentication, and token resolution.\n- **GitLab adapter** — code host implementation backed by a `curl`-based API client with injected configuration (no environment reads).\n- **Jira adapter** — issue tracker backed by the Jira REST API v3, including Markdown ↔ Atlassian Document Format (ADF) conversion.\n- **Board status model** — a canonical, ordered set of board columns (`Blocked`/`Todo`/`In Progress`/`Review`/`Done`) with colors and descriptions shared across board-capable adapters.\n- **Injected configuration everywhere** — GitLab, Jira, and GitHub App adapters take configuration as constructor arguments; none reads `process.env` or files directly, keeping the library embeddable in any host.\n- **Compiled ESM + type declarations** — `bun run build` emits `dist/**/*.js` and `dist/**/*.d.ts` via `tsc`, with a three-entry-point `exports` map (`.`, `./providers`, `./git`) and a `files` allow-list so `npm pack` ships only `dist/`, `README.md`, and `LICENSE`.\n- **CI type-check, unit-test, and package gate** — GitHub Actions runs `bun install`, `bun run typecheck`, and `bun run test:unit` on every PR and push to `main`, plus a second job that builds, packs, and smoke-tests the tarball under both Node and Bun.\n- **Release workflow placeholder** — a `Release` GitHub Actions job reserved for future semantic-release automation (tracked as a separate issue).\n- **Claude Code agent guardrails** — a hooked `.claude/settings.json` and `.claude/hooks/*` scripts (pre/post-tool-use, notification, stop, subagent-stop) constrain and observe agent tool use in this repo.\n\n## Setup\n\n1. Install dependencies: `bun install`\n2. Copy the environment template and fill in your own values: `cp .env.sample .env`\n3. Type-check: `bun run typecheck`\n4. Run the unit test suite: `bun run test:unit`\n5. Build: `bun run build`\n\n## Domain glossary\n\nSee [UBIQUITOUS_LANGUAGE.md](./UBIQUITOUS_LANGUAGE.md) for the canonical terms used across this codebase (identity, forge, provider, worktree, etc.).\n\n## Project Structure\n\n```\n.adw/                        ADW-generated project docs (project.md, providers.md, conditional_docs.md, ...)\n.claude/\n  hooks/                      Claude Code lifecycle hooks (pre/post-tool-use, notification, stop, subagent-stop)\n  settings.json                Agent permission/guardrail configuration\n.github/\n  workflows/ci.yml             Typecheck + unit test CI gate\n  workflows/release.yml        Release automation placeholder\n  adw.yml                      ADW guardrails toggle (outside .adw/, survives regeneration)\nfeatures/regression/vocabulary.md   Regression test vocabulary\nspecs/                        Per-issue implementation plans (ADW-generated)\nscripts/\n  smokePackage.ts             Builds, packs, and smoke-tests the tarball under Node + Bun (`bun run smoke:package`)\nsrc/\n  index.ts                    Root entry point (\".\"): forge ports + domain model only\n  git/                        Forge-neutral git/worktree core (GitContext, worktree ops, bootstrap identity, process cleanup) — entry point \"./git\"\n  providers/                  Forge provider ports and adapters — entry point \"./providers\"\n    github/                   GitHub adapter (issue tracker, code host, board manager, App auth, gh CLI commands)\n    gitlab/                   GitLab adapter (API client, code host, type mappers)\n    jira/                     Jira adapter (API client, issue tracker, ADF converter)\n    forgeProviders.ts          Provider assembly function\n    types.ts                   Platform-agnostic provider interfaces\ndist/                        Build output (gitignored) — emitted by `bun run build`\ntsconfig.json                 TypeScript strict-mode configuration (NodeNext modules/resolution)\ntsconfig.build.json            Build config: extends tsconfig.json, emits dist/**/*.js + dist/**/*.d.ts\nvitest.config.ts               Vitest configuration (JUnit output via $ADW_UNIT_TEST_REPORT_PATH)\n```\n",
+        "numLines": 88,
+        "startLine": 1,
+        "totalLines": 88
+      }
+    },
+    "tool_use_id": "toolu_018GNitex715PwceBghNPCGp",
+    "duration_ms": 1
+  },
+  {
+    "session_id": "04aa6b9f-ba56-46b3-ba1b-2c748f91e95b",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/04aa6b9f-ba56-46b3-ba1b-2c748f91e95b.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "0b8a7534-8c08-4640-b69a-9671c612f09a",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git ls-files | tail -150",
+      "description": "List remaining tracked files"
+    },
+    "tool_response": {
+      "stdout": ".adw-version\n.adw/commands.md\n.adw/conditional_docs.md\n.adw/project.md\n.adw/providers.md\n.adw/review_proof.md\n.adw/scenarios.md\n.claude/commands/install.md\n.claude/commands/prime.md\n.claude/hooks/notification.ts\n.claude/hooks/post-tool-use.ts\n.claude/hooks/pre-tool-use.ts\n.claude/hooks/stop.ts\n.claude/hooks/subagent-stop.ts\n.claude/hooks/utils/constants.ts\n.claude/settings.json\n.claude/skills/grill-me/SKILL.md\n.claude/skills/implement-tdd/SKILL.md\n.claude/skills/implement-tdd/deep-modules.md\n.claude/skills/implement-tdd/interface-design.md\n.claude/skills/implement-tdd/mocking.md\n.claude/skills/implement-tdd/refactoring.md\n.claude/skills/implement-tdd/tests.md\n.claude/skills/improve-codebase-architecture/REFERENCE.md\n.claude/skills/improve-codebase-architecture/SKILL.md\n.claude/skills/prd-to-issues/SKILL.md\n.claude/skills/tdd/SKILL.md\n.claude/skills/tdd/deep-modules.md\n.claude/skills/tdd/interface-design.md\n.claude/skills/tdd/mocking.md\n.claude/skills/tdd/refactoring.md\n.claude/skills/tdd/tests.md\n.claude/skills/ubiquitous-language/SKILL.md\n.claude/skills/write-a-prd/SKILL.md\n.github/adw.yml\n.github/workflows/ci.yml\n.github/workflows/release.yml\n.gitignore\nLICENSE\nREADME.md\nUBIQUITOUS_LANGUAGE.md\napp_docs/feature-wdjsgu-package-build-export-package-build.md\nbun.lock\nfeatures/regression/vocabulary.md\npackage.json\nscripts/smokePackage.ts\nspecs/issue-1-adw-wdjsgu-package-build-export-sdlc_planner-package-build-exports-ci.md\nsrc/__tests__/importGraph.test.ts\nsrc/__tests__/packageExports.test.ts\nsrc/git/__tests__/bootstrapIdentity.test.ts\nsrc/git/__tests__/claimOps.test.ts\nsrc/git/__tests__/commitOps.test.ts\nsrc/git/__tests__/gitContext.test.ts\nsrc/git/__tests__/gitContextOperations.test.ts\nsrc/git/__tests__/gitReadOps.test.ts\nsrc/git/__tests__/remoteOps.test.ts\nsrc/git/__tests__/repoApiCwd.test.ts\nsrc/git/__tests__/repoWorkspace.test.ts\nsrc/git/__tests__/workingDirectoryGuard.test.ts\nsrc/git/__tests__/worktreeLogger.test.ts\nsrc/git/bootstrapIdentity.ts\nsrc/git/branchOps.ts\nsrc/git/claimOps.ts\nsrc/git/commitOps.ts\nsrc/git/consoleLogger.ts\nsrc/git/gitContext.ts\nsrc/git/gitReadOps.ts\nsrc/git/index.ts\nsrc/git/processCleanup.ts\nsrc/git/remoteOps.ts\nsrc/git/repoWorkspace.ts\nsrc/git/types.ts\nsrc/git/workingDirectoryGuard.ts\nsrc/git/worktreeCreateOps.ts\nsrc/git/worktreeProbeOps.ts\nsrc/git/worktreeQueryOps.ts\nsrc/git/worktreeRemoveOps.ts\nsrc/git/worktreeResetOps.ts\nsrc/index.ts\nsrc/providers/__tests__/boardManager.test.ts\nsrc/providers/__tests__/forgeProviders.deps.test.ts\nsrc/providers/__tests__/forgeProviders.selection.test.ts\nsrc/providers/__tests__/forgeProviders.test.ts\nsrc/providers/__tests__/forgeProvidersFixture.ts\nsrc/providers/__tests__/refusalStubs.test.ts\nsrc/providers/__tests__/workspaceValidation.test.ts\nsrc/providers/forgeProviders.ts\nsrc/providers/github/__tests__/appAuth.test.ts\nsrc/providers/github/__tests__/cloneUrl.test.ts\nsrc/providers/github/__tests__/ghCommandRunner.test.ts\nsrc/providers/github/__tests__/ghIssueParsers.test.ts\nsrc/providers/github/__tests__/ghPrParsers.test.ts\nsrc/providers/github/__tests__/ghRepoApi.test.ts\nsrc/providers/github/__tests__/ghRepoApiCwd.test.ts\nsrc/providers/github/__tests__/gitContextFixture.ts\nsrc/providers/github/__tests__/githubBoardManager.test.ts\nsrc/providers/github/__tests__/githubCodeHost.test.ts\nsrc/providers/github/__tests__/githubIdentity.test.ts\nsrc/providers/github/__tests__/githubIssueTracker.test.ts\nsrc/providers/github/__tests__/githubIssueTrackerLabelPolicy.test.ts\nsrc/providers/github/__tests__/githubTokenProvider.test.ts\nsrc/providers/github/__tests__/tokenResolver.test.ts\nsrc/providers/github/appAuth.ts\nsrc/providers/github/cloneUrl.ts\nsrc/providers/github/commands/__tests__/issueCommands.test.ts\nsrc/providers/github/commands/boardCommands.ts\nsrc/providers/github/commands/issueCommands.ts\nsrc/providers/github/commands/labelCommands.ts\nsrc/providers/github/commands/prCommands.ts\nsrc/providers/github/commands/secretCommands.ts\nsrc/providers/github/contextBinding.ts\nsrc/providers/github/domain/issue.ts\nsrc/providers/github/domain/pullRequest.ts\nsrc/providers/github/ghAuthToken.ts\nsrc/providers/github/ghCommandRunner.ts\nsrc/providers/github/ghIssueApi.ts\nsrc/providers/github/ghIssueParsers.ts\nsrc/providers/github/ghPrApi.ts\nsrc/providers/github/ghPrParsers.ts\nsrc/providers/github/ghRepoApi.ts\nsrc/providers/github/githubBoardManager.ts\nsrc/providers/github/githubCodeHost.ts\nsrc/providers/github/githubIdentity.ts\nsrc/providers/github/githubIssueTracker.ts\nsrc/providers/github/githubTokenProvider.ts\nsrc/providers/github/index.ts\nsrc/providers/github/mappers.ts\nsrc/providers/github/tokenResolver.ts\nsrc/providers/gitlab/__tests__/gitlabApiClient.test.ts\nsrc/providers/gitlab/__tests__/gitlabCodeHost.test.ts\nsrc/providers/gitlab/gitlabApiClient.ts\nsrc/providers/gitlab/gitlabBoardManager.ts\nsrc/providers/gitlab/gitlabCodeHost.ts\nsrc/providers/gitlab/gitlabTypes.ts\nsrc/providers/gitlab/index.ts\nsrc/providers/gitlab/mappers.ts\nsrc/providers/index.ts\nsrc/providers/jira/__tests__/jiraApiClient.test.ts\nsrc/providers/jira/__tests__/jiraIssueTracker.test.ts\nsrc/providers/jira/adfConverter.ts\nsrc/providers/jira/index.ts\nsrc/providers/jira/jiraApiClient.ts\nsrc/providers/jira/jiraBoardManager.ts\nsrc/providers/jira/jiraIssueTracker.ts\nsrc/providers/jira/jiraTypes.ts\nsrc/providers/types.ts\nsrc/providers/workspaceValidation.ts\ntsconfig.build.json\ntsconfig.json\nvitest.config.ts",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_01Bwdxr8v9WtJSftsr8k4iqH",
+    "duration_ms": 32
+  },
+  {
+    "session_id": "04aa6b9f-ba56-46b3-ba1b-2c748f91e95b",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/04aa6b9f-ba56-46b3-ba1b-2c748f91e95b.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "0b8a7534-8c08-4640-b69a-9671c612f09a",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "find . -maxdepth 1 -iname \"*.sample*\"; ls -la .adw",
+      "description": "Find env sample files and list .adw dir"
+    },
+    "tool_response": {
+      "stdout": "total 56\ndrwxr-xr-x@  8 martin  staff   256 Sep 10 13:13 .\ndrwxr-xr-x@ 23 martin  staff   736 Sep 10 13:14 ..\n-rw-r--r--@  1 martin  staff  1086 Sep 10 13:13 commands.md\n-rw-r--r--@  1 martin  staff  2614 Sep 10 13:13 conditional_docs.md\n-rw-r--r--@  1 martin  staff  4197 Sep 10 13:13 project.md\n-rw-r--r--@  1 martin  staff   154 Sep 10 13:13 providers.md\n-rw-r--r--@  1 martin  staff  2296 Sep 10 13:13 review_proof.md\n-rw-r--r--@  1 martin  staff   334 Sep 10 13:13 scenarios.md",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_0153TBYpFGp4i2xRp8ephKC7",
+    "duration_ms": 30
+  },
+  {
+    "session_id": "04aa6b9f-ba56-46b3-ba1b-2c748f91e95b",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/04aa6b9f-ba56-46b3-ba1b-2c748f91e95b.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "0b8a7534-8c08-4640-b69a-9671c612f09a",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "cat .gitignore; echo ---; find . -maxdepth 2 -iname \"*env*\" -not -path \"./node_modules/*\"; echo ---; cat .adw/project.md",
+      "description": "Check gitignore, env-related files, and project.md"
+    },
+    "tool_response": {
+      "stdout": "node_modules/\ndist/\n*.tsbuildinfo\n\n# local env files\n.env\n.env*.local\n# ADW: copied slash commands (do not commit)\n.claude/commands/adw_init.md\n.adw/.regen-receipt\n# ADW: copied slash commands (do not commit)\n.claude/commands/align_plan_scenarios.md\n.claude/commands/bug.md\n.claude/commands/chore.md\n.claude/commands/classify_issue.md\n.claude/commands/clean_local_repo.md\n.claude/commands/commit.md\n.claude/commands/conditional_docs.md\n.claude/commands/diff_evaluator.md\n.claude/commands/document.md\n.claude/commands/extract_dependencies.md\n.claude/commands/feature.md\n.claude/commands/find_issue_dependencies.md\n.claude/commands/generate_branch_name.md\n.claude/commands/generate_step_definitions.md\n.claude/commands/implement.md\n.claude/commands/patch.md\n.claude/commands/pr_review.md\n.claude/commands/promote_regression_vocabulary.md\n.claude/commands/pull_request.md\n.claude/commands/resolve_conflict.md\n.claude/commands/resolve_failed_scenario.md\n.claude/commands/resolve_failed_test.md\n.claude/commands/resolve_plan_scenarios.md\n.claude/commands/review.md\n.claude/commands/scenario_writer.md\n.claude/commands/test.md\n.claude/commands/tools.md\n.claude/commands/validate_plan_scenarios.md\n.claude/commands/validate_scenario_fidelity.md\n.claude/skills/depaudit-triage/\n.claude/skills/pr-lens/\n.claude/skills/promote-regression-vocabulary/\n.claude/skills/refactor/\n.claude/skills/write-a-skill/\n---\n./.env\n---\n## Project Overview\n`@paysdoc/devplatform` is a TypeScript library providing forge ports and adapters (GitHub, GitLab,\nJira) over a forge-neutral git/worktree core. It was extracted from the `AI_Dev_Workflow` repository\nwith history. `bun run build` compiles `src/` to `dist/**/*.js` + `dist/**/*.d.ts` via `tsc`, and\n`package.json` exposes three entry points (`.`, `./providers`, `./git`). Release automation\n(`npm publish`) is still tracked as a separate open issue in this repository (see README.md).\n\n## Relevant Files\n- `src/index.ts` — Root package entry point (`\".\"`): re-exports the forge ports and domain model\n  from `src/providers/types.ts` only — no adapter, no `forgeProviders`.\n- `src/git/` — Forge-neutral git/worktree core: identity bootstrap, branch/commit/remote\n  operations, worktree create/remove/probe/query/reset, claim ops, working-directory guard, git\n  context, and a console logger. Each module has a co-located `__tests__/` suite. `src/git/index.ts`\n  is the `\"./git\"` entry point.\n- `src/providers/forgeProviders.ts`, `src/providers/index.ts`, `src/providers/types.ts` — Forge\n  provider selection/registration surface: the neutral abstraction that the GitHub/GitLab/Jira\n  adapters implement. `src/providers/index.ts` is the `\"./providers\"` entry point.\n- `src/providers/workspaceValidation.ts` — Workspace validation shared across providers.\n- `src/providers/github/` — GitHub adapter: `gh` CLI command runner, issue/PR parsers and APIs,\n  board manager, code host, App auth, identity, and token resolution, plus `commands/` for\n  issue/PR/board/label/secret CLI commands.\n- `src/providers/gitlab/` — GitLab adapter: API client, code host, board manager, type mappers.\n- `src/providers/jira/` — Jira adapter: API client, issue tracker, board manager, ADF (Atlassian\n  Document Format) converter.\n- `src/__tests__/importGraph.test.ts` — static import-graph walker asserting `\"./git\"` and `\".\"`\n  reach no adapter module and no `forgeProviders`.\n- `src/__tests__/packageExports.test.ts` — asserts the `package.json` `exports`/`files` contract.\n- `tsconfig.build.json` — build-only tsconfig (extends `tsconfig.json`, emits `dist/`, excludes\n  `__tests__/`).\n- `scripts/smokePackage.ts` — builds, packs, and smoke-tests the tarball under Node + Bun (`bun run\n  smoke:package`).\n- `.github/adw.yml` — ADW configuration living outside `.adw/` (guardrails toggle); not overwritten\n  by `/adw_init` regeneration.\n- `.github/workflows/ci.yml` — CI: `check` job (`bun install`, `bun run typecheck`, `bun run\n  test:unit`) plus a `package` job (`bun run build`, `npm pack --dry-run`, `bun run smoke:package`).\n- `vitest.config.ts` — Test runner config; already wires JUnit output via\n  `$ADW_UNIT_TEST_REPORT_PATH`.\n\n## Framework Notes\n- Runtime/tooling: Bun (package manager and script runner), TypeScript (strict mode, ES2022,\n  `module`/`moduleResolution: NodeNext`), Vitest for unit tests.\n- No linter is currently configured.\n- A build step exists: `bun run build` runs `tsc -p tsconfig.build.json`, emitting\n  `dist/**/*.js` + `dist/**/*.d.ts` from `src/`. `moduleResolution` is `NodeNext` (not `bundler`),\n  which enforces explicit `.js` extensions on every relative import specifier at typecheck time.\n  `tsc --noEmit` is still used for both `typecheck` and `test` npm-scripts (the latter is a naming\n  quirk — it does not run the test suite).\n- The actual unit-test suite is run via `bun run test:unit` (vitest).\n\n## Library Install Command\n`bun add <package>` for runtime dependencies, `bun add -d <package>` for dev dependencies.\n\n## Script Execution\n`bun run <script-name>` (see `package.json` scripts: `typecheck`, `test:unit`, `test`), or\n`bunx tsx <file.ts>` for ad-hoc script execution.\n\n## Agent Guardrails\n`.claude/settings.json` already existed in this repository prior to `/adw_init` running, so ADW left\nit untouched and did not apply the starter guardrails template (step 7 skip-if-exists rule). The\nexisting file defines its own permission allow/deny list and wires the repo's `.claude/hooks/*`\nscripts (pre-tool-use, post-tool-use, notification, stop, subagent-stop) via\n`bunx tsx $CLAUDE_PROJECT_DIR/.claude/hooks/...`.",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_013mFM5m33oWZ9rViEJo7RJg",
+    "duration_ms": 27
+  },
+  {
+    "session_id": "04aa6b9f-ba56-46b3-ba1b-2c748f91e95b",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/04aa6b9f-ba56-46b3-ba1b-2c748f91e95b.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "0b8a7534-8c08-4640-b69a-9671c612f09a",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git log --all --diff-filter=A --name-only -- '*.env.sample*' | head -20; echo ---; git show HEAD --stat | head -5; echo ---; cat package.json",
+      "description": "Search git history for .env.sample and view package.json"
+    },
+    "tool_response": {
+      "stdout": "---\ncommit fee68b9344f4fda32eeb6298a5062d7a6859d2c5\nMerge: cb3e9ab 7e8e799\nAuthor: paysdoc-adw[bot] <268826933+paysdoc-adw[bot]@users.noreply.github.com>\nDate:   Thu Sep 10 13:13:09 2026 +0200\n\n---\n{\n  \"name\": \"@paysdoc/devplatform\",\n  \"version\": \"0.0.0-development\",\n  \"description\": \"Forge ports and adapters (GitHub, GitLab, Jira) over a forge-neutral git/worktree core\",\n  \"type\": \"module\",\n  \"license\": \"MIT\",\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/paysdoc/devplatform.git\"\n  },\n  \"main\": \"./dist/index.js\",\n  \"types\": \"./dist/index.d.ts\",\n  \"exports\": {\n    \".\": {\n      \"types\": \"./dist/index.d.ts\",\n      \"import\": \"./dist/index.js\",\n      \"default\": \"./dist/index.js\"\n    },\n    \"./providers\": {\n      \"types\": \"./dist/providers/index.d.ts\",\n      \"import\": \"./dist/providers/index.js\",\n      \"default\": \"./dist/providers/index.js\"\n    },\n    \"./git\": {\n      \"types\": \"./dist/git/index.d.ts\",\n      \"import\": \"./dist/git/index.js\",\n      \"default\": \"./dist/git/index.js\"\n    },\n    \"./package.json\": \"./package.json\"\n  },\n  \"files\": [\"dist\", \"README.md\", \"LICENSE\"],\n  \"sideEffects\": false,\n  \"publishConfig\": {\n    \"access\": \"public\"\n  },\n  \"engines\": {\n    \"node\": \">=20\"\n  },\n  \"scripts\": {\n    \"typecheck\": \"tsc --noEmit\",\n    \"test:unit\": \"vitest run\",\n    \"test\": \"tsc --noEmit\",\n    \"clean\": \"node -e \\\"require('node:fs').rmSync('dist',{recursive:true,force:true})\\\"\",\n    \"build\": \"bun run clean && tsc -p tsconfig.build.json\",\n    \"smoke:package\": \"bunx tsx scripts/smokePackage.ts\",\n    \"prepack\": \"bun run build\"\n  },\n  \"devDependencies\": {\n    \"@types/node\": \"^25.3.0\",\n    \"tsx\": \"^4.19.3\",\n    \"typescript\": \"^5.7.3\",\n    \"vitest\": \"^4.1.0\"\n  }\n}",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_013yganuXX28tMFbfy1DhVwT",
+    "duration_ms": 60
+  },
+  {
+    "session_id": "04aa6b9f-ba56-46b3-ba1b-2c748f91e95b",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/04aa6b9f-ba56-46b3-ba1b-2c748f91e95b.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "0b8a7534-8c08-4640-b69a-9671c612f09a",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "find .claude -maxdepth 2 -type d; echo ---; ls app_docs; echo ---; ls specs; echo ---; bun --version 2>/dev/null || echo no-bun",
+      "description": "Inspect .claude subdirectories, app_docs, specs, and bun availability"
+    },
+    "tool_response": {
+      "stdout": ".claude\n.claude/hooks\n.claude/commands\n.claude/skills\n.claude/hooks/utils\n.claude/skills/depaudit-triage\n.claude/skills/write-a-prd\n.claude/skills/promote-regression-vocabulary\n.claude/skills/pr-lens\n.claude/skills/ubiquitous-language\n.claude/skills/implement-tdd\n.claude/skills/improve-codebase-architecture\n.claude/skills/prd-to-issues\n.claude/skills/write-a-skill\n.claude/skills/tdd\n.claude/skills/grill-me\n.claude/skills/refactor\n---\nfeature-wdjsgu-package-build-export-package-build.md\n---\nissue-1-adw-wdjsgu-package-build-export-sdlc_planner-package-build-exports-ci.md\n---\n1.3.6",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_014B5kRnycGDaVsuMGaEdC3x",
+    "duration_ms": 37
+  },
+  {
+    "session_id": "04aa6b9f-ba56-46b3-ba1b-2c748f91e95b",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/04aa6b9f-ba56-46b3-ba1b-2c748f91e95b.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "0b8a7534-8c08-4640-b69a-9671c612f09a",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "bun install",
+      "description": "Install project dependencies with bun"
+    },
+    "tool_response": {
+      "stdout": "[0.25ms] \".env\"\nbun install v1.3.6 (d530ed99)\n\n+ @types/node@25.9.6\n+ tsx@4.23.13\n+ typescript@5.9.3\n+ vitest@4.1.11\n\n51 packages installed [18.00ms]",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_01CtKqH5ZS9182rER7GA87X2",
+    "duration_ms": 39
+  },
+  {
+    "session_id": "04aa6b9f-ba56-46b3-ba1b-2c748f91e95b",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/04aa6b9f-ba56-46b3-ba1b-2c748f91e95b.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "0b8a7534-8c08-4640-b69a-9671c612f09a",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/README.md",
+      "old_string": "```\n.adw/                        ADW-generated project docs (project.md, providers.md, conditional_docs.md, ...)\n.claude/\n  hooks/                      Claude Code lifecycle hooks (pre/post-tool-use, notification, stop, subagent-stop)\n  settings.json                Agent permission/guardrail configuration\n.github/\n  workflows/ci.yml             Typecheck + unit test CI gate\n  workflows/release.yml        Release automation placeholder\n  adw.yml                      ADW guardrails toggle (outside .adw/, survives regeneration)\nfeatures/regression/vocabulary.md   Regression test vocabulary\nspecs/                        Per-issue implementation plans (ADW-generated)\nscripts/\n  smokePackage.ts             Builds, packs, and smoke-tests the tarball under Node + Bun (`bun run smoke:package`)\nsrc/\n  index.ts                    Root entry point (\".\"): forge ports + domain model only\n  git/                        Forge-neutral git/worktree core (GitContext, worktree ops, bootstrap identity, process cleanup) — entry point \"./git\"\n  providers/                  Forge provider ports and adapters — entry point \"./providers\"\n    github/                   GitHub adapter (issue tracker, code host, board manager, App auth, gh CLI commands)\n    gitlab/                   GitLab adapter (API client, code host, type mappers)\n    jira/                     Jira adapter (API client, issue tracker, ADF converter)\n    forgeProviders.ts          Provider assembly function\n    types.ts                   Platform-agnostic provider interfaces\ndist/                        Build output (gitignored) — emitted by `bun run build`\ntsconfig.json                 TypeScript strict-mode configuration (NodeNext modules/resolution)\ntsconfig.build.json            Build config: extends tsconfig.json, emits dist/**/*.js + dist/**/*.d.ts\nvitest.config.ts               Vitest configuration (JUnit output via $ADW_UNIT_TEST_REPORT_PATH)\n```",
+      "new_string": "```\n.adw/                        ADW-generated project docs (project.md, providers.md, commands.md, conditional_docs.md, review_proof.md, scenarios.md)\n.adw-version                  ADW template version marker\n.claude/\n  commands/                   ADW-copied slash commands (gitignored except install.md, prime.md)\n  hooks/                      Claude Code lifecycle hooks (pre/post-tool-use, notification, stop, subagent-stop)\n  skills/                     Agent skills (TDD, PRD authoring, architecture review, ubiquitous language, ...)\n  settings.json                Agent permission/guardrail configuration\n.github/\n  workflows/ci.yml             Typecheck + unit test CI gate, plus build/pack/smoke-test package gate\n  workflows/release.yml        Release automation placeholder\n  adw.yml                      ADW guardrails toggle (outside .adw/, survives regeneration)\napp_docs/                    Generated per-feature documentation\nfeatures/regression/vocabulary.md   Regression test vocabulary\nspecs/                        Per-issue implementation plans (ADW-generated)\nscripts/\n  smokePackage.ts             Builds, packs, and smoke-tests the tarball under Node + Bun (`bun run smoke:package`)\nsrc/\n  index.ts                    Root entry point (\".\"): forge ports + domain model only\n  __tests__/                  Import-graph and package-exports contract tests\n  git/                        Forge-neutral git/worktree core (GitContext, worktree ops, bootstrap identity, process cleanup) — entry point \"./git\"\n  providers/                  Forge provider ports and adapters — entry point \"./providers\"\n    github/                   GitHub adapter (issue tracker, code host, board manager, App auth, gh CLI commands)\n    gitlab/                   GitLab adapter (API client, code host, type mappers)\n    jira/                     Jira adapter (API client, issue tracker, ADF converter)\n    forgeProviders.ts          Provider assembly function\n    types.ts                   Platform-agnostic provider interfaces\ndist/                        Build output (gitignored) — emitted by `bun run build`\ntsconfig.json                 TypeScript strict-mode configuration (NodeNext modules/resolution)\ntsconfig.build.json            Build config: extends tsconfig.json, emits dist/**/*.js + dist/**/*.d.ts\nvitest.config.ts               Vitest configuration (JUnit output via $ADW_UNIT_TEST_REPORT_PATH)\n```",
+      "replace_all": false
+    },
+    "tool_response": {
+      "filePath": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/README.md",
+      "oldString": "```\n.adw/                        ADW-generated project docs (project.md, providers.md, conditional_docs.md, ...)\n.claude/\n  hooks/                      Claude Code lifecycle hooks (pre/post-tool-use, notification, stop, subagent-stop)\n  settings.json                Agent permission/guardrail configuration\n.github/\n  workflows/ci.yml             Typecheck + unit test CI gate\n  workflows/release.yml        Release automation placeholder\n  adw.yml                      ADW guardrails toggle (outside .adw/, survives regeneration)\nfeatures/regression/vocabulary.md   Regression test vocabulary\nspecs/                        Per-issue implementation plans (ADW-generated)\nscripts/\n  smokePackage.ts             Builds, packs, and smoke-tests the tarball under Node + Bun (`bun run smoke:package`)\nsrc/\n  index.ts                    Root entry point (\".\"): forge ports + domain model only\n  git/                        Forge-neutral git/worktree core (GitContext, worktree ops, bootstrap identity, process cleanup) — entry point \"./git\"\n  providers/                  Forge provider ports and adapters — entry point \"./providers\"\n    github/                   GitHub adapter (issue tracker, code host, board manager, App auth, gh CLI commands)\n    gitlab/                   GitLab adapter (API client, code host, type mappers)\n    jira/                     Jira adapter (API client, issue tracker, ADF converter)\n    forgeProviders.ts          Provider assembly function\n    types.ts                   Platform-agnostic provider interfaces\ndist/                        Build output (gitignored) — emitted by `bun run build`\ntsconfig.json                 TypeScript strict-mode configuration (NodeNext modules/resolution)\ntsconfig.build.json            Build config: extends tsconfig.json, emits dist/**/*.js + dist/**/*.d.ts\nvitest.config.ts               Vitest configuration (JUnit output via $ADW_UNIT_TEST_REPORT_PATH)\n```",
+      "newString": "```\n.adw/                        ADW-generated project docs (project.md, providers.md, commands.md, conditional_docs.md, review_proof.md, scenarios.md)\n.adw-version                  ADW template version marker\n.claude/\n  commands/                   ADW-copied slash commands (gitignored except install.md, prime.md)\n  hooks/                      Claude Code lifecycle hooks (pre/post-tool-use, notification, stop, subagent-stop)\n  skills/                     Agent skills (TDD, PRD authoring, architecture review, ubiquitous language, ...)\n  settings.json                Agent permission/guardrail configuration\n.github/\n  workflows/ci.yml             Typecheck + unit test CI gate, plus build/pack/smoke-test package gate\n  workflows/release.yml        Release automation placeholder\n  adw.yml                      ADW guardrails toggle (outside .adw/, survives regeneration)\napp_docs/                    Generated per-feature documentation\nfeatures/regression/vocabulary.md   Regression test vocabulary\nspecs/                        Per-issue implementation plans (ADW-generated)\nscripts/\n  smokePackage.ts             Builds, packs, and smoke-tests the tarball under Node + Bun (`bun run smoke:package`)\nsrc/\n  index.ts                    Root entry point (\".\"): forge ports + domain model only\n  __tests__/                  Import-graph and package-exports contract tests\n  git/                        Forge-neutral git/worktree core (GitContext, worktree ops, bootstrap identity, process cleanup) — entry point \"./git\"\n  providers/                  Forge provider ports and adapters — entry point \"./providers\"\n    github/                   GitHub adapter (issue tracker, code host, board manager, App auth, gh CLI commands)\n    gitlab/                   GitLab adapter (API client, code host, type mappers)\n    jira/                     Jira adapter (API client, issue tracker, ADF converter)\n    forgeProviders.ts          Provider assembly function\n    types.ts                   Platform-agnostic provider interfaces\ndist/                        Build output (gitignored) — emitted by `bun run build`\ntsconfig.json                 TypeScript strict-mode configuration (NodeNext modules/resolution)\ntsconfig.build.json            Build config: extends tsconfig.json, emits dist/**/*.js + dist/**/*.d.ts\nvitest.config.ts               Vitest configuration (JUnit output via $ADW_UNIT_TEST_REPORT_PATH)\n```",
+      "originalFile": "# @paysdoc/devplatform\n\nA TypeScript library of forge-neutral git/worktree primitives plus GitHub, GitLab, and Jira adapters for building dev-workflow automation.\n\nExtracted from [AI_Dev_Workflow](https://github.com/paysdoc/AI_Dev_Workflow) with history.\nRelease automation is tracked as a separate issue in this repository.\n\n## Install\n\n```\nbun add @paysdoc/devplatform\n# or\nnpm i @paysdoc/devplatform\n```\n\nThe package ships three entry points:\n\n```ts\nimport { BoardStatus, type Issue, type RepoContext } from '@paysdoc/devplatform';         // forge ports + domain model\nimport { forgeProviders } from '@paysdoc/devplatform/providers';                          // adapter assembly + GitHub/GitLab/Jira adapters\nimport { GitContext, consoleLogger } from '@paysdoc/devplatform/git';                     // forge-neutral git/worktree core\n```\n\n## What it does\n\n- **Forge-neutral git executor** — `GitContext.exec()` is the single spawn site, env merge, cwd resolution, and ENOENT rewrap for every git command; no forge semantics leak into it.\n- **Identity-bound context construction** — a `GitContext` is built from a mandatory owner/repo/selfHost/tokenProvider/gitIdentity; incomplete identity fails at construction rather than at first use.\n- **Worktree lifecycle management** — create/ensure, list, remove, probe (health: `healthy`/`locked`/`prunable`/`missing`), and reset (takeover) operations for git worktrees under `.worktrees/`.\n- **Branch, commit, and remote operations** — branch creation/switching, commits, and remote push/fetch helpers layered on the shared executor.\n- **Working-directory guard** — turns a spawn ENOENT caused by a missing cwd into a diagnostic naming the path and repo identity, keyed off the OS-independent error `code`.\n- **Distributed-lock claim primitives** — detached-worktree add/remove, empty-commit nonce marking, and a never-forced push used to implement an atomic winner/loser election (e.g. for upgrade claims).\n- **Process cleanup** — kills processes still running inside a worktree directory before it is removed.\n- **Pluggable credential and logging ports** — `TokenProvider` (credential-purpose-scoped) and `Logger` ports let a consumer supply auth and logging without the core depending on either.\n- **Bootstrap-only git reads** — a narrow, structurally-exempt set of pre-context reads (origin remote URL, env/git-config identity) for use before a full `GitContext` exists.\n- **Forge-neutral provider interfaces** — `IssueTracker`, `CodeHost`, and `BoardManager` ports abstract issue tracking, PR/code hosting, and project boards across platforms.\n- **`forgeProviders()` assembly function** — binds one `RepoIdentifier` to a full provider triple, validating identity, token provider shape, and context binding before constructing any adapter; rejects unknown or wrong-port forge names via `UnknownForgeError`.\n- **GitHub adapter** — issue tracker, code host, and Projects V2 board manager built on the `gh` CLI, including issue/PR read and write operations, label management, GitHub App authentication, and token resolution.\n- **GitLab adapter** — code host implementation backed by a `curl`-based API client with injected configuration (no environment reads).\n- **Jira adapter** — issue tracker backed by the Jira REST API v3, including Markdown ↔ Atlassian Document Format (ADF) conversion.\n- **Board status model** — a canonical, ordered set of board columns (`Blocked`/`Todo`/`In Progress`/`Review`/`Done`) with colors and descriptions shared across board-capable adapters.\n- **Injected configuration everywhere** — GitLab, Jira, and GitHub App adapters take configuration as constructor arguments; none reads `process.env` or files directly, keeping the library embeddable in any host.\n- **Compiled ESM + type declarations** — `bun run build` emits `dist/**/*.js` and `dist/**/*.d.ts` via `tsc`, with a three-entry-point `exports` map (`.`, `./providers`, `./git`) and a `files` allow-list so `npm pack` ships only `dist/`, `README.md`, and `LICENSE`.\n- **CI type-check, unit-test, and package gate** — GitHub Actions runs `bun install`, `bun run typecheck`, and `bun run test:unit` on every PR and push to `main`, plus a second job that builds, packs, and smoke-tests the tarball under both Node and Bun.\n- **Release workflow placeholder** — a `Release` GitHub Actions job reserved for future semantic-release automation (tracked as a separate issue).\n- **Claude Code agent guardrails** — a hooked `.claude/settings.json` and `.claude/hooks/*` scripts (pre/post-tool-use, notification, stop, subagent-stop) constrain and observe agent tool use in this repo.\n\n## Setup\n\n1. Install dependencies: `bun install`\n2. Copy the environment template and fill in your own values: `cp .env.sample .env`\n3. Type-check: `bun run typecheck`\n4. Run the unit test suite: `bun run test:unit`\n5. Build: `bun run build`\n\n## Domain glossary\n\nSee [UBIQUITOUS_LANGUAGE.md](./UBIQUITOUS_LANGUAGE.md) for the canonical terms used across this codebase (identity, forge, provider, worktree, etc.).\n\n## Project Structure\n\n```\n.adw/                        ADW-generated project docs (project.md, providers.md, conditional_docs.md, ...)\n.claude/\n  hooks/                      Claude Code lifecycle hooks (pre/post-tool-use, notification, stop, subagent-stop)\n  settings.json                Agent permission/guardrail configuration\n.github/\n  workflows/ci.yml             Typecheck + unit test CI gate\n  workflows/release.yml        Release automation placeholder\n  adw.yml                      ADW guardrails toggle (outside .adw/, survives regeneration)\nfeatures/regression/vocabulary.md   Regression test vocabulary\nspecs/                        Per-issue implementation plans (ADW-generated)\nscripts/\n  smokePackage.ts             Builds, packs, and smoke-tests the tarball under Node + Bun (`bun run smoke:package`)\nsrc/\n  index.ts                    Root entry point (\".\"): forge ports + domain model only\n  git/                        Forge-neutral git/worktree core (GitContext, worktree ops, bootstrap identity, process cleanup) — entry point \"./git\"\n  providers/                  Forge provider ports and adapters — entry point \"./providers\"\n    github/                   GitHub adapter (issue tracker, code host, board manager, App auth, gh CLI commands)\n    gitlab/                   GitLab adapter (API client, code host, type mappers)\n    jira/                     Jira adapter (API client, issue tracker, ADF converter)\n    forgeProviders.ts          Provider assembly function\n    types.ts                   Platform-agnostic provider interfaces\ndist/                        Build output (gitignored) — emitted by `bun run build`\ntsconfig.json                 TypeScript strict-mode configuration (NodeNext modules/resolution)\ntsconfig.build.json            Build config: extends tsconfig.json, emits dist/**/*.js + dist/**/*.d.ts\nvitest.config.ts               Vitest configuration (JUnit output via $ADW_UNIT_TEST_REPORT_PATH)\n```\n",
+      "structuredPatch": [
+        {
+          "oldStart": 59,
+          "oldLines": 20,
+          "newStart": 59,
+          "newLines": 25,
+          "lines": [
+            " ## Project Structure",
+            " ",
+            " ```",
+            "-.adw/                        ADW-generated project docs (project.md, providers.md, conditional_docs.md, ...)",
+            "+.adw/                        ADW-generated project docs (project.md, providers.md, commands.md, conditional_docs.md, review_proof.md, scenarios.md)",
+            "+.adw-version                  ADW template version marker",
+            " .claude/",
+            "+  commands/                   ADW-copied slash commands (gitignored except install.md, prime.md)",
+            "   hooks/                      Claude Code lifecycle hooks (pre/post-tool-use, notification, stop, subagent-stop)",
+            "+  skills/                     Agent skills (TDD, PRD authoring, architecture review, ubiquitous language, ...)",
+            "   settings.json                Agent permission/guardrail configuration",
+            " .github/",
+            "-  workflows/ci.yml             Typecheck + unit test CI gate",
+            "+  workflows/ci.yml             Typecheck + unit test CI gate, plus build/pack/smoke-test package gate",
+            "   workflows/release.yml        Release automation placeholder",
+            "   adw.yml                      ADW guardrails toggle (outside .adw/, survives regeneration)",
+            "+app_docs/                    Generated per-feature documentation",
+            " features/regression/vocabulary.md   Regression test vocabulary",
+            " specs/                        Per-issue implementation plans (ADW-generated)",
+            " scripts/",
+            "   smokePackage.ts             Builds, packs, and smoke-tests the tarball under Node + Bun (`bun run smoke:package`)",
+            " src/",
+            "   index.ts                    Root entry point (\".\"): forge ports + domain model only",
+            "+  __tests__/                  Import-graph and package-exports contract tests",
+            "   git/                        Forge-neutral git/worktree core (GitContext, worktree ops, bootstrap identity, process cleanup) — entry point \"./git\"",
+            "   providers/                  Forge provider ports and adapters — entry point \"./providers\"",
+            "     github/                   GitHub adapter (issue tracker, code host, board manager, App auth, gh CLI commands)"
+          ]
+        }
+      ],
+      "userModified": false,
+      "replaceAll": false
+    },
+    "tool_use_id": "toolu_01Cm6rqgLpMwtXQkQjUeFjuW",
+    "duration_ms": 3
+  },
+  {
+    "session_id": "04aa6b9f-ba56-46b3-ba1b-2c748f91e95b",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/04aa6b9f-ba56-46b3-ba1b-2c748f91e95b.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "0b8a7534-8c08-4640-b69a-9671c612f09a",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/UBIQUITOUS_LANGUAGE.md"
+    },
+    "tool_response": {
+      "type": "text",
+      "file": {
+        "filePath": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/UBIQUITOUS_LANGUAGE.md",
+        "content": "# Ubiquitous Language\n\n## Git core\n\n| Term | Definition | Aliases to avoid |\n|------|-----------|-----------------|\n| **GitContext** | The identity-bound authority for \"which repo's filesystem,\" and the single owner of the forge-neutral executor | Repo context, git client |\n| **exec()** | GitContext's single spawn site: one env merge, one cwd resolution, one ENOENT rewrap, for every git command | Run command, shell out |\n| **Identity** | The mandatory owner/repo/selfHost/tokenProvider/gitIdentity bundle a GitContext is constructed from | Config, credentials |\n| **Worktree** | A checked-out working copy of a branch, registered under `.worktrees/`, distinct from the main repo checkout | Clone, checkout |\n| **Worktree registration** | A worktree's health state as reported by a probe: `healthy`, `locked`, `prunable`, or `missing` | Worktree status |\n| **Takeover (reset)** | The orchestration that reclaims a worktree left in a bad state (e.g. aborts an in-progress merge) so it can be reused | Recovery, cleanup |\n| **Bootstrap read** | One of a narrow set of pre-context git reads (origin remote URL, env/git-config identity) that run before a full GitContext exists | Pre-init read |\n| **Claim** | A distributed-lock election performed via a detached worktree, an allow-empty nonce commit, and a never-forced push whose rejection is the lock | Election, lock |\n| **TokenProvider** | The port a forge adapter implements to hand GitContext a credential for a given purpose, instead of GitContext holding one itself | Credential store, auth provider |\n| **Logger port** | The injected logging seam (`Logger`/`LogLevel`, defaulting to `consoleLogger`) that keeps this package free of a dependency on the host's logger | Log sink |\n\n## Forge providers\n\n| Term | Definition | Aliases to avoid |\n|------|-----------|-----------------|\n| **Forge** | A platform that hosts code and/or tracks issues — GitHub, GitLab, or Jira in this codebase | Platform, provider (as a noun for the platform itself) |\n| **Adapter** | A forge-specific implementation of one or more provider ports (e.g. the GitHub adapter implements IssueTracker, CodeHost, and BoardManager) | Integration, connector |\n| **Port** | A platform-agnostic interface — `IssueTracker`, `CodeHost`, or `BoardManager` — that adapters implement and consumers depend on | Interface (when unqualified), contract |\n| **IssueTracker** | The port for issue/ticket operations: fetch, comment, label, close, list, move status | Ticket API |\n| **CodeHost** | The port for PR/code-hosting operations: create, fetch, comment, approve, merge, list pull requests | Repo API, VCS host |\n| **BoardManager** | The port for project-board discovery, creation, and column configuration | Project API |\n| **RepoIdentifier** | The platform-agnostic `{owner, repo, platform}` triple that names a repository | Repo id, repo slug |\n| **BoundProviders** | The `{issueTracker, codeHost, boardManager?}` triple returned by `forgeProviders()`, all bound to one identity | Provider set |\n| **RepoContext** | A `BoundProviders` plus `{cwd, repoId}`, passed through workflow phases so they stay decoupled from a specific platform | Workflow context |\n| **forgeProviders()** | The library's single public assembly function: validates identity, token provider shape, and context binding, then constructs the bound provider triple | Provider factory |\n| **ForgeSelection** | The `{codeHost, issueTracker}` pair naming which forge implements each port for a given assembly call | Forge config |\n| **UnknownForgeError** | Thrown by `forgeProviders()` when a forge name falls outside the closed union for its port | Invalid forge |\n| **BoardStatus** | The canonical, ordered set of board columns — Blocked, Todo, In Progress, Review, Done — shared across board-capable adapters | Board column, status |\n| **ForgeActionResult** | A forge mutation's outcome reported as `{success, error?}` rather than thrown | Result, response |\n\n## Relationships\n\n- A **GitContext** is constructed from exactly one **Identity** and exposes **exec()** as the sole spawn site.\n- A **Worktree** belongs to exactly one **GitContext**'s base repository and has one **Worktree registration** at any time.\n- **forgeProviders()** takes one **ForgeSelection** and one **Identity** and returns one **BoundProviders**.\n- A **BoundProviders** contains exactly one **IssueTracker** and one **CodeHost**, and at most one **BoardManager**.\n- Each **Adapter** implements one or more **Ports**, but never more than one **Adapter** backs a given **Port** within a single **BoundProviders**.\n- A **RepoContext** extends **BoundProviders** with the **RepoIdentifier** and working directory it was assembled for.\n\n## Example dialogue\n\n> **Dev:** \"Where does the `gh` CLI call actually happen when we fetch an issue?\"\n> **Domain expert:** \"Inside the GitHub **Adapter**'s **IssueTracker** implementation — it binds a command runner once, over the **GitContext** the caller already holds. The **Adapter** never constructs its own context.\"\n> **Dev:** \"And if I ask `forgeProviders()` for GitLab as the code host but don't pass GitLab config?\"\n> **Dev:** \"Right — it throws before constructing anything, because the **Port** contract for CodeHost requires that config for the GitLab **Adapter**.\"\n> **Domain expert:** \"Exactly, and if you passed an unsupported forge name entirely, like `bitbucket` for codeHost, you'd get an **UnknownForgeError** instead — the union of valid forges per **Port** is closed.\"\n> **Dev:** \"What's the difference between **BoundProviders** and **RepoContext** then?\"\n> **Domain expert:** \"**RepoContext** is **BoundProviders** plus the `cwd` and `RepoIdentifier` — it's what gets threaded through workflow phases so they never touch a platform-specific type directly.\"\n\n## Flagged ambiguities\n\n- \"context\" is used for two distinct concepts: **GitContext** (the git/worktree executor) and **RepoContext** (the provider bundle plus identity/cwd). Keep them distinct — a **RepoContext** is built using a **GitContext**, not the other way around.\n- \"provider\" is used both for the **Port** interfaces (`IssueTracker`, `CodeHost`, `BoardManager`) and for forge-specific **Adapters** that implement them. Prefer **Port** for the interface and **Adapter** for the implementation; reserve \"provider\" for the assembled **BoundProviders**/`forgeProviders()` naming already baked into the code.\n",
+        "numLines": 60,
+        "startLine": 1,
+        "totalLines": 60
+      }
+    },
+    "tool_use_id": "toolu_01NAvgU5AJMtdBKBLwJaagGe",
+    "duration_ms": 1
+  },
+  {
+    "session_id": "04aa6b9f-ba56-46b3-ba1b-2c748f91e95b",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/04aa6b9f-ba56-46b3-ba1b-2c748f91e95b.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "0b8a7534-8c08-4640-b69a-9671c612f09a",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "cat src/providers/workspaceValidation.ts | head -30",
+      "description": "Check workspaceValidation.ts purpose"
+    },
+    "tool_response": {
+      "stdout": "/**\n * Workspace validation helpers for `createRepoContext` (moved verbatim from\n * `repoContext.ts` in #818 to keep that file under the 300-line cap; fs-only,\n * no identity construction, no framework imports).\n */\n\nimport { existsSync, statSync } from 'fs';\nimport { join } from 'path';\n\n/**\n * Validates that the working directory exists and contains a `.git` directory.\n */\nexport function validateWorkingDirectory(cwd: string): void {\n  if (!existsSync(cwd)) {\n    throw new Error(`Working directory does not exist: ${cwd}`);\n  }\n\n  const stat = statSync(cwd);\n  if (!stat.isDirectory()) {\n    throw new Error(`Working directory is not a directory: ${cwd}`);\n  }\n\n  if (!existsSync(join(cwd, '.git'))) {\n    throw new Error(\n      `Working directory is not a git repository (no .git found): ${cwd}`,\n    );\n  }\n}\n\n/**",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_01VPez8ayZ253CVmaD6zZRrr",
+    "duration_ms": 18
+  },
+  {
+    "session_id": "04aa6b9f-ba56-46b3-ba1b-2c748f91e95b",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/04aa6b9f-ba56-46b3-ba1b-2c748f91e95b.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "0b8a7534-8c08-4640-b69a-9671c612f09a",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "bun run typecheck 2>&1 | tail -20",
+      "description": "Run typecheck to verify project builds cleanly"
+    },
+    "tool_response": {
+      "stdout": "$ tsc --noEmit",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_01J2SNtpC2QztBNymguHgKKW",
+    "duration_ms": 999
+  }
+]

@@ -30,3 +30,32 @@ jobs:
       - run: bun run build
       - run: npm pack --dry-run
       - run: bun run smoke:package
+
+  release-dry-run:
+    name: Release dry-run
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    # semantic-release verifies push access with `git push --dry-run` before it
+    # analyzes a single commit, even in dry-run mode, so GITHUB_TOKEN needs
+    # `contents: write` or the job fails with EGITNOPERMISSION. Nothing is pushed
+    # or published: release.config.js drops the npm/github plugins under
+    # SEMANTIC_RELEASE_DRY_RUN and semantic-release skips tag creation in
+    # dry-run mode. Pull requests from forks always receive a read-only token,
+    # so this job fails that probe on fork PRs regardless of this block.
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: bun install
+      - run: bun run release:dry-run
+        env:
+          DRY_RUN_BRANCH: ${{ github.head_ref }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

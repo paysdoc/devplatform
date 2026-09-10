@@ -1,0 +1,17 @@
+[
+  {
+    "session_id": "4a703631-9910-4aef-b764-8c6c4dda4b7d",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/4a703631-9910-4aef-b764-8c6c4dda4b7d.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "20351181-dd61-4769-b7be-7ecb2ff84474",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "high"
+    },
+    "hook_event_name": "Stop",
+    "stop_hook_active": false,
+    "last_assistant_message": "Every case in the plan behaves as specified — including the `feat: fix: …` guard (parses as type `feat`, not agent `feat`) and merge-commit non-match.\n\n**Plan created:** `specs/issue-2-adw-9xqejz-release-automation-w-sdlc_planner-release-automation-agent-prefixed-parser.md`\n\n- **Researched the repo**: `.adw/project.md`, `.adw/commands.md`, `.adw/conditional_docs.md`, `package.json`, both tsconfigs, `vitest.config.ts`, both workflows, and the existing contract-test/script style (`packageExports.test.ts`, `smokePackage.ts`). No coding-guidelines file exists in this repo, so the plan pins conventions observed in the code instead.\n- **Found the real failure mode the issue is about**: this repo's history is agent-prefixed (`build-agent: feat: …`, `plan-orchestrator: chore: …`), which the stock conventional header pattern does not match — every agent commit would parse as `type: null`, so semantic-release would never publish. The plan's header pattern makes the `<agent-name>: ` prefix optional and requires it to contain a hyphen, so no conventional type can be swallowed as an agent name.\n- **Found a blocking prerequisite**: `git ls-remote --tags origin` returns **no tags** — the `v1.0.0` baseline the issue assumes does not exist yet. Step 1 establishes it (with owner confirmation, since pushing a tag is outward-facing), and the release workflow gets a hard `git rev-parse --verify refs/tags/v1.0.0` guard so 1.0.0 can never be recomputed.\n- **Nine ordered steps**: tag baseline → devDependencies → `release.config.js` (single source of truth for `parserOpts`) → `tsconfig.json` `allowJs`/`include` so the tests can import it → two unit test files (regex-level plus real `analyzeCommits` release-type cases for patch/minor/none/major) → real `release.yml` with OIDC + `NPM_TOKEN` fallback → secret-free PR dry-run job that prints the computed next version → README updates → validation.\n- **Verified the proposed regex empirically** against 11 real header shapes drawn from this repo's log — all match the plan's assertions.\n- **Flagged honestly in Notes**: acceptance criterion 3 (first CI release publishes 1.0.1/1.1.0) is not verifiable pre-merge; the dry run intentionally omits credentialed plugins; and merging this `chore:`-typed PR should correctly produce *no* release, which shouldn't be misread as a broken config.",
+    "background_tasks": [],
+    "session_crons": []
+  }
+]

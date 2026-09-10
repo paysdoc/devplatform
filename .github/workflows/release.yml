@@ -1,16 +1,63 @@
+# The npm trusted publisher on npmjs.com must be linked to the
+# `paysdoc/devplatform` repository and this exact workflow filename
+# (release.yml) — renaming this file silently breaks OIDC trusted
+# publishing. `permissions.id-token: write` is what lets `@semantic-release/npm`
+# mint a short-lived OIDC token instead of requiring a long-lived npm
+# credential stored in the repository; `NPM_TOKEN` below is a fallback that
+# only engages when that secret is present.
 name: Release
-
-# Placeholder. Release automation (semantic-release with the agent-prefixed
-# commit parser, OIDC trusted publishing) is issue L2 of the extraction PRD.
-# The filename is referenced when the npm trusted publisher is linked.
 
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  id-token: write
 
 jobs:
   release:
-    name: Release (not yet configured)
+    name: Release
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Release automation is configured by issue L2."
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Verify the v1.0.0 baseline tag is reachable
+        run: |
+          if ! git rev-parse -q --verify refs/tags/v1.0.0 >/dev/null; then
+            echo "::error::refs/tags/v1.0.0 is not reachable after fetching tags. The v1.0.0 baseline tag must exist before semantic-release can run, or it will recompute and try to republish 1.0.0." >&2
+            exit 1
+          fi
+
+      - uses: oven-sh/setup-bun@v2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Upgrade npm for OIDC trusted publishing support
+        run: |
+          npm install -g npm@latest
+          npm --version
+
+      - run: bun install --frozen-lockfile
+
+      - run: bun run typecheck
+      - run: bun run test:unit
+
+      - name: Run semantic-release
+        run: node node_modules/semantic-release/bin/semantic-release.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

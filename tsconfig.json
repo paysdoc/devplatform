@@ -10,8 +10,9 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
+    "allowJs": true,
     "noEmit": true
   },
-  "include": ["src/**/*.ts", "scripts/**/*.ts"],
+  "include": ["src/**/*.ts", "scripts/**/*.ts", "release.config.js"],
   "exclude": ["node_modules", "dist"]
 }

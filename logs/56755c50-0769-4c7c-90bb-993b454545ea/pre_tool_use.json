@@ -1,0 +1,57 @@
+[
+  {
+    "session_id": "56755c50-0769-4c7c-90bb-993b454545ea",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/56755c50-0769-4c7c-90bb-993b454545ea.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "94901eff-3ad4-4d9c-9c38-2db747378dc4",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser/.adw/commands.md"
+    },
+    "tool_use_id": "toolu_01FW1xd7vbZrtsCkFNBT84VJ"
+  },
+  {
+    "session_id": "56755c50-0769-4c7c-90bb-993b454545ea",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/56755c50-0769-4c7c-90bb-993b454545ea.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "94901eff-3ad4-4d9c-9c38-2db747378dc4",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "bun run typecheck 2>&1",
+      "timeout": 300000
+    },
+    "tool_use_id": "toolu_01N3chPD2JzUgcZQVwKiQV7w"
+  },
+  {
+    "session_id": "56755c50-0769-4c7c-90bb-993b454545ea",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/56755c50-0769-4c7c-90bb-993b454545ea.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "94901eff-3ad4-4d9c-9c38-2db747378dc4",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "bun run build 2>&1",
+      "timeout": 300000
+    },
+    "tool_use_id": "toolu_01UMr9jD7a7PJEAQV3sU5bMT"
+  },
+  {
+    "session_id": "56755c50-0769-4c7c-90bb-993b454545ea",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/56755c50-0769-4c7c-90bb-993b454545ea.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "94901eff-3ad4-4d9c-9c38-2db747378dc4",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "export ADW_UNIT_TEST_REPORT_PATH=\"/tmp/junit-report.xml\" && bun run test:unit 2>&1",
+      "timeout": 300000
+    },
+    "tool_use_id": "toolu_01LA1chAsQM2V3bR14iQnPjn"
+  }
+]

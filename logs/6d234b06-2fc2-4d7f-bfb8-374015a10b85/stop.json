@@ -1,0 +1,17 @@
+[
+  {
+    "session_id": "6d234b06-2fc2-4d7f-bfb8-374015a10b85",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/6d234b06-2fc2-4d7f-bfb8-374015a10b85.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "721b189a-86ae-4da2-a547-8ee98281d269",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "Stop",
+    "stop_hook_active": false,
+    "last_assistant_message": "document-agent: chore: add release automation docs and config",
+    "background_tasks": [],
+    "session_crons": []
+  }
+]

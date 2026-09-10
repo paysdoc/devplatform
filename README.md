@@ -3,7 +3,7 @@
 A TypeScript library of forge-neutral git/worktree primitives plus GitHub, GitLab, and Jira adapters for building dev-workflow automation.
 
 Extracted from [AI_Dev_Workflow](https://github.com/paysdoc/AI_Dev_Workflow) with history.
-Release automation is tracked as a separate issue in this repository.
+Releases are automated by semantic-release on every push to `main`.
 
 ## Install
 
@@ -41,8 +41,8 @@ import { GitContext, consoleLogger } from '@paysdoc/devplatform/git';           
 - **Injected configuration everywhere** — GitLab, Jira, and GitHub App adapters take configuration as constructor arguments; none reads `process.env` or files directly, keeping the library embeddable in any host.
 - **Compiled ESM + type declarations** — `bun run build` emits `dist/**/*.js` and `dist/**/*.d.ts` via `tsc`, with a three-entry-point `exports` map (`.`, `./providers`, `./git`) and a `files` allow-list so `npm pack` ships only `dist/`, `README.md`, and `LICENSE`.
 - **CI type-check, git/gh guard, unit-test, and package gate** — GitHub Actions runs `bun install`, `bun run typecheck`, `bun run lint:git-guard`, and `bun run test:unit` on every PR and push to `main`, plus a second job that builds, packs, and smoke-tests the tarball under both Node and Bun.
+- **Automated releases via semantic-release** — a `Release` GitHub Actions job runs semantic-release on every push to `main`, using a commit parser that accepts an optional `<agent-name>: ` prefix before the conventional type (`build-agent: feat: …` → minor, `review-patch-agent: fix: …` → patch, `plan-orchestrator: chore: …` → no release), a PR `release-dry-run` job that prints the computed next version before merge, and npm OIDC trusted publishing with an `NPM_TOKEN` fallback.
 - **Git/gh CI guard** — an AST-based check (`bun run lint:git-guard`, `scripts/checkGitGhGuard.ts` + `scripts/guard/`) that fails CI on a direct `git`/`gh` shell-out outside `src/git/` and `src/providers/github/` (the two structurally-exempt packages), or on ad-hoc provider/`GitContext` construction anywhere outside the one-entry `src/providers/forgeProviders.ts` allowlist.
-- **Release workflow placeholder** — a `Release` GitHub Actions job reserved for future semantic-release automation (tracked as a separate issue).
 - **Claude Code agent guardrails** — a hooked `.claude/settings.json` and `.claude/hooks/*` scripts (pre/post-tool-use, notification, stop, subagent-stop) constrain and observe agent tool use in this repo.
 
 ## Setup
@@ -53,6 +53,30 @@ import { GitContext, consoleLogger } from '@paysdoc/devplatform/git';           
 4. Run the unit test suite: `bun run test:unit`
 5. Build: `bun run build`
 
+## Releasing
+
+Releases are computed by [semantic-release](https://semantic-release.gitbook.io/) from commit messages on
+every push to `main` — see `release.config.js`. Commit headers must follow the conventional-commits format,
+optionally preceded by a hyphenated agent name:
+
+```
+[<agent-name>: ]<type>[(<scope>)][!]: <subject>
+```
+
+- `feat: …` / `<agent-name>: feat: …` → minor release
+- `fix: …` / `<agent-name>: fix: …` → patch release
+- `feat!: …`, or any commit with a `BREAKING CHANGE:` footer → major release
+- `chore: …`, `docs: …`, and other non-releasing types → no release
+
+The agent-name prefix must be a lowercase, hyphenated token (e.g. `build-agent`, `plan-orchestrator`) so it
+can never be confused with a conventional type. Every pull request runs a `release-dry-run` CI job that
+prints the version the merge would compute, without publishing anything.
+
+Publishing uses npm OIDC trusted publishing (no long-lived npm credential stored in the repository), falling
+back to an `NPM_TOKEN` secret if one is present. The release baseline is the `v1.0.0` git tag on the commit
+of the first manually published version; the release workflow hard-fails if that tag is not reachable, so it
+can never recompute or republish `1.0.0`.
+
 ## Domain glossary
 
 See [UBIQUITOUS_LANGUAGE.md](./UBIQUITOUS_LANGUAGE.md) for the canonical terms used across this codebase (identity, forge, provider, worktree, etc.).
@@ -60,24 +84,30 @@ See [UBIQUITOUS_LANGUAGE.md](./UBIQUITOUS_LANGUAGE.md) for the canonical terms u
 ## Project Structure
 
 ```
-.adw/                        ADW-generated project docs (project.md, providers.md, conditional_docs.md, ...)
+.adw/                        ADW-generated project docs (project.md, providers.md, commands.md, conditional_docs.md, review_proof.md, scenarios.md)
+.adw-version                  ADW template version marker
 .claude/
+  commands/                   ADW-copied slash commands (gitignored except install.md, prime.md)
   hooks/                      Claude Code lifecycle hooks (pre/post-tool-use, notification, stop, subagent-stop)
+  skills/                     Agent skills (TDD, PRD authoring, architecture review, ubiquitous language, ...)
   settings.json                Agent permission/guardrail configuration
 .github/
-  workflows/ci.yml             Typecheck + unit test CI gate
-  workflows/release.yml        Release automation placeholder
+  workflows/ci.yml             Typecheck + git/gh guard + unit test CI gate, build/pack/smoke-test package gate, and a PR-only release-dry-run job
+  workflows/release.yml        Release automation: semantic-release on push to main (v1.0.0 baseline guard, OIDC + NPM_TOKEN fallback)
   adw.yml                      ADW guardrails toggle (outside .adw/, survives regeneration)
 app_docs/                    Per-module documentation owned by conditional_docs.md routing (ADW-generated)
 UBIQUITOUS_LANGUAGE.md       Canonical domain glossary
 features/regression/vocabulary.md   Regression test vocabulary
 specs/                        Per-issue implementation plans (ADW-generated)
+release.config.js             semantic-release configuration: agent-prefix-aware commit parser, branches, plugin list
 scripts/
   smokePackage.ts             Builds, packs, and smoke-tests the tarball under Node + Bun (`bun run smoke:package`)
+  releaseDryRun.ts             Runs `semantic-release --dry-run` and prints the computed next version (`bun run release:dry-run`)
   checkGitGhGuard.ts          CI git/gh guard entry point (`bun run lint:git-guard`) — dev-only, excluded from dist/
   guard/                      Guard rule modules: shell-out exempt-package set, construction allowlist, stdout report
 src/
   index.ts                    Root entry point ("."): forge ports + domain model only
+  __tests__/                  Import-graph, package-exports, and release-config contract tests
   git/                        Forge-neutral git/worktree core (GitContext, worktree ops, bootstrap identity, process cleanup) — entry point "./git"
   providers/                  Forge provider ports and adapters — entry point "./providers"
     github/                   GitHub adapter (issue tracker, code host, board manager, App auth, gh CLI commands)

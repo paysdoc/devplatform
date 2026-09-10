@@ -1,0 +1,17 @@
+[
+  {
+    "session_id": "56673d6d-00c4-4e26-9538-4dc9a7809e36",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/56673d6d-00c4-4e26-9538-4dc9a7809e36.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "7988ca19-9615-4e31-80bd-ada5f7c21a3d",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "Stop",
+    "stop_hook_active": false,
+    "last_assistant_message": "review-patch-agent: chore: refine release-notes types and dry-run test",
+    "background_tasks": [],
+    "session_crons": []
+  }
+]

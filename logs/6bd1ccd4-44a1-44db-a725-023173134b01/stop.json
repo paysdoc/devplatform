@@ -1,0 +1,17 @@
+[
+  {
+    "session_id": "6bd1ccd4-44a1-44db-a725-023173134b01",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/6bd1ccd4-44a1-44db-a725-023173134b01.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e2e6892b-26a7-4e4d-a3d8-8bf93530b193",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "Stop",
+    "stop_hook_active": false,
+    "last_assistant_message": "**Summary:**\n- Routed touched files across two entries: `.github/workflows/{ci,release}.yml` + `.github/adw.yml` → existing `ci-and-adw-config.md` entry; `release.config.js`, `scripts/releaseDryRun.ts`, and the release-specific tests/type stubs → a genuinely novel area with no existing owner.\n- Found `app_docs/ci-and-adw-config.md` was referenced by `.adw/conditional_docs.md` but the file itself had never been committed on this branch (an orphaned index entry) — **rewrote it in place** (created fresh) with current-state content and regenerated its `Conditions:` block.\n- **Created new** `app_docs/feature-9xqejz-release-automation.md` documenting the agent-prefixed commit parser, dry-run script, plugin toggling, and baseline guard, with a fresh index entry (`Owns`/`Conditions`).\n- Did not touch `app_docs/feature-wdjsgu-package-build-export-package-build.md` — its existing `Owns` glob already covers the minor `package.json`/`tsconfig.json` edits in this change and its description remains accurate.\n\nRouting path: **one rewrite-in-place** (`ci-and-adw-config.md`, recovering a missing file) + **one new entry** (`feature-9xqejz-release-automation.md`) — no sibling collapse was needed.\n\nDocumentation files:\n- `app_docs/feature-9xqejz-release-automation.md`\n- `app_docs/ci-and-adw-config.md`",
+    "background_tasks": [],
+    "session_crons": []
+  }
+]

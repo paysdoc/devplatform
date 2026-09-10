@@ -1,0 +1,17 @@
+[
+  {
+    "session_id": "7735aeaa-c28b-4d5f-bdef-91a32588007e",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/7735aeaa-c28b-4d5f-bdef-91a32588007e.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "e029d30d-7614-4433-8397-d0ba4cf90044",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "max"
+    },
+    "hook_event_name": "Stop",
+    "stop_hook_active": false,
+    "last_assistant_message": "All validation gates pass. Here's the summary.\n\n## Summary\n\nImplemented the patch plan for GitHub Issue #2: pinned `conventional-changelog-conventionalcommits` to a version compatible with the stable release-notes generator, and added a regression test that exercises the real `generateNotes` call so preset/writer drift fails at unit level instead of on a push to `main`.\n\n- **`package.json`** — pinned `conventional-changelog-conventionalcommits` from `^10.4.0` to `^9.3.1` in `devDependencies` via `bun add -d`.\n- **`bun.lock`** — refreshed by the install: specifier bumped, resolved entry now `9.3.1` (with `compare-func` dependency), and the orphaned `@conventional-changelog/template` entry pruned. Writer stayed pinned at `8.4.0`.\n- **`src/__tests__/semantic-release-release-notes-generator.d.ts`** (new) — ambient `declare module` shim for `@semantic-release/release-notes-generator`'s `generateNotes` export, mirroring the existing `semantic-release-commit-analyzer.d.ts` shim style.\n- **`src/__tests__/releaseConfig.test.ts`** — added the `generateNotes` import, extended the file-header comment, and appended a new `describe` block with two tests: one confirming agent-prefixed `feat`/`fix` commits render correctly under `### Features` / `### Bug Fixes`, and one confirming the agent prefix is stripped and `chore:` commits are omitted.\n\n**Validation results (all passed):**\n- `bun install` — no-op (lockfile already refreshed)\n- `bun run typecheck` — zero errors\n- `bun run test:unit` — 40 files, **876 tests** passed (up from 874)\n- Reviewer's offline `generateNotes` reproduction one-liner — now renders `### Features` / `### Bug Fixes` instead of throwing `Missing helper`\n- `bun run build` — clean `dist/` output, no test/config leakage\n- `bun run release:dry-run` — got past `generateNotes` (loaded both plugins with no `Missing helper` error, strictly further than before the fix), then failed at branch validation due to missing `GITHUB_TOKEN` in this sandboxed environment (remote is reachable via SSH but semantic-release needs API auth). Per the plan's explicit caveat, treating the CI `release-dry-run` job on the PR as authoritative for this step rather than claiming a local pass.\n\n## Files changed (`git diff --stat`)\n\n```\n bun.lock                                                    |  6 +--\n package.json                                                |  2 +-\n src/__tests__/releaseConfig.test.ts                         | 50 +++++++++++++++++++++-\n src/__tests__/semantic-release-release-notes-generator.d.ts | 44 +++++++++++++++++++\n 4 files changed, 96 insertions(+), 6 deletions(-)\n```\n\nExactly the four files the plan specified, matching its predicted scope (~100 lines).",
+    "background_tasks": [],
+    "session_crons": []
+  }
+]
