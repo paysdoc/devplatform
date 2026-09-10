@@ -59,20 +59,25 @@ See [UBIQUITOUS_LANGUAGE.md](./UBIQUITOUS_LANGUAGE.md) for the canonical terms u
 ## Project Structure
 
 ```
-.adw/                        ADW-generated project docs (project.md, providers.md, conditional_docs.md, ...)
+.adw/                        ADW-generated project docs (project.md, providers.md, commands.md, conditional_docs.md, review_proof.md, scenarios.md)
+.adw-version                  ADW template version marker
 .claude/
+  commands/                   ADW-copied slash commands (gitignored except install.md, prime.md)
   hooks/                      Claude Code lifecycle hooks (pre/post-tool-use, notification, stop, subagent-stop)
+  skills/                     Agent skills (TDD, PRD authoring, architecture review, ubiquitous language, ...)
   settings.json                Agent permission/guardrail configuration
 .github/
-  workflows/ci.yml             Typecheck + unit test CI gate
+  workflows/ci.yml             Typecheck + unit test CI gate, plus build/pack/smoke-test package gate
   workflows/release.yml        Release automation placeholder
   adw.yml                      ADW guardrails toggle (outside .adw/, survives regeneration)
+app_docs/                    Generated per-feature documentation
 features/regression/vocabulary.md   Regression test vocabulary
 specs/                        Per-issue implementation plans (ADW-generated)
 scripts/
   smokePackage.ts             Builds, packs, and smoke-tests the tarball under Node + Bun (`bun run smoke:package`)
 src/
   index.ts                    Root entry point ("."): forge ports + domain model only
+  __tests__/                  Import-graph and package-exports contract tests
   git/                        Forge-neutral git/worktree core (GitContext, worktree ops, bootstrap identity, process cleanup) — entry point "./git"
   providers/                  Forge provider ports and adapters — entry point "./providers"
     github/                   GitHub adapter (issue tracker, code host, board manager, App auth, gh CLI commands)

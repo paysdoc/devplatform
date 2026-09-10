@@ -1,0 +1,50 @@
+[
+  {
+    "session_id": "a65fb38d-f73e-4e94-b621-6441651206e9",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/a65fb38d-f73e-4e94-b621-6441651206e9.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "cd53b915-c664-4b58-b30c-f38bd418ff3b",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git diff HEAD --stat && echo --- && git status"
+    },
+    "tool_response": {
+      "stdout": " README.md | 9 +++++++--\n 1 file changed, 7 insertions(+), 2 deletions(-)\n---\nOn branch chore-issue-2-release-automation-agent-prefixed-parser\nYour branch is up to date with 'origin/main'.\n\nChanges not staged for commit:\n  (use \"git add <file>...\" to update what will be committed)\n  (use \"git restore <file>...\" to discard changes in working directory)\n\tmodified:   README.md\n\nUntracked files:\n  (use \"git add <file>...\" to include in what will be committed)\n\tlogs/\n\tspecs/issue-2-adw-9xqejz-release-automation-w-sdlc_planner-release-automation-agent-prefixed-parser.md\n\nno changes added to commit (use \"git add\" and/or \"git commit -a\")",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_01RSD3AWoxDRQXmbg2zTphtA",
+    "duration_ms": 350
+  },
+  {
+    "session_id": "a65fb38d-f73e-4e94-b621-6441651206e9",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-chore-issue-2-release-automation-agent-prefixed-parser/a65fb38d-f73e-4e94-b621-6441651206e9.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/chore-issue-2-release-automation-agent-prefixed-parser",
+    "prompt_id": "cd53b915-c664-4b58-b30c-f38bd418ff3b",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "medium"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git diff HEAD -- README.md"
+    },
+    "tool_response": {
+      "stdout": "diff --git a/README.md b/README.md\nindex 37d145c..2ad8e89 100644\n--- a/README.md\n+++ b/README.md\n@@ -59,20 +59,25 @@ See [UBIQUITOUS_LANGUAGE.md](./UBIQUITOUS_LANGUAGE.md) for the canonical terms u\n ## Project Structure\n \n ```\n-.adw/                        ADW-generated project docs (project.md, providers.md, conditional_docs.md, ...)\n+.adw/                        ADW-generated project docs (project.md, providers.md, commands.md, conditional_docs.md, review_proof.md, scenarios.md)\n+.adw-version                  ADW template version marker\n .claude/\n+  commands/                   ADW-copied slash commands (gitignored except install.md, prime.md)\n   hooks/                      Claude Code lifecycle hooks (pre/post-tool-use, notification, stop, subagent-stop)\n+  skills/                     Agent skills (TDD, PRD authoring, architecture review, ubiquitous language, ...)\n   settings.json                Agent permission/guardrail configuration\n .github/\n-  workflows/ci.yml             Typecheck + unit test CI gate\n+  workflows/ci.yml             Typecheck + unit test CI gate, plus build/pack/smoke-test package gate\n   workflows/release.yml        Release automation placeholder\n   adw.yml                      ADW guardrails toggle (outside .adw/, survives regeneration)\n+app_docs/                    Generated per-feature documentation\n features/regression/vocabulary.md   Regression test vocabulary\n specs/                        Per-issue implementation plans (ADW-generated)\n scripts/\n   smokePackage.ts             Builds, packs, and smoke-tests the tarball under Node + Bun (`bun run smoke:package`)\n src/\n   index.ts                    Root entry point (\".\"): forge ports + domain model only\n+  __tests__/                  Import-graph and package-exports contract tests\n   git/                        Forge-neutral git/worktree core (GitContext, worktree ops, bootstrap identity, process cleanup) — entry point \"./git\"\n   providers/                  Forge provider ports and adapters — entry point \"./providers\"\n     github/                   GitHub adapter (issue tracker, code host, board manager, App auth, gh CLI commands)",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_01Q7VfJhLw9LzNeuD7X6PZJm",
+    "duration_ms": 36
+  }
+]
