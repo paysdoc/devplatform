@@ -15,20 +15,37 @@ sits between the co-located `vitest` unit suites and manual verification.
   (registered via `NODE_OPTIONS="--import tsx"` in the `test:e2e` script, not cucumber's own
   `loader` option) so they can import the library's own `src/` modules under the repository's
   `NodeNext` resolution without a separate build step.
-- `features/per-issue/` — one `.feature` file per issue (e.g. `feature-9.feature`), tagged
-  `@adw-<issue>`, generated as the behavioural contract for that issue's build.
+- `features/per-issue/` — one `.feature` file per issue (e.g. `feature-9.feature`,
+  `feature-11.feature`), tagged `@adw-<issue>`, generated as the behavioural contract for that
+  issue's build.
 - `features/regression/vocabulary.md` — the promoted, reusable Given/When/Then phrase registry
   for scenarios worth keeping as a standing regression suite (`@regression`).
 - `features/step_definitions/` — step definitions wiring Gherkin phrases to the library's public
   entry points (`src/providers/index.ts`, `src/git/index.ts`), via dynamic `import()` so a
-  missing export fails only the scenario that needs it, not the whole run.
+  missing export fails only the scenario that needs it, not the whole run. Issue #11's widened
+  surface is split by function group across several modules to stay under the 300-line cap:
+  `githubTokenProvider.steps.ts`, `githubIdentityAndAppConfig.steps.ts`,
+  `githubAppAuthAndCli.steps.ts`, `ghRepoApi.steps.ts`, `gitOps.steps.ts`, and
+  `publicSurfacePackaging.steps.ts`.
 - `features/support/world.ts` — the shared Cucumber `World`: per-scenario input/output state,
   managed `process.env` keys snapshotted before and restored after every scenario so a
-  developer's own shell identity never leaks into an assertion.
+  developer's own shell identity never leaks into an assertion. Also restores `PATH` (not a
+  managed env key) and removes any throwaway git repositories/generated signing keys a scenario
+  created, in its `After` hook.
+- `features/support/publicSurfaceLoader.ts` — the dynamic-import loader shared by issue #11's step
+  modules: resolves a name off the providers/git barrel or throws a message naming the missing
+  export and its subpath.
+- `features/support/gitFixture.ts` — real throwaway git repository fixtures (issue #11): an
+  isolated `(command, cwd) => string` runner and a helper that initialises a repository with one
+  committed file, used by the `commitOps`/`branchOps` scenarios.
+- `features/support/stubGh.ts` — installs a stub `gh` executable first on `PATH` for the
+  `ghAuthToken()` reader scenarios (issue #11).
 - `features/support/packagedConsumer.ts` — the packaging fixture shared by every `@packaging`
   scenario: packs the real tarball (`npm pack`, which runs `prepack` → `bun run build`) once per
   cucumber process, installs it into a throwaway consumer project, and exposes helpers to run or
-  type-check a module against it.
+  type-check a module against it. `publicSurfacePackaging.steps.ts` (issue #11) reuses these same
+  helpers for data-table-driven steps that resolve many names across many subpaths in one
+  generated module, alongside `packagedConsumer.steps.ts`'s original two-name steps.
 - `bun run test:e2e` — runs the whole suite; extra cucumber flags pass straight through, e.g.
   `bun run test:e2e --tags "@adw-9"` or `bun run test:e2e --tags "not @packaging"` for a fast
   inner loop that skips the pack-and-install scenarios.
