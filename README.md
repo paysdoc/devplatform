@@ -47,6 +47,7 @@ const gitContext = new GitContext({ owner: 'acme', repo: 'webapp', selfHost: fal
 - **Pluggable credential and logging ports** — `TokenProvider` (credential-purpose-scoped) and `Logger` ports let a consumer supply auth and logging without the core depending on either.
 - **Bootstrap-only git reads** — a narrow, structurally-exempt set of pre-context reads (origin remote URL, env/git-config identity) for use before a full `GitContext` exists.
 - **Forge-neutral provider interfaces** — `IssueTracker`, `CodeHost`, and `BoardManager` ports abstract issue tracking, PR/code hosting, and project boards across platforms.
+- **Workspace validation helpers** — `validateWorkingDirectory` and `parseOwnerRepoFromUrl` ship from `@paysdoc/devplatform/providers` for cross-adapter cwd/remote-URL checks shared by GitHub, GitLab, and Jira.
 - **`forgeProviders()` assembly function** — binds one `RepoIdentifier` to a full provider triple, validating identity, token provider shape, and context binding before constructing any adapter; rejects unknown or wrong-port forge names via `UnknownForgeError`.
 - **`createForgeCredentials()` forge-keyed credential factory** — resolves a `TokenProvider` and a bootstrap `GitIdentity` from `forge.codeHost` alone, the way `forgeProviders()` resolves the tracker/code-host/board: GitHub dispatches through the App-installation-token → PAT → `gh auth token` chain plus the App-bot identity; GitLab serves its configured token for both credential purposes plus an environment/git-config identity; an unknown code host is refused via `UnknownForgeError` before any credential seam is touched. `createLiteralTokenProvider` — a fixed-string `TokenProvider` for tests and fixtures — ships from `@paysdoc/devplatform/git` (re-exported from the GitHub adapter for backwards compatibility).
 - **GitHub adapter** — issue tracker, code host, and Projects V2 board manager built on the `gh` CLI, including issue/PR read and write operations, label management, GitHub App authentication, and token resolution. Since issue #11, its credential/identity helpers (`createGitHubTokenProvider`, `resolveBootstrapGitIdentity`, `resolveContextToken`, `ghAuthToken`, `isGitHubAppConfigured`, `getInstallationToken`) and the bound `createGhRepoApi` view ship from `@paysdoc/devplatform/providers` too, for a consumer switching over with no behaviour change — `createForgeCredentials` remains the recommended, forge-neutral route that composes exactly those functions.
@@ -123,12 +124,15 @@ See [UBIQUITOUS_LANGUAGE.md](./UBIQUITOUS_LANGUAGE.md) for the canonical terms u
   hooks/                      Claude Code lifecycle hooks (pre/post-tool-use, notification, stop, subagent-stop)
   skills/                     Agent skills (TDD, PRD authoring, architecture review, ubiquitous language, ...)
   settings.json                Agent permission/guardrail configuration
+bun.lock                      Bun lockfile
 .github/
   workflows/ci.yml             Typecheck + git/gh guard + unit test CI gate, build/pack/smoke-test package gate, and a PR-only release-dry-run job
   workflows/release.yml        Release automation: semantic-release on push to main (v1.0.0 baseline guard, OIDC + NPM_TOKEN fallback)
   adw.yml                      ADW guardrails toggle (outside .adw/, survives regeneration)
 app_docs/                    Per-module documentation owned by conditional_docs.md routing (ADW-generated)
 UBIQUITOUS_LANGUAGE.md       Canonical domain glossary
+LICENSE                      Package license
+package.json                 Package manifest: entry-point exports map, files allow-list, scripts
 cucumber.js                  Cucumber/BDD runner configuration (loads tsx, points at features/)
 features/
   per-issue/                  Per-issue Gherkin feature files (e.g. feature-9.feature), tagged @adw-<issue>
@@ -155,6 +159,7 @@ src/
     forgeProviders.ts          Provider assembly function
     forgeCredentials.ts        Forge-keyed credential factory (TokenProvider + bootstrap GitIdentity)
     types.ts                   Platform-agnostic provider interfaces
+    workspaceValidation.ts     Cross-adapter cwd/remote-URL validation helpers
 dist/                        Build output (gitignored) — emitted by `bun run build`
 tsconfig.json                 TypeScript strict-mode configuration (NodeNext modules/resolution)
 tsconfig.build.json            Build config: extends tsconfig.json, emits dist/**/*.js + dist/**/*.d.ts
