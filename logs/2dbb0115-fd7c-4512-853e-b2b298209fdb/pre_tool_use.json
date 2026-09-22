@@ -1,0 +1,36 @@
+[
+  {
+    "session_id": "2dbb0115-fd7c-4512-853e-b2b298209fdb",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-feature-issue-11-widen-public-exports-adw-switchover/2dbb0115-fd7c-4512-853e-b2b298209fdb.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/feature-issue-11-widen-public-exports-adw-switchover",
+    "prompt_id": "8dfeab68-b77d-420f-b643-544d5bca2248",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "high"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git diff --cached README.md | grep '^[+-]' | grep -v '^[+-][+-]'",
+      "description": "Show the staged README change"
+    },
+    "tool_use_id": "toolu_01SDG21E4EwAqhpyBGTpAWC9"
+  },
+  {
+    "session_id": "2dbb0115-fd7c-4512-853e-b2b298209fdb",
+    "transcript_path": "/Users/martin/.claude/projects/-Users-martin-projects-paysdoc-devplatform--worktrees-feature-issue-11-widen-public-exports-adw-switchover/2dbb0115-fd7c-4512-853e-b2b298209fdb.jsonl",
+    "cwd": "/Users/martin/projects/paysdoc/devplatform/.worktrees/feature-issue-11-widen-public-exports-adw-switchover",
+    "prompt_id": "8dfeab68-b77d-420f-b643-544d5bca2248",
+    "permission_mode": "bypassPermissions",
+    "effort": {
+      "level": "high"
+    },
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git commit -q -m \"chore: remove session logs and update README file tree\n\nDelete all tracked and staged files under logs/ and add the missing\ntop-level entries (bun.lock, LICENSE, package.json) plus\nworkspaceValidation.ts to the README file tree.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\" && git push -u origin feature-issue-11-widen-public-exports-adw-switchover 2>&1 | tail -5; echo \"---\"; git log --oneline -1; git status --short | wc -l",
+      "description": "Commit the removal and push the branch to origin"
+    },
+    "tool_use_id": "toolu_01Mwcv1tm2WWpx6LY9ujWRav"
+  }
+]
