@@ -26,7 +26,10 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # Cucumber 13 refuses to start on Node 20 ("Cucumber can only run on
+          # Node.js versions 22 || 24 || >=26"), so the @packaging BDD step below
+          # needs 22 — it is the only step in this job that cares.
+          node-version: 22
       - run: bun install
       - run: bun run build
       - run: npm pack --dry-run
