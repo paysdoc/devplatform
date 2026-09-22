@@ -40,16 +40,17 @@ const gitContext = new GitContext({ owner: 'acme', repo: 'webapp', selfHost: fal
 - **Forge-neutral git executor** — `GitContext.exec()` is the single spawn site, env merge, cwd resolution, and ENOENT rewrap for every git command; no forge semantics leak into it.
 - **Identity-bound context construction** — a `GitContext` is built from a mandatory owner/repo/selfHost/tokenProvider/gitIdentity; incomplete identity fails at construction rather than at first use.
 - **Worktree lifecycle management** — create/ensure, list, remove, probe (health: `healthy`/`locked`/`prunable`/`missing`), and reset (takeover) operations for git worktrees under `.worktrees/`.
-- **Branch, commit, and remote operations** — branch creation/switching, commits, and remote push/fetch helpers layered on the shared executor.
+- **Branch, commit, and remote operations** — branch creation/switching, commits, and remote push/fetch helpers layered on the shared executor; `commitOps`, `branchOps`, and `isLeaseRejection` ship from `@paysdoc/devplatform/git` since issue #11, for a consumer that wants to drive them directly.
 - **Working-directory guard** — turns a spawn ENOENT caused by a missing cwd into a diagnostic naming the path and repo identity, keyed off the OS-independent error `code`.
 - **Distributed-lock claim primitives** — detached-worktree add/remove, empty-commit nonce marking, and a never-forced push used to implement an atomic winner/loser election (e.g. for upgrade claims).
 - **Process cleanup** — kills processes still running inside a worktree directory before it is removed.
 - **Pluggable credential and logging ports** — `TokenProvider` (credential-purpose-scoped) and `Logger` ports let a consumer supply auth and logging without the core depending on either.
 - **Bootstrap-only git reads** — a narrow, structurally-exempt set of pre-context reads (origin remote URL, env/git-config identity) for use before a full `GitContext` exists.
 - **Forge-neutral provider interfaces** — `IssueTracker`, `CodeHost`, and `BoardManager` ports abstract issue tracking, PR/code hosting, and project boards across platforms.
+- **Workspace validation helpers** — `validateWorkingDirectory` and `parseOwnerRepoFromUrl` ship from `@paysdoc/devplatform/providers` for cross-adapter cwd/remote-URL checks shared by GitHub, GitLab, and Jira.
 - **`forgeProviders()` assembly function** — binds one `RepoIdentifier` to a full provider triple, validating identity, token provider shape, and context binding before constructing any adapter; rejects unknown or wrong-port forge names via `UnknownForgeError`.
 - **`createForgeCredentials()` forge-keyed credential factory** — resolves a `TokenProvider` and a bootstrap `GitIdentity` from `forge.codeHost` alone, the way `forgeProviders()` resolves the tracker/code-host/board: GitHub dispatches through the App-installation-token → PAT → `gh auth token` chain plus the App-bot identity; GitLab serves its configured token for both credential purposes plus an environment/git-config identity; an unknown code host is refused via `UnknownForgeError` before any credential seam is touched. `createLiteralTokenProvider` — a fixed-string `TokenProvider` for tests and fixtures — ships from `@paysdoc/devplatform/git` (re-exported from the GitHub adapter for backwards compatibility).
-- **GitHub adapter** — issue tracker, code host, and Projects V2 board manager built on the `gh` CLI, including issue/PR read and write operations, label management, GitHub App authentication, and token resolution.
+- **GitHub adapter** — issue tracker, code host, and Projects V2 board manager built on the `gh` CLI, including issue/PR read and write operations, label management, GitHub App authentication, and token resolution. Since issue #11, its credential/identity helpers (`createGitHubTokenProvider`, `resolveBootstrapGitIdentity`, `resolveContextToken`, `ghAuthToken`, `isGitHubAppConfigured`, `getInstallationToken`) and the bound `createGhRepoApi` view ship from `@paysdoc/devplatform/providers` too, for a consumer switching over with no behaviour change — `createForgeCredentials` remains the recommended, forge-neutral route that composes exactly those functions.
 - **GitLab adapter** — code host implementation backed by a `curl`-based API client with injected configuration (no environment reads).
 - **Jira adapter** — issue tracker backed by the Jira REST API v3, including Markdown ↔ Atlassian Document Format (ADF) conversion.
 - **Board status model** — a canonical, ordered set of board columns (`Blocked`/`Todo`/`In Progress`/`Review`/`Done`) with colors and descriptions shared across board-capable adapters.
@@ -64,11 +65,17 @@ const gitContext = new GitContext({ owner: 'acme', repo: 'webapp', selfHost: fal
 ## Setup
 
 1. Install dependencies: `bun install`
-2. Copy the environment template and fill in your own values: `cp .env.sample .env`
-3. Type-check: `bun run typecheck`
-4. Run the unit test suite: `bun run test:unit`
-5. Run the BDD scenario suite: `bun run test:e2e`
-6. Build: `bun run build`
+2. Type-check: `bun run typecheck`
+3. Run the unit test suite: `bun run test:unit`
+4. Run the BDD scenario suite: `bun run test:e2e`
+5. Build: `bun run build`
+
+This package takes all forge configuration (tokens, App credentials, GitLab/Jira settings) as
+constructor arguments from the consumer — it reads no `.env` file and no `process.env` value as
+its primary configuration path. There is no root `.env.sample` to copy for using the library
+itself; the optional `GIT_AUTHOR_*`/`GITHUB_APP_*` environment fallbacks used only by the
+bootstrap-identity readers are documented in `app_docs/git-worktree-core.md` and
+`app_docs/github-provider.md`.
 
 ## Releasing
 
@@ -94,6 +101,15 @@ back to an `NPM_TOKEN` secret if one is present. The release baseline is the `v1
 of the first manually published version; the release workflow hard-fails if that tag is not reachable, so it
 can never recompute or republish `1.0.0`.
 
+The npm trusted publisher for `@paysdoc/devplatform` must be linked to this exact GitHub Actions workflow
+(owner `paysdoc`, repository `devplatform`, workflow filename `release.yml`, no environment), and the
+package's Publishing access setting must permit trusted publishing. If the OIDC token exchange succeeds but
+the publish itself is still denied (`403 … OIDC permission denied for this action`), add an `NPM_TOKEN`
+repository secret as a fallback — `@semantic-release/npm` prefers it over OIDC when both are present. A run
+that tags a version and then fails to publish it leaves an orphan tag that a re-run will not republish (no
+new commits exist after the tag); delete the orphan tag and any GitHub release it created, then trigger the
+workflow again — never delete `v1.0.0`.
+
 ## Domain glossary
 
 See [UBIQUITOUS_LANGUAGE.md](./UBIQUITOUS_LANGUAGE.md) for the canonical terms used across this codebase (identity, forge, provider, worktree, etc.).
@@ -108,12 +124,15 @@ See [UBIQUITOUS_LANGUAGE.md](./UBIQUITOUS_LANGUAGE.md) for the canonical terms u
   hooks/                      Claude Code lifecycle hooks (pre/post-tool-use, notification, stop, subagent-stop)
   skills/                     Agent skills (TDD, PRD authoring, architecture review, ubiquitous language, ...)
   settings.json                Agent permission/guardrail configuration
+bun.lock                      Bun lockfile
 .github/
   workflows/ci.yml             Typecheck + git/gh guard + unit test CI gate, build/pack/smoke-test package gate, and a PR-only release-dry-run job
   workflows/release.yml        Release automation: semantic-release on push to main (v1.0.0 baseline guard, OIDC + NPM_TOKEN fallback)
   adw.yml                      ADW guardrails toggle (outside .adw/, survives regeneration)
 app_docs/                    Per-module documentation owned by conditional_docs.md routing (ADW-generated)
 UBIQUITOUS_LANGUAGE.md       Canonical domain glossary
+LICENSE                      Package license
+package.json                 Package manifest: entry-point exports map, files allow-list, scripts
 cucumber.js                  Cucumber/BDD runner configuration (loads tsx, points at features/)
 features/
   per-issue/                  Per-issue Gherkin feature files (e.g. feature-9.feature), tagged @adw-<issue>
@@ -124,22 +143,23 @@ logs/<session-id>/           Claude Code hook session logs (chat, pre/post-tool-
 specs/                        Per-issue implementation plans (ADW-generated), plus specs/patch/ for patch plans
 release.config.js             semantic-release configuration: agent-prefix-aware commit parser, branches, plugin list
 scripts/
-  smokePackage.ts             Builds, packs, and smoke-tests the tarball under Node + Bun (`bun run smoke:package`)
+  smokePackage.ts             Builds, packs, and smoke-tests the tarball under Node + Bun via a table-driven dynamic-import key check (`bun run smoke:package`)
   releaseDryRun.ts             Runs `semantic-release --dry-run` and prints the computed next version (`bun run release:dry-run`)
   checkGitGhGuard.ts          CI git/gh guard entry point (`bun run lint:git-guard`) — dev-only, excluded from dist/
   guard/                      Guard rule modules: shell-out exempt-package set, construction allowlist, stdout report
 src/
   index.ts                    Root entry point ("."): forge ports + domain model only
   __tests__/                  Import-graph, package-exports, and release-config contract tests
-  git/                        Forge-neutral git/worktree core (GitContext, worktree ops, bootstrap identity, process cleanup) — entry point "./git"
+  git/                        Forge-neutral git/worktree core (GitContext, worktree ops, bootstrap identity, process cleanup) — entry point "./git"; also re-exports commitOps/branchOps/isLeaseRejection since issue #11
     literalTokenProvider.ts    Fixed-string TokenProvider for tests/fixtures (re-exported from the GitHub adapter)
   providers/                  Forge provider ports and adapters — entry point "./providers"
-    github/                   GitHub adapter (issue tracker, code host, board manager, App auth, gh CLI commands)
+    github/                   GitHub adapter (issue tracker, code host, board manager, App auth, gh CLI commands); its credential/identity helpers and createGhRepoApi are re-exported on this barrel since issue #11
     gitlab/                   GitLab adapter (API client, code host, type mappers, adapter-internal token provider + bootstrap identity)
     jira/                     Jira adapter (API client, issue tracker, ADF converter)
     forgeProviders.ts          Provider assembly function
     forgeCredentials.ts        Forge-keyed credential factory (TokenProvider + bootstrap GitIdentity)
     types.ts                   Platform-agnostic provider interfaces
+    workspaceValidation.ts     Cross-adapter cwd/remote-URL validation helpers
 dist/                        Build output (gitignored) — emitted by `bun run build`
 tsconfig.json                 TypeScript strict-mode configuration (NodeNext modules/resolution)
 tsconfig.build.json            Build config: extends tsconfig.json, emits dist/**/*.js + dist/**/*.d.ts

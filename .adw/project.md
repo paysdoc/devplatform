@@ -3,7 +3,9 @@
 Jira) over a forge-neutral git/worktree core. It was extracted from the `AI_Dev_Workflow` repository
 with history. `bun run build` compiles `src/` to `dist/**/*.js` + `dist/**/*.d.ts` via `tsc`, and
 `package.json` exposes three entry points (`.`, `./providers`, `./git`). Release automation
-(`npm publish`) is still tracked as a separate open issue in this repository (see README.md).
+(`npm publish`) is implemented via semantic-release (`.github/workflows/release.yml`); `v1.0.0` is
+published, but the `v1.1.0` release run failed at `npm publish` with an npm OIDC trusted-publisher
+permission error — see README.md's Releasing section and `app_docs/feature-9xqejz-release-automation.md`.
 
 ## Relevant Files
 - `src/index.ts` — Root package entry point (`"."`): re-exports the forge ports and domain model
@@ -12,7 +14,8 @@ with history. `bun run build` compiles `src/` to `dist/**/*.js` + `dist/**/*.d.t
   operations, worktree create/remove/probe/query/reset, claim ops, working-directory guard, git
   context, a console logger, and `literalTokenProvider.ts` (a fixed-string `TokenProvider` for
   tests/fixtures, re-exported from the GitHub adapter for backwards compatibility). Each module
-  has a co-located `__tests__/` suite. `src/git/index.ts` is the `"./git"` entry point.
+  has a co-located `__tests__/` suite. `src/git/index.ts` is the `"./git"` entry point; it also
+  re-exports `commitOps`, `branchOps`, and `isLeaseRejection` since issue #11.
 - `src/providers/forgeProviders.ts`, `src/providers/index.ts`, `src/providers/types.ts` — Forge
   provider selection/registration surface: the neutral abstraction that the GitHub/GitLab/Jira
   adapters implement. `src/providers/index.ts` is the `"./providers"` entry point.
@@ -22,7 +25,10 @@ with history. `bun run build` compiles `src/` to `dist/**/*.js` + `dist/**/*.d.t
 - `src/providers/workspaceValidation.ts` — Workspace validation shared across providers.
 - `src/providers/github/` — GitHub adapter: `gh` CLI command runner, issue/PR parsers and APIs,
   board manager, code host, App auth, identity, and token resolution, plus `commands/` for
-  issue/PR/board/label/secret CLI commands.
+  issue/PR/board/label/secret CLI commands. Since issue #11, its credential/identity helpers
+  (`createGitHubTokenProvider`, `resolveBootstrapGitIdentity`, `resolveContextToken`, `ghAuthToken`,
+  `isGitHubAppConfigured`, `getInstallationToken`) and the bound `createGhRepoApi` view are
+  re-exported from `src/providers/github/index.ts`, reachable via `@paysdoc/devplatform/providers`.
 - `src/providers/gitlab/` — GitLab adapter: API client, code host, board manager, type mappers,
   plus the adapter-internal `gitlabTokenProvider.ts`/`gitlabIdentity.ts` `createForgeCredentials`
   composes (not exported from the GitLab barrel).

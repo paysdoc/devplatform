@@ -14,18 +14,23 @@
  * carries no forge logic. Every *production* TokenProvider implementation
  * (`createGitHubTokenProvider`), the gh command-string builders, GitHub App
  * authentication, token resolution, GitHub remote-URL parsing, bot-identity
- * derivation, clone-URL construction and `gh auth token` all live in the
- * GitHub forge adapter (`adws/providers/github/`, #792/#793), not here. The
- * forge-keyed `createForgeCredentials` factory (`src/providers/forgeCredentials.ts`,
- * issue #9) is the public way to obtain a production TokenProvider without
- * naming a forge.
+ * derivation and clone-URL construction all live in the GitHub forge adapter
+ * (`src/providers/github/`, #792/#793) and, since issue #11, are themselves
+ * re-exported from that adapter's `./index.ts` — reachable from this package's
+ * consumers via `@paysdoc/devplatform/providers` — rather than deep-import
+ * only. The forge-keyed `createForgeCredentials` factory
+ * (`src/providers/forgeCredentials.ts`, issue #9) remains the recommended,
+ * forge-neutral way to obtain a production TokenProvider without naming a
+ * forge. This git core still never imports from `src/providers/`.
  *
  * Also exports the worktree lifecycle op namespaces (create/remove/query/
- * probe/reset) and the distributed-lock `claimOps`, alongside the
- * `repoWorkspace` workspace ops — the full forge-neutral git/worktree
- * surface this package ships (issue #1). None of it imports from
- * `src/providers/`; that boundary is enforced by a committed import-graph
- * test.
+ * probe/reset), the distributed-lock `claimOps`, the commit/push and branch
+ * orchestration namespaces (`commitOps`, `isLeaseRejection`, `branchOps` —
+ * exported since issue #11, git-core: runner-injected orchestration with no
+ * forge vocabulary), alongside the `repoWorkspace` workspace ops — the full
+ * forge-neutral git/worktree surface this package ships (issue #1). None of
+ * it imports from `src/providers/`; that boundary is enforced by a committed
+ * import-graph test.
  *
  * Bootstrap exceptions (issue #700, narrowed by #793): the functions below
  * are the ONLY legitimate pre-context git reads in the codebase — generic
@@ -44,6 +49,8 @@ export { consoleLogger } from './consoleLogger.js';
 export { createLiteralTokenProvider } from './literalTokenProvider.js';
 export { killProcessesInDirectory } from './processCleanup.js';
 export { claimOps } from './claimOps.js';
+export { commitOps, isLeaseRejection } from './commitOps.js';
+export { branchOps } from './branchOps.js';
 export { worktreeCreateOps } from './worktreeCreateOps.js';
 export { worktreeRemoveOps } from './worktreeRemoveOps.js';
 export { worktreeQueryOps } from './worktreeQueryOps.js';

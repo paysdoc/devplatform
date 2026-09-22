@@ -15,10 +15,14 @@ git/worktree core independently, without pulling adapter code into a git-only co
 - Define three public entry points via `package.json` `exports`:
   - `"."` → `dist/index.js` — forge ports and domain model only, re-exported from
     `src/index.ts` (`export * from './providers/types.js'`). No adapter code.
-  - `"./providers"` → `dist/providers/index.js` — `forgeProviders`, its options/deps types, and
-    the GitHub/GitLab/Jira adapters (`src/providers/index.ts`).
+  - `"./providers"` → `dist/providers/index.js` — `forgeProviders`, `createForgeCredentials`, the
+    GitHub/GitLab/Jira adapters (`src/providers/index.ts`), and, since issue #11, the GitHub
+    adapter's credential/identity helpers (`createGitHubTokenProvider`, `resolveBootstrapGitIdentity`,
+    `resolveContextToken`, `ghAuthToken`, `isGitHubAppConfigured`, `getInstallationToken`) and the
+    bound `createGhRepoApi` view, re-exported for the ADW switchover with no behaviour change.
   - `"./git"` → `dist/git/index.js` — the forge-neutral git/worktree core (`src/git/index.ts`):
-    `GitContext`, the executor/port/logger types, `consoleLogger`, `claimOps`, the worktree
+    `GitContext`, the executor/port/logger types, `consoleLogger`, `claimOps`, `commitOps`,
+    `isLeaseRejection`, and `branchOps` (the latter three re-exported since issue #11), the worktree
     create/remove/query/probe/reset op namespaces, and the workspace ops.
   - `"./package.json"` — conventional passthrough for tooling that reads the manifest directly.
 - Limit the packed tarball to `dist/`, `README.md`, `LICENSE` (`files` in `package.json`); `main`/
@@ -38,11 +42,12 @@ git/worktree core independently, without pulling adapter code into a git-only co
   (`bun run smoke:package`): builds, asserts the six `dist/**/index.{js,d.ts}` outputs exist,
   runs `npm pack --dry-run --json` to assert no `src/` entries and that `README.md`/`LICENSE` are
   present, packs a real tarball, installs it into a throwaway temp consumer (its own
-  `node_modules`, not the workspace's), and imports all three subpaths under both `node` and
-  `bun`, asserting a representative symbol from each (`BoardStatus`, `forgeProviders`,
-  `createForgeCredentials`, `GitContext`, `createLiteralTokenProvider`) — the last two names
-  (issue #9) are the same symbols the committed `@packaging` BDD scenarios prove resolve at
-  runtime and in the emitted `.d.ts` (`app_docs/bdd-scenarios.md`).
+  `node_modules`, not the workspace's), and runs a table-driven dynamic-import key check
+  (`EXPECTED_EXPORTS`, keyed by subpath, issue #11) under both `node` and `bun` — every public
+  name across all three subpaths must resolve to a defined value, so widening a barrel is a
+  one-line table edit rather than a hand-written assertion. The same names (plus the
+  `GhRepoApi`/`GitHubAppConfig` types) are what the committed `@packaging` BDD scenarios prove
+  resolve at runtime and in the emitted `.d.ts` (`app_docs/bdd-scenarios.md`).
 - CI: a `package` job (`.github/workflows/ci.yml`, alongside the existing `check` job) runs
   `bun install` → `bun run build` → `npm pack --dry-run` → `bun run smoke:package` on
   `oven-sh/setup-bun@v2` + `actions/setup-node@v4`, so the Node consumer leg is real rather than

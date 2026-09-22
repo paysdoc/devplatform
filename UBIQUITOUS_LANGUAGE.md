@@ -35,6 +35,12 @@
 | **ForgeActionResult** | A forge mutation's outcome reported as `{success, error?}` rather than thrown | Result, response |
 | **createForgeCredentials()** | The forge-keyed factory that resolves a **TokenProvider** and a bootstrap **GitIdentity** from `forge.codeHost` alone; sibling of `forgeProviders()`, same closed-union refusal via **UnknownForgeError** | Credential factory |
 
+## GitHub adapter
+
+| Term | Definition | Aliases to avoid |
+|------|-----------|-----------------|
+| **GhRepoApi** | The 35-operation bound view over one GitContext, composing the issue, PR, and repo-scoped (label/secret/board) operations | Repo client |
+
 ## Relationships
 
 - A **GitContext** is constructed from exactly one **Identity** and exposes **exec()** as the sole spawn site.

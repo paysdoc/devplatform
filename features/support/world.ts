@@ -8,7 +8,9 @@
  * steps drive the library's public functions and read what they return.
  */
 import { After, Before, setDefaultTimeout, setWorldConstructor, World, type IWorldOptions } from '@cucumber/cucumber';
+import * as fs from 'node:fs';
 import { Platform, type RepoIdentifier } from '../../src/providers/types.js';
+import type { ExecFn, GitContext } from '../../src/git/index.js';
 
 setDefaultTimeout(30_000);
 
@@ -72,6 +74,60 @@ export class DevPlatformWorld extends World {
   /** Packaged-consumer scenarios: the installed project and the last subprocess run inside it. */
   consumerDir?: string;
   subprocess?: { readonly status: number | null; readonly stdout: string; readonly stderr: string };
+  /** The `name`/`kind` columns of the data table the last packaging When step consumed, for its Then step to check the report against. */
+  expectedKindRows?: Array<{ name: string; kind: string }>;
+
+  // -------------------------------------------------------------------------
+  // Issue #11 — widened public surface, driven directly (not through
+  // createForgeCredentials), plus real throwaway git repositories.
+  // -------------------------------------------------------------------------
+
+  /** True unless a scenario declares "no GitHub App configuration is injected" — then `appConfig` is left out of the deps bag entirely, so the callee's own environment fallback decides. */
+  appConfigInjected = true;
+  /** Overrides the real `getInstallationToken` call with a fixed result, for scenarios that only care that the mint result wins the resolution order. */
+  mintInstallationTokenResult?: string;
+  resolvedToken?: string;
+  tokenResolutionError?: unknown;
+
+  /** The literal (possibly incomplete) config an `isGitHubAppConfigured`/`getInstallationToken` scenario built from its Given step. */
+  appConfigUnderTest?: { appId: string; appSlug: string; privateKeyPath: string };
+  appConfiguredVerdict?: boolean;
+  /** The `AppAuthDeps`-shaped seam for a hermetic `getInstallationToken` mint — never real curl. */
+  mintDeps?: { runCurl: (args: readonly string[], stdinConfig: string) => string };
+  githubApiStubCalls?: string[];
+  mintedToken?: string;
+  mintError?: unknown;
+  /** Directories holding a freshly generated signing key, removed in `After`. */
+  generatedKeyPaths: string[] = [];
+
+  /** The stub `gh` executable's directory, and the `PATH` value to restore in `After` — `PATH` is not a managed env key. */
+  stubGhDir?: string;
+  originalPath?: string;
+  readToken?: string;
+
+  /** A `GitContext` built for the `createGhRepoApi` scenario, and the mutable recorder its injected `exec` delegates to (set after construction, since the scenario configures the recorder in a later Given step). */
+  ghContext?: GitContext;
+  execRecorder: ExecFn = () => {
+    throw new Error('no executor recorder was configured for this scenario');
+  };
+  execRecorderCalls?: Array<{ command: string; env: NodeJS.ProcessEnv }>;
+  ghRepoApiInstance?: { defaultBranch(): string };
+  ghRepoApiDefaultBranchResult?: string;
+
+  /** Real throwaway git repositories for the `commitOps`/`branchOps`/`isLeaseRejection` scenarios — directories removed in `After`. */
+  gitCleanupDirs: string[] = [];
+  repoDir?: string;
+  remoteDir?: string;
+  remoteAheadSha?: string;
+  runner: (command: string, cwd: string) => string = () => {
+    throw new Error('no git repository was created for this scenario');
+  };
+  commitReport?: boolean;
+  pushError?: unknown;
+  currentBranchResult?: string;
+  deleteBranchResult?: boolean;
+  pushFailureStderr?: string;
+  leaseVerdict?: boolean;
 
   private savedEnv = new Map<string, string | undefined>();
 
@@ -135,4 +191,15 @@ Before(function (this: DevPlatformWorld) {
 
 After(function (this: DevPlatformWorld) {
   this.restoreProcessEnv();
+
+  if (this.originalPath !== undefined) {
+    process.env['PATH'] = this.originalPath;
+    this.originalPath = undefined;
+  }
+  for (const dir of [this.stubGhDir, ...this.generatedKeyPaths, ...this.gitCleanupDirs]) {
+    if (dir) fs.rmSync(dir, { recursive: true, force: true });
+  }
+  this.stubGhDir = undefined;
+  this.generatedKeyPaths = [];
+  this.gitCleanupDirs = [];
 });

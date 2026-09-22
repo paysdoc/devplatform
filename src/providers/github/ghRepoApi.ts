@@ -2,10 +2,12 @@
  * ghRepoApi.ts — the relocation target of GitContext's former semantic
  * surface (#797). Composes the issue and PR leaf factories with the
  * repo/label/secret/board remainder into one `GhRepoApi` view over a
- * `GitContext` the caller already holds. Deep-import only: never added to
- * `./index.ts`, exactly like `ghIssueApi`/`ghPrApi` and `createGhCommandRunner`
- * — a bound view over an existing context selects no identity, so it is not a
- * construction site the guard's `unsanctioned-construction` rule needs to see.
+ * `GitContext` the caller already holds. Exported from `./index.ts` since
+ * issue #11, because ADW's `feature-797` step definitions consume it from the
+ * published package; `ghIssueApi`, `ghPrApi` and `createGhCommandRunner`
+ * remain deep-import only. Still not a construction site for the guard's
+ * `unsanctioned-construction` rule — a bound view over an existing context
+ * selects no identity.
  */
 
 import type { GitContext } from '../../git/index.js';

@@ -19,7 +19,7 @@
 - Manage cloned target-repository workspaces outside any `GitContext` (`repoWorkspace.ts`): compute workspace path, detect an existing clone, clone a caller-supplied URL verbatim, and ensure-fetch an existing clone.
 - Kill lingering processes holding open files under a worktree directory before removal (`processCleanup.ts`).
 - Supply a default, dependency-free `Logger` (`consoleLogger.ts`) and a fixture-only `TokenProvider` (`literalTokenProvider.ts`).
-- Export the entire public surface — `GitContext`, its types, all `*Ops` namespaces, bootstrap functions, and workspace helpers — through `index.ts`.
+- Export the entire public surface — `GitContext`, its types, all `*Ops` namespaces (including `commitOps`/`branchOps` and `isLeaseRejection`, re-exported since issue #11 for ADW's regression steps), bootstrap functions, and workspace helpers — through `index.ts`.
 
 ## Contracts & Invariants
 
@@ -37,6 +37,7 @@
 - `bootstrapIdentity.ts` and `repoWorkspace.ts` are structurally exempt from repo-wide git/gh shellout guards by living in this package's directory, not by allowlist — and both are restricted to generic git reads/writes with no forge vocabulary (no GitHub URL parsing, no `gh` CLI, no bot-identity derivation).
 - `repoWorkspace.ts` clones exactly the URL it is given, with no scheme rewriting; any forge-specific URL translation happens in the calling adapter before this module is invoked.
 - The package imports nothing from `src/providers/`; this boundary is enforced by a committed import-graph test.
+- Since issue #11, `commitOps`, `isLeaseRejection`, and `branchOps` are exported from `index.ts` alongside `claimOps`, so ADW's regression step definitions can drive them directly with their own injected runner. This widens the export list only: every function still takes an injected `(command, cwd) => string` runner, and the package still imports nothing from `src/providers/`.
 - `literalTokenProvider.ts`'s `createLiteralTokenProvider` is a test/fixture-only implementation (not a production credential source) that always answers via the `GH_TOKEN` overlay key — a deliberate, grandfathered exception to the rule that a production provider owns its credential variable name on the adapter side of the port.
 
 ## Configuration
