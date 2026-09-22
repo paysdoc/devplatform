@@ -102,13 +102,29 @@ of the first manually published version; the release workflow hard-fails if that
 can never recompute or republish `1.0.0`.
 
 The npm trusted publisher for `@paysdoc/devplatform` must be linked to this exact GitHub Actions workflow
-(owner `paysdoc`, repository `devplatform`, workflow filename `release.yml`, no environment), and the
-package's Publishing access setting must permit trusted publishing. If the OIDC token exchange succeeds but
-the publish itself is still denied (`403 … OIDC permission denied for this action`), add an `NPM_TOKEN`
-repository secret as a fallback — `@semantic-release/npm` prefers it over OIDC when both are present. A run
-that tags a version and then fails to publish it leaves an orphan tag that a re-run will not republish (no
-new commits exist after the tag); delete the orphan tag and any GitHub release it created, then trigger the
-workflow again — never delete `v1.0.0`.
+(owner `paysdoc`, repository `devplatform`, workflow filename `release.yml`, no environment) **and must have
+the direct `npm publish` action allowed**. npm creates a new trusted publisher with `npm stage publish`
+permission only; direct publishing is a separate tick under the publisher's "Allowed actions" that is off by
+default. Without it the OIDC token exchange succeeds, provenance is signed, and the publish `PUT` itself is
+then denied with `403 … OIDC permission denied for this action`. Fix it on npmjs.com, or from an
+authenticated, 2FA-enabled npm CLI (11.15+):
+
+```
+npm trust list @paysdoc/devplatform
+npm trust github @paysdoc/devplatform --file release.yml --repo paysdoc/devplatform --allow-publish --allow-stage-publish
+```
+
+Do not reach for `NPM_TOKEN` to work around this: npm is removing direct publishing via bypass-2FA tokens in
+January 2027, and a stage-only token cannot serve `@semantic-release/npm`, which runs plain `npm publish` and
+has no staged-publishing mode. The package's Publishing access setting may be "Require two-factor
+authentication and disallow tokens" — that only restricts classic tokens, trusted publishers keep working.
+
+semantic-release pushes the git tag *before* it publishes, so a run that fails at `npm publish` leaves an
+orphan tag that a re-run will not republish (no new commits exist after the tag) and reports "no relevant
+changes". Delete the orphan tag and any GitHub release it created, then trigger the workflow again — never
+delete `v1.0.0`. After a successful publish, the registry metadata shows the new version within a couple of
+minutes but the tarball itself can 404 for several minutes more; that is npm replication lag, not a failed
+release.
 
 ## Domain glossary
 
