@@ -606,7 +606,11 @@ Hermetic (no build; `bun run test:e2e --tags "@adw-11 and not @packaging"`):
 
 Deliberately not scenario-covered (per the feature file's header): the `./git` layering proof
 stays with `src/__tests__/importGraph.test.ts`; the `feat:` commit and the npm publication are
-release-process outcomes verified in Steps 8–9.
+release-process outcomes verified in Steps 8–9. The companion types
+`GitHubTokenProviderInput`, `BootstrapIdentityDeps` and `ResolveContextTokenInput` (Step 4) are
+an additive convention beyond the issue's list, so the `@packaging` type-check table is pinned
+to the issue's names plus `GitHubAppConfig`; those three are verified by `bun run typecheck` and
+the built `dist/providers/github/index.d.ts` (Step 4 checkpoint), not by a scenario.
 
 Step vocabulary: reuse `Given the library tarball is installed into a clean consumer project`,
 `Then the subprocess exits {int}` and the `feature-9` credential/identity phrases; new phrases are
