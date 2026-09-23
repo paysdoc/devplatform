@@ -16,8 +16,13 @@ sits between the co-located `vitest` unit suites and manual verification.
   `loader` option) so they can import the library's own `src/` modules under the repository's
   `NodeNext` resolution without a separate build step.
 - `features/per-issue/` — one `.feature` file per issue (e.g. `feature-9.feature`,
-  `feature-11.feature`), tagged `@adw-<issue>`, generated as the behavioural contract for that
-  issue's build.
+  `feature-11.feature`, `feature-16.feature`), tagged `@adw-<issue>`, generated as the behavioural
+  contract for that issue's build. `feature-16.feature` covers the forge metadata port (issue #16):
+  7 hermetic scenarios (a GitHub issue fetch, a 4-row Jira instance-URL outline, a Jira tracker
+  constructed from only a client and a project key, a GitHub pull-request listing) plus 4
+  `@packaging` scenarios (a 2-row entry-point outline reading `Issue.createdAt`/`url` and
+  `PullRequestRecord.updatedAt`/`url` as required strings, the Jira client's instance URL as a
+  read-only string, and the Jira tracker constructor with and without a logger).
 - `features/regression/vocabulary.md` — the promoted, reusable Given/When/Then phrase registry
   for scenarios worth keeping as a standing regression suite (`@regression`).
 - `features/step_definitions/` — step definitions wiring Gherkin phrases to the library's public
@@ -26,7 +31,17 @@ sits between the co-located `vitest` unit suites and manual verification.
   surface is split by function group across several modules to stay under the 300-line cap:
   `githubTokenProvider.steps.ts`, `githubIdentityAndAppConfig.steps.ts`,
   `githubAppAuthAndCli.steps.ts`, `ghRepoApi.steps.ts`, `gitOps.steps.ts`, and
-  `publicSurfacePackaging.steps.ts`.
+  `publicSurfacePackaging.steps.ts`. Issue #16 adds `forgeMetadataGitHub.steps.ts` (the GitHub
+  Given/When/Then steps: git context over the CLI fake, held issue/pull requests, tracker and code
+  host built through the providers entry point), `forgeMetadataJira.steps.ts` (the Jira steps: held
+  issue behind a scripted `fetchFn`, tracker via the factory or constructed directly from a client),
+  and `forgeMetadataPackaging.steps.ts` (the three `@packaging` type-check `When` steps, each
+  driven through `typeCheckInConsumer()` and asserted only via the shared `Then the subprocess
+  exits {int}` step).
+- `features/support/ghCliFake.ts` (issue #16) — a projection-aware GitHub CLI fake shared by the
+  GitHub scenarios: holds one issue and a list of pull requests, answers `gh issue view <n> …
+  --json <fields>` / `gh pr list … --state all --json <fields> …` with the held data projected to
+  exactly the requested fields, and throws naming any other command.
 - `features/support/world.ts` — the shared Cucumber `World`: per-scenario input/output state,
   managed `process.env` keys snapshotted before and restored after every scenario so a
   developer's own shell identity never leaks into an assertion. Also restores `PATH` (not a
@@ -58,7 +73,13 @@ sits between the co-located `vitest` unit suites and manual verification.
 - `@packaging`-tagged scenarios build, pack and install the tarball into a clean project, then
   run a Node subprocess and the repository's own `tsc` against it — the committed proof that a
   published name resolves both at runtime and in the emitted `.d.ts`, per
-  `app_docs/feature-wdjsgu-package-build-export-package-build.md`.
+  `app_docs/feature-wdjsgu-package-build-export-package-build.md`. A required (non-optional)
+  member is proven by a generated module reading it where a bare `string` is expected under
+  `strict` (a missing, optional or non-string member fails the check); a read-only member is
+  proven by reading it as a `string` and adding an `@ts-expect-error`-guarded reassignment (a
+  writable member leaves the directive unused and fails the check) — the pattern `feature-16`'s
+  packaging scenarios use for `Issue.createdAt`/`url`, `PullRequestRecord.updatedAt`/`url`, and
+  `JiraApiClient.instanceUrl`.
 - `tsconfig.json`'s `include` covers `features/**/*.ts` so the step layer is typechecked by
   `bun run typecheck`/`bun run test`; `tsconfig.build.json` stays `src`-only, so nothing under
   `features/` ever reaches `dist/` or the npm tarball.

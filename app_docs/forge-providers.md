@@ -8,7 +8,7 @@ This module is the forge-neutral provider layer: it turns a `ForgeSelection` (wh
 
 - `forgeProviders()` (`src/providers/forgeProviders.ts`) builds the one `BoundProviders` set (`issueTracker`, `codeHost`, optional `boardManager`) for a given `RepoIdentifier`, dispatching per-port on `forge.issueTracker` (`github` | `jira`) and `forge.codeHost` (`github` | `gitlab`).
 - `createForgeCredentials()` (`src/providers/forgeCredentials.ts`) builds the `{ tokenProvider, gitIdentity }` pair for a given `RepoIdentifier`, dispatching on `forge.codeHost` alone (the issue-tracker selection is irrelevant to credentials).
-- `types.ts` defines the forge-neutral domain contracts (`Issue`, `PullRequest`, `IssueTracker`, `CodeHost`, `BoardManager`, `BoundProviders`, `RepoContext`, `RepoIdentifier`, `Platform`) that every adapter implements and every consumer programs against.
+- `types.ts` defines the forge-neutral domain contracts (`Issue`, `PullRequest`, `IssueTracker`, `CodeHost`, `BoardManager`, `BoundProviders`, `RepoContext`, `RepoIdentifier`, `Platform`) that every adapter implements and every consumer programs against. Since issue #16, `Issue` carries required `createdAt: string` (ISO 8601 creation timestamp) and `url: string` (the forge-published issue URL), and `PullRequestRecord` carries required `updatedAt: string` (ISO 8601 last-update timestamp, the "newest first" key for preferred-PR selection) and `url: string` (the forge-published PR URL) — both adapters populate all four, passing timestamps through verbatim in each forge's own format (GitHub `Z`-suffixed, Jira millisecond `+0000`, no reformatting). `IssueListEntry` remains the only "optional projection" shape (`createdAt?`/`updatedAt?`) and is deliberately not harmonised with these required fields.
 - `workspaceValidation.ts` provides filesystem-only helpers (`validateWorkingDirectory`, `parseOwnerRepoFromUrl`) used when constructing a `RepoContext` from a working directory and git remote.
 - `index.ts` is the module's public barrel, re-exporting `types.js`, the Jira/GitHub/GitLab adapter sub-barrels, `forgeProviders.js`, `forgeCredentials.js`, and `workspaceValidation.js`.
 
@@ -24,6 +24,7 @@ This module is the forge-neutral provider layer: it turns a `ForgeSelection` (wh
 - `UnknownForgeError` is shared between the two factories; its `source` parameter (default `'forgeProviders'`) is set to `'createForgeCredentials'` when raised from that factory, so the message always names the entry point that refused.
 - `RepoIdentifier` validation (`validateRepoIdentifier`) only checks that `owner`/`repo` are non-empty after trimming; it does not otherwise normalize the identifier.
 - `BoundProviders` and its extension `RepoContext` (`cwd` + `repoId` added) are `Readonly`; `forgeProviders()` returns a frozen object (`Object.freeze`).
+- The Jira issue tracker (`src/providers/jira/`, no conditional-docs entry of its own) composes its `Issue.url` as `<instanceUrl>/browse/<KEY>` from `JiraApiClient.instanceUrl` — a public readonly member exposing the client's already-normalised (single trailing-slash strip) instance URL — rather than a second positional constructor argument on `JiraIssueTracker`, so its exported `(client, projectKey, logger?)` constructor stays unchanged (issue #16, additive/minor release).
 
 ## Configuration
 
