@@ -34,6 +34,7 @@ const ISSUE_NEW: JiraIssueResponse = {
     creator: { displayName: 'Bot' },
     labels: [],
     comment: { comments: [], startAt: 0, maxResults: 0, total: 0 },
+    created: '2026-01-01T00:00:00.000Z',
   },
 };
 
@@ -92,6 +93,19 @@ describe('createJiraIssueTracker — end-to-end through the factory with a scrip
     const issue = await tracker.fetchIssue(7);
 
     expect(issue).toMatchObject({ id: 'ADW-7', number: 7, title: 'Title', state: 'OPEN' });
+    expect(issue.createdAt).toBe('2026-01-01T00:00:00.000Z');
+    expect(issue.url).toBe('https://acme.atlassian.net/browse/ADW-7');
+  });
+
+  it('a trailing-slash instanceUrl still yields the single-slash browse URL (the client normalises once; the tracker does not normalise again)', async () => {
+    const fetchFn = scriptedFetch([
+      { match: (url) => url.includes('/issue/ADW-7'), respond: () => jsonResponse(ISSUE_NEW) },
+    ]);
+    const tracker = createJiraIssueTracker({ instanceUrl: 'https://acme.atlassian.net/', projectKey: 'ADW', auth: AUTH }, { fetchFn });
+
+    const issue = await tracker.fetchIssue(7);
+
+    expect(issue.url).toBe('https://acme.atlassian.net/browse/ADW-7');
   });
 
   it('closeIssue transitions a new-category issue to done, returns true, and logs success with level', async () => {

@@ -89,6 +89,8 @@ export class JiraIssueTracker implements IssueTracker {
       author: jiraIssue.fields.creator.displayName,
       labels: [...jiraIssue.fields.labels],
       comments,
+      createdAt: jiraIssue.fields.created,
+      url: `${this.client.instanceUrl}/browse/${jiraIssue.key}`,
     };
   }
 

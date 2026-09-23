@@ -32,6 +32,13 @@ const CLOUD_AUTH: JiraAuth = { email: 'me@example.com', apiToken: 'tok' };
 const INSTANCE = 'https://acme.atlassian.net/';
 
 describe('JiraApiClient — request shape from injected configuration (#818)', () => {
+  it('the public instanceUrl member is the trailing-slash-normalised value (issue #16)', () => {
+    const { fetchFn } = makeRecordingFetch({ key: 'ADW-7' });
+    const client = new JiraApiClient(INSTANCE, CLOUD_AUTH, { fetchFn });
+
+    expect(client.instanceUrl).toBe('https://acme.atlassian.net');
+  });
+
   it('getIssue builds the expected URL, method, and Basic auth header for cloud auth', () => {
     const { fetchFn, calls } = makeRecordingFetch({ key: 'ADW-7' });
     const client = new JiraApiClient(INSTANCE, CLOUD_AUTH, { fetchFn });

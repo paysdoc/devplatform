@@ -11,6 +11,7 @@ import { After, Before, setDefaultTimeout, setWorldConstructor, World, type IWor
 import * as fs from 'node:fs';
 import { Platform, type RepoIdentifier } from '../../src/providers/types.js';
 import type { ExecFn, GitContext } from '../../src/git/index.js';
+import type { GhCliFakeState } from './ghCliFake.js';
 
 setDefaultTimeout(30_000);
 
@@ -107,6 +108,30 @@ export class DevPlatformWorld extends World {
 
   /** A `GitContext` built for the `createGhRepoApi` scenario, and the mutable recorder its injected `exec` delegates to (set after construction, since the scenario configures the recorder in a later Given step). */
   ghContext?: GitContext;
+
+  // -------------------------------------------------------------------------
+  // Issue #16 — creation/update metadata on Issue and PullRequestRecord.
+  // -------------------------------------------------------------------------
+
+  /** The GitHub CLI fake's held state, for the issue-#16 scenarios' Given/Then steps. */
+  ghFakeState?: GhCliFakeState;
+  /** The repository identity bound to `ghContext` for the issue-#16 scenarios (a fresh field so the pre-existing `ghRepoApi.steps.ts` scenario is untouched). */
+  ghRepoId?: RepoIdentifier;
+  /** The `Issue` returned by the last GitHub or Jira issue-tracker fetch, read structurally so no adapter-internal type is imported into the step layer. */
+  fetchedIssue?: { readonly createdAt: string; readonly url: string };
+  /** The `PullRequestRecord[]` returned by the last GitHub code host listing. */
+  listedPullRequests?: readonly {
+    readonly number: number;
+    readonly body: string;
+    readonly state: string;
+    readonly mergedAt: string | null;
+    readonly updatedAt: string;
+    readonly url: string;
+  }[];
+  /** The Jira issue the scripted `fetchFn` answers with, declared by a Given step before either Jira When step builds its fetcher from it. */
+  jiraHeldIssue?: { readonly key: string; readonly createdAt: string; readonly updatedAt: string };
+  /** A directly constructed `JiraApiClient`, read structurally (its `instanceUrl` is the only member a scenario reads). */
+  jiraClient?: { readonly instanceUrl: string };
   execRecorder: ExecFn = () => {
     throw new Error('no executor recorder was configured for this scenario');
   };

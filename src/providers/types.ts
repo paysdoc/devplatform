@@ -59,6 +59,10 @@ export interface Issue {
   author: string;
   labels: string[];
   comments: IssueComment[];
+  /** ISO 8601 creation timestamp — read by ADW's plan/scenario agent prompts (ADW #844). */
+  createdAt: string;
+  /** The forge-published issue URL — read by ADW's build agent prompt (ADW #844). */
+  url: string;
 }
 
 /**
@@ -140,12 +144,16 @@ export interface MergedPullRequestRecord {
   mergedAt: string | null;
 }
 
-/** Every PR of the repository — open, closed or merged — projected to what issue-link detection needs. `state` is the forge-native vocabulary `PullRequestSummary.state` already carries. */
+/** Every PR of the repository — open, closed or merged — projected to what issue-link detection needs, plus the update timestamp and URL the HITL board notifier reads. `state` is the forge-native vocabulary `PullRequestSummary.state` already carries. */
 export interface PullRequestRecord {
   number: number;
   body: string;
   state: string;
   mergedAt: string | null;
+  /** ISO 8601 last-update timestamp — the "newest first" ordering key for preferred-PR selection (ADW #844). */
+  updatedAt: string;
+  /** The forge-published pull-request URL (ADW #844). */
+  url: string;
 }
 
 /**

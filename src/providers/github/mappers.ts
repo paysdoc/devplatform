@@ -23,7 +23,8 @@ export function mapGitHubCommentToIssueComment(comment: GitHubComment): IssueCom
 }
 
 /**
- * Maps a GitHubIssue to a platform-agnostic Issue.
+ * Maps a GitHubIssue to a platform-agnostic Issue, carrying the creation
+ * timestamp and URL through unchanged (issue #16).
  */
 export function mapGitHubIssueToIssue(issue: GitHubIssue): Issue {
   return {
@@ -35,6 +36,8 @@ export function mapGitHubIssueToIssue(issue: GitHubIssue): Issue {
     author: issue.author.login,
     labels: issue.labels.map((l) => l.name),
     comments: issue.comments.map(mapGitHubCommentToIssueComment),
+    createdAt: issue.createdAt,
+    url: issue.url,
   };
 }
 
