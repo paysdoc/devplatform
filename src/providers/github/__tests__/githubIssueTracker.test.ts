@@ -30,7 +30,7 @@ describe('GitHubIssueTracker — command strings', () => {
 });
 
 describe('GitHubIssueTracker — parse and map', () => {
-  it('fetchIssue maps a raw payload to Issue, flattening labels to names with the unknown-author default', async () => {
+  it('fetchIssue maps a raw payload to Issue, flattening labels to names with the unknown-author default, and carries createdAt/url through (issue #16)', async () => {
     const json = JSON.stringify({
       number: 42, title: 'Ship it', state: 'OPEN', labels: [{ name: 'hitl' }],
       createdAt: '2026-01-01T00:00:00Z', updatedAt: '2026-01-02T00:00:00Z', url: 'https://x',
@@ -42,6 +42,8 @@ describe('GitHubIssueTracker — parse and map', () => {
 
     expect(issue.author).toBe('unknown');
     expect(issue.labels).toEqual(['hitl']);
+    expect(issue.createdAt).toBe('2026-01-01T00:00:00Z');
+    expect(issue.url).toBe('https://x');
   });
 
   it('fetchComments maps the REST shape (user.login/created_at)', () => {

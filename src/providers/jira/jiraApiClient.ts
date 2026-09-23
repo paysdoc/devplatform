@@ -3,7 +3,7 @@
  * Handles authentication, request building, and error handling.
  *
  * Configuration is INJECTED (#818) — never read from the environment. Logs via the
- * `Logger` port (adws/gitContext/types.ts), defaulting to `consoleLogger`.
+ * `Logger` port (`src/git/types.ts`), defaulting to `consoleLogger`.
  * `fetchFn` is the hermetic transport test seam; production uses global fetch.
  */
 
@@ -38,7 +38,8 @@ export interface JiraApiClientDeps {
 const defaultFetch: FetchFn = (url, init) => fetch(url, init);
 
 export class JiraApiClient {
-  private readonly instanceUrl: string;
+  /** The trailing-slash-normalised Jira instance URL every request is built on (issue #16: also the base of the `…/browse/<KEY>` issue URL). */
+  readonly instanceUrl: string;
   private readonly auth: JiraAuth;
   private readonly logger: Logger;
   private readonly fetchFn: FetchFn;
