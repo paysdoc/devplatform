@@ -274,9 +274,14 @@ Execute every step in order, top to bottom.
   `strict: true` — that is the RED baseline, and why CI's `check` job is red on this branch until
   Step 7 lands. Once Step 7's steps exist and before Steps 2–4 land, the GitHub issue scenario
   fails on the mapping that drops `createdAt`/`url`, the PR-listing scenario fails because the
-  CLI fake returns only the fields the old projection requests, and the Jira scenarios fail on
-  the missing `createdAt`/`url` and on the private `instanceUrl` — each for the reason the issue
-  names.
+  CLI fake returns only the fields the old projection requests, the Jira scenarios fail on the
+  missing `createdAt`/`url`, the required-strings `@packaging` outline fails on the four missing
+  members, and the read-only `@packaging` scenario fails on the private `instanceUrl` — each for
+  the reason the issue names. Two expected non-reds: the hermetic `Then the Jira API client
+  reports the instance URL …` step already passes (TypeScript's `private` is erased at runtime,
+  so that scenario goes red on its browse-URL step, not on the client read), and the
+  constructor `@packaging` scenario is green from the start — it guards the unchanged
+  `(client, projectKey, logger?)` signature rather than driving a change.
 - Release state (verified 2026-09-23): `origin` tags are `v1.0.0` and `v1.1.0` (the latter on
   the PR #14 merge commit `9981481`); npm has `1.0.0` and `1.1.0`; the only commits on `main`
   since `v1.1.0` are a `ci:` commit and a merge. So the next `feat:` computes **1.2.0** — exactly
@@ -447,11 +452,16 @@ Execute every step in order, top to bottom.
   to rows by `number`, expect exactly one listed record per row, compare only the named columns.
   **`Then each listed pull request still carries the body, state and merge timestamp GitHub holds
   for it`**: compare `body`, `state`, `mergedAt` (null when not merged) against the held state.
-- **Jira fake**: a scripted `fetchFn` answering `GET <instanceUrl>/rest/api/3/issue/ADW-7…` with a
+- **Jira fake**: a scripted `fetchFn` answering `GET …/rest/api/3/issue/ADW-7` (the feature
+  file's wording) — match the method and a URL whose path, query string aside, ends
+  `/rest/api/3/issue/ADW-7`; never rebuild the expected URL from the Gherkin's raw instance URL.
+  The client requests `<normalised instance URL>/rest/api/3/issue/ADW-7?expand=renderedFields`,
+  so a match built from `https://acme.atlassian.net/`, `…net//` or `https://jira.example.com/jira/`
+  would miss and fail those outline rows for the wrong reason. Answer with a
   `JiraIssueResponse`-shaped payload (`id`, `key: 'ADW-7'`, `fields: { summary, description (ADF
   doc), status { name, statusCategory { id, key: 'new', name } }, creator { displayName },
   labels: [], comment, created: <declared>, updated: <declared> }`, plus a REST `self` link and
-  *no* browse URL) and throwing on anything else; global `fetch` is never reached. `updated` is
+  *no* browse URL), and throw on anything else; global `fetch` is never reached. `updated` is
   an extra key the type does not declare — fine for a scripted payload (cast via `unknown`) and
   it makes a `createdAt` read from the wrong field fail.
 - **`Given Jira holds issue {string} created at {string}, last updated at {string}`**: store the
@@ -475,8 +485,9 @@ Execute every step in order, top to bottom.
 - **`@packaging` steps** (`features/step_definitions/forgeMetadataPackaging.steps.ts`), all via
   `typeCheckInConsumer()` and asserting only through `Then the subprocess exits 0`:
   - **`When the consumer type-checks a module that reads these fields from {string} as required
-    strings`** (table `type|field`): generate a `.ts` module that `import type { Issue,
-    PullRequestRecord } from '<entryPoint>'` and, per row, exports a function returning the field
+    strings`** (table `type|field`): generate a `.ts` module that imports the table's distinct
+    `type` names as types from `<entryPoint>` (for this table, `import type { Issue,
+    PullRequestRecord } from '<entryPoint>'`) and, per row, exports a function returning the field
     where a `string` is expected under `strict` — e.g.
     `export function read_Issue_createdAt(value: Issue): string { return value.createdAt; }` —
     so a missing member, an optional member (`string | undefined`) or a non-string member fails
