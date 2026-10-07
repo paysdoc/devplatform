@@ -154,7 +154,7 @@ features/
   per-issue/                  Per-issue Gherkin feature files (e.g. feature-9.feature), tagged @adw-<issue>
   regression/vocabulary.md    Regression test vocabulary (promoted, reusable Given/When/Then phrases)
   step_definitions/           Cucumber step definitions wiring Gherkin steps to the library's public surface
-  support/                    Shared Cucumber world/support code (packagedConsumer helper, world.ts)
+  support/                    Shared Cucumber world/support code (world.ts, gitFixture, ghCliFake/stubGh, packagedConsumer, publicSurfaceLoader)
 logs/<session-id>/           Claude Code hook session logs (chat, pre/post-tool-use, stop transcripts)
 specs/                        Per-issue implementation plans (ADW-generated), plus specs/patch/ for patch plans
 release.config.js             semantic-release configuration: agent-prefix-aware commit parser, branches, plugin list
@@ -167,6 +167,7 @@ src/
   index.ts                    Root entry point ("."): forge ports + domain model only
   __tests__/                  Import-graph, package-exports, and release-config contract tests
   git/                        Forge-neutral git/worktree core (GitContext, worktree ops, bootstrap identity, process cleanup) — entry point "./git"; also re-exports commitOps/branchOps/isLeaseRejection since issue #11
+    gitReadOps.ts / repoWorkspace.ts  Read-only git queries and repo workspace helpers
     literalTokenProvider.ts    Fixed-string TokenProvider for tests/fixtures (re-exported from the GitHub adapter)
   providers/                  Forge provider ports and adapters — entry point "./providers"
     github/                   GitHub adapter (issue tracker, code host, board manager, App auth, gh CLI commands); its credential/identity helpers and createGhRepoApi are re-exported on this barrel since issue #11

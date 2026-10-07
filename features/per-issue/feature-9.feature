@@ -101,6 +101,7 @@ Feature: Forge-keyed credential factory
     When forge credentials are created
     Then the bootstrap git identity is "Release Bot" with email "release-bot@example.com"
 
+  @adw-18
   Scenario: GitLab bootstrap identity falls back to git config when the environment carries none
     Given the forge selection names code host "gitlab" for repository "paysdoc/devplatform"
     And the GitLab configuration supplies token "glpat-configured" at "https://gitlab.com"
@@ -109,6 +110,7 @@ Feature: Forge-keyed credential factory
     When forge credentials are created
     Then the bootstrap git identity is "Local Dev" with email "local-dev@example.com"
 
+  @adw-18
   Scenario: GitLab bootstrap identity derives no bot identity from a GitHub App in the environment
     Given the forge selection names code host "gitlab" for repository "paysdoc/devplatform"
     And the GitLab configuration supplies token "glpat-configured" at "https://gitlab.com"

@@ -83,7 +83,7 @@ array then flows unchanged from builder → runner → `ExecFn` → `execFileSyn
   - Extend `git-gh-shellout` so it also recognises an argv array literal (`['git', …]`) as a
     call's first argument. Without this, the existing rule would stop seeing `ctx.exec(['gh', …])`
     outside the exempt packages once `exec` takes an array.
-- **Regression tests** cover three things:
+- **Regression tests** cover four things:
   - Hostile-value argv tests (`'`, `"`, `` ` ``, `$(echo pwned)`, `\`, newline) through stand-in
     runners for `createPRCmd`, `createIssueCmd`, the label builders, `listOpenIssuesCmd`,
     `graphQLCmd` and every commit op.
@@ -92,6 +92,15 @@ array then flows unchanged from builder → runner → `ExecFn` → `execFileSyn
       runs nothing and records the message verbatim.
     - A real `printf` through the default executor echoes a hostile argument back unchanged.
   - Guard tests for both rule changes.
+  - The `@adw-18` BDD scenarios in `features/per-issue/feature-18.feature`. They prove the same
+    guarantees through the public entry points:
+    - The GitHub code host, issue tracker and repository API hand `gh` each hostile value as
+      exactly one argument, with the body on stdin.
+    - A stub `gh` on `PATH` receives the deckerly#52 title verbatim through the default executor.
+    - Real git commits, shows, worktrees and clones keep hostile messages, paths and branch names
+      intact.
+    - The guard fails a template-literal command handed to a runner.
+    - The emitted `.d.ts` accepts an argv runner and rejects a command-string runner.
 - Update the existing unit tests and the BDD support layer to argv. Mark the change as breaking so
   semantic-release computes **2.0.0**.
 
@@ -248,24 +257,36 @@ Use these files to fix the bug:
 
 **BDD support and steps (type-checked by `bun run typecheck`; `features/**` is in `tsconfig.json`)**
 - `features/support/world.ts`: the `ExecStub` type (line 19), `execRecorderCalls` (line 138) and
-  `runner` (line 147).
+  `runner` (line 147). The recorder must also capture `input`, because feature-18 asserts what
+  each `gh pr create`/`gh issue create` received on standard input.
 - `features/support/gitFixture.ts`: `makeGitRunner` (an `execSync(command)` runner passed straight
   into `commitOps`/`branchOps`) and the fixture repository commands.
 - `features/support/ghCliFake.ts`: dispatches on `command.startsWith('gh issue view ')` and parses
   `--json` by regex.
 - `features/support/stubGh.ts`: the comment says `ghAuthToken` "spawns `gh auth token` through the
-  shell".
+  shell". It also needs a recording stub for feature-18's real-spawn pull request scenario.
 - `features/step_definitions/gitOps.steps.ts`: the `Runner` type and every fixture `this.runner(…)`
   command string.
 - `features/step_definitions/ghRepoApi.steps.ts`: the recorder records `command` and the Then step
-  checks `call.command.includes(named)`.
+  checks `call.command.includes(named)`. Feature-18's first rule reuses its two Given steps and
+  its "composed through the providers entry point" When step.
 - `features/step_definitions/forgeCredentials.steps.ts`: the `execStub = (cmd: string) => …`
   git-config stubs (lines 134-147).
 - `features/step_definitions/forgeMetadataGitHub.steps.ts`,
   `features/step_definitions/githubIdentityAndAppConfig.steps.ts`: type flow only (`ExecFn` from
   `createGhCliFake`; `exec?: unknown`). Change only if typecheck demands it.
-- `features/per-issue/feature-11.feature`: read-only. Its commitOps/branchOps/ghRepoApi scenarios
-  must stay green through the reworked support layer.
+- `features/support/packagedConsumer.ts` (`typeCheckInConsumer`) and
+  `features/step_definitions/packagedConsumer.steps.ts` (`Then the subprocess exits {int}`, which
+  reads `world.subprocess`): read-only. Feature-18's guard and `@packaging` steps reuse both.
+- `features/per-issue/feature-18.feature`: read-only. These are the `@adw-18` scenarios this change
+  must turn green (see Task 8).
+- `features/per-issue/feature-9.feature`, `feature-11.feature`, `feature-16.feature`: read-only.
+  The scenario phase tagged some of their scenarios `@adw-18` as regression coverage for the
+  reworked support layer. They must stay green unchanged:
+  - the git-config stubs (feature-9's GitLab fallbacks, feature-11's bootstrap-identity fallbacks);
+  - the stub-`gh` `ghAuthToken` reads and the `createGhRepoApi` recorder (feature-11);
+  - the real-repository commitOps/branchOps runner (feature-11);
+  - the CLI fake (feature-16).
 
 **Documentation (conditional-docs owners of the touched paths)**
 - `app_docs/git-worktree-core.md`: owns `src/git/**`. Lines 10, 30, 32 and 40 describe
@@ -293,6 +314,8 @@ Use these files to fix the bug:
   the same operations driven through `createGhRepoApi` over a `GitContext` with a spy `ExecFn`.
 - `scripts/guard/shellCommandStringRule.ts`: the new `shell-command-string` guard rule module,
   shaped like `constructionRule.ts`.
+- `features/step_definitions/argvCommands.steps.ts`: the step definitions for
+  `features/per-issue/feature-18.feature` (see Task 8).
 
 ## Step by Step Tasks
 IMPORTANT: Execute every step in order, top to bottom.
@@ -628,16 +651,22 @@ IMPORTANT: Execute every step in order, top to bottom.
   - Update the docblock.
 - `features/support/world.ts`:
   - `ExecStub = (argv: readonly string[], opts: unknown) => string`.
-  - `execRecorderCalls?: Array<{ argv: readonly string[]; env: NodeJS.ProcessEnv }>`.
+  - `execRecorderCalls?: Array<{ argv: readonly string[]; env: NodeJS.ProcessEnv; input?: string }>`.
   - `runner: (argv: readonly string[], cwd: string) => string`.
 - `features/support/ghCliFake.ts`:
   - Dispatch on argv: `gh issue view …` is `argv[0] === 'gh' && argv[1] === 'issue' && argv[2] === 'view'`;
     `gh pr list … --state all` is matched the same way, with `argv[argv.indexOf('--state') + 1] === 'all'`.
   - `parseJsonFields(argv)` reads the element after `--json`.
   - Error messages render `argv.join(' ')`.
-- `features/support/stubGh.ts`: the comment says `ghAuthToken` spawns `gh` found on `PATH`, not
-  "through the shell". The stub's `#!/bin/sh` shebang still works because `execFileSync` resolves
-  `gh` via `PATH`.
+- `features/support/stubGh.ts`:
+  - The comment says `ghAuthToken` spawns `gh` found on `PATH`, not "through the shell". The
+    stub's `#!/bin/sh` shebang still works because `execFileSync` resolves `gh` via `PATH`.
+  - Add a recording variant next to `installStubGh` for feature-18's second rule. Its script:
+    - writes each invocation's arguments to its own file in the stub directory, NUL-separated
+      (`printf '%s\0' "$@"`), so quotes and newlines survive;
+    - for `pr create`, also saves stdin and prints the configured URL;
+    - for anything else, exits 0 with no output. The code host's `gh pr list` pre-check then
+      fails to parse and falls through to creation.
 - `features/step_definitions/gitOps.steps.ts`:
   - `type Runner = (argv: readonly string[], cwd: string) => string`.
   - `hasLocalBranch` uses `['git', 'branch', '--list']`.
@@ -651,16 +680,69 @@ IMPORTANT: Execute every step in order, top to bottom.
     - `['git', 'rev-list', '--count', 'HEAD']`
     - `['git', 'rev-parse', branch]`
 - `features/step_definitions/ghRepoApi.steps.ts`: `execFn: ExecFn = (argv, options) => this.execRecorder(argv, options)`.
-  The recorder pushes `{ argv, env }`. The Then step asserts `call.argv.some((a) => a.includes(named))`
+  The recorder pushes `{ argv, env, input: options.input }`. The Then step asserts `call.argv.some((a) => a.includes(named))`
   and renders `call.argv.join(' ')` in its failure message. The feature-11 phrase is unchanged.
+  The literal-credential Given also sets `world.ghRepoId`, so feature-18 can build the code host
+  and issue tracker over the same context.
 - `features/step_definitions/forgeCredentials.steps.ts`: the stubs become
   `(argv) => argv.includes('user.name') ? … : argv.includes('user.email') ? … : throw` with
   `argv.join(' ')` in messages.
 - `features/step_definitions/forgeMetadataGitHub.steps.ts`,
   `features/step_definitions/githubIdentityAndAppConfig.steps.ts`: no change unless typecheck flags
   one.
-- If the scenario phase has added `@adw-18` scenarios under `features/per-issue/`, implement their
-  step definitions against the public entry points, reusing this support layer.
+- Add `features/step_definitions/argvCommands.steps.ts` for `features/per-issue/feature-18.feature`.
+  Drive only public entry points, and reuse the existing steps: the literal-credential context, the
+  recorder, the repository-API composition, the throwaway-repository and working-tree steps in
+  `gitOps.steps.ts`, and `the subprocess exits {int}`.
+  - **First rule (recorder).**
+    - Store the hazard table's values in order.
+    - Build the code host and issue tracker over the declared context through the providers entry
+      point, as `forgeMetadataGitHub.steps.ts` does.
+    - Each When calls one public operation once per value:
+      - the code host's `createPullRequest({ title, body, sourceBranch, targetBranch })`;
+      - `createPR(title, body, head, base, values)` on the composed repository API;
+      - the tracker's `createIssue`, `addLabel` (`adds`), `applyLabel` (`applies`), `ensureLabel`
+        and `searchOpenIssues`;
+      - `runGraphQL(query, { status: value, number: 52 })` on the composed repository API;
+      - the context's `commitChanges`, `addAndCommitPaths`, `removeAndCommitPaths` and
+        `commitAllowEmpty`, with any worktree path (the recorder never spawns).
+    - The Then steps keep only the recorded calls whose argv starts with the named program and
+      subcommand, e.g. `gh pr create`. Other calls, such as the code host's `gh pr list`
+      pre-check, are ignored. The steps then assert:
+      - the call count;
+      - the element after the flag equals the value byte for byte;
+      - `input` equals the body;
+      - each listed flag is followed by its argument.
+  - **Second rule (stub `gh`).**
+    - Install the recording stub.
+    - Build a `GitContext` with no `exec`. Its `frameworkRepoRoot` must be an existing temporary
+      directory, because `gh` runs in the framework-root cwd class.
+    - Assert on the recorded arguments and stdin.
+  - **Third rule (real git).**
+    - Build the context with no `exec`, `selfHost: true`, `frameworkRepoRoot` set to the throwaway
+      repository, and a token provider whose overlay carries `GIT_CONFIG_GLOBAL: '/dev/null'` and
+      `GIT_CONFIG_NOSYSTEM: '1'` (as in Task 1).
+    - "Creates a worktree for the new branch" is `createWorktreeForNewBranch(branch)`. Its base is
+      `HEAD`, because the repository has no remote. `removeWorktree(branch)` also deletes the
+      local branch.
+    - "The git entry point's clone operation" is `cloneRepo(repoDir, workspacePath)` with no
+      `exec`, with the workspace under a temporary directory.
+    - Read path lists with `-z`, so git's path quoting never changes a comparison.
+  - **Fourth rule (guard).**
+    - Write the docstring as the only file of a temporary source tree.
+    - The guard scans `process.cwd()`. Run it with the repository's own `tsx` binary and that
+      tree as `cwd`.
+    - Store `{ status, stdout, stderr }` in `world.subprocess`, and assert the report names the
+      file.
+  - **Fourth rule (`@packaging`).**
+    - Generate the consumer module with `typeCheckInConsumer`, as `forgeMetadataPackaging.steps.ts`
+      does.
+    - "A program and its argument list" is the argv-array runner
+      `(argv: readonly string[], …) => string`, whose element 0 is the program. That is the shape
+      of `ExecFn` and of the op-module `Runner`. "One command string" is
+      `(command: string, …) => string`.
+    - Put each `rejects` row under `// @ts-expect-error`. `tsc` then exits 0 only when every
+      `accepts` row compiles and every `rejects` row fails to compile.
 
 ### 9. Refresh the documentation that the change makes false
 Follow `.adw/coding_guidelines.md`: comment only invariants and non-obvious reasons, and never cite
@@ -714,13 +796,20 @@ Execute every command to validate the bug is fixed with zero regressions.
   exceptions.
 - `bun run test:unit`: the full unit suite, including the rewritten command assertions and the
   guard tests.
+- `bun run test:e2e --tags "@adw-18 and not @packaging"`: the issue's scenarios through the public
+  entry points. This covers feature-18's recorder, stub-`gh`, real-git and guard rules, plus the
+  `@adw-18`-tagged regression scenarios in features 9, 11 and 16. Run it after Task 8; every
+  scenario must pass.
 - `bun run test:e2e --tags "not @packaging"`: the hermetic BDD suite. This covers the feature-11
   commitOps, branchOps and push-rejection scenarios against real throwaway repositories through
   the argv runner, the `createGhRepoApi` recorder scenario, the stub-`gh` `ghAuthToken`
-  scenarios, the feature-16 CLI-fake scenarios, and any `@adw-18` scenarios.
+  scenarios, the feature-9 and feature-11 git-config identity fallbacks, the feature-16 CLI-fake
+  scenarios, and every hermetic `@adw-18` scenario in feature-18.
 - `bun run build`: emits `dist/**/*.js` and `.d.ts` with the new signatures.
 - `bun run test:e2e --tags "@packaging"`: the packed-tarball scenarios still resolve every exported
-  name from the emitted `.d.ts`.
+  name from the emitted `.d.ts`. Feature-18's runner-shape scenario also shows that the emitted
+  declarations accept an argv runner and reject a command-string runner for `GitContext`'s
+  executor, `commitOps` and `branchOps`.
 
 ## Notes
 - **Coding guidelines** (`.adw/coding_guidelines.md`):

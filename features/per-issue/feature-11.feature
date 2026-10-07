@@ -128,6 +128,7 @@ Feature: Widened public surface for the ADW switchover
     When the bootstrap git identity is resolved through the providers entry point
     Then the bootstrap git identity is "adw-bot[bot]" with email "12345+adw-bot[bot]@users.noreply.github.com"
 
+  @adw-18
   Scenario: The bootstrap identity resolver served through the providers entry point ignores a GitHub App advertised by the environment once the caller has established there is no App
     Given the GitHub App is not configured
     And the environment advertises a GitHub App with app id "12345" and slug "adw-bot"
@@ -143,6 +144,7 @@ Feature: Widened public surface for the ADW switchover
     When the bootstrap git identity is resolved through the providers entry point
     Then the bootstrap git identity is "Release Bot" with email "release-bot@example.com"
 
+  @adw-18
   Scenario: The bootstrap identity resolver served through the providers entry point falls back to git config when no App is configured and the environment carries no identity
     Given the GitHub App is not configured
     And the environment carries no git author identity
@@ -186,11 +188,13 @@ Feature: Widened public surface for the ADW switchover
   # @paysdoc/devplatform/providers — ghAuthToken
   # -------------------------------------------------------------------------
 
+  @adw-18
   Scenario: The GitHub CLI token reader served through the providers entry point returns what the CLI prints
     Given a stub GitHub CLI on the PATH prints the token "gho_from_stub"
     When the GitHub CLI token is read through the providers entry point
     Then the read token is "gho_from_stub"
 
+  @adw-18
   Scenario: The GitHub CLI token reader served through the providers entry point returns an empty token when the CLI fails
     Given a stub GitHub CLI on the PATH exits with an error
     When the GitHub CLI token is read through the providers entry point
@@ -200,6 +204,7 @@ Feature: Widened public surface for the ADW switchover
   # @paysdoc/devplatform/providers — createGhRepoApi
   # -------------------------------------------------------------------------
 
+  @adw-18
   Scenario: A repository API composed through the providers entry point issues its gh commands through the bound context's executor with that context's credential
     Given a git context for "paysdoc/devplatform" with the literal credential "fixed-token"
     And the context's executor is a recorder that answers every command with "main"
@@ -213,6 +218,7 @@ Feature: Widened public surface for the ADW switchover
   # @paysdoc/devplatform/git — commitOps
   # -------------------------------------------------------------------------
 
+  @adw-18
   Scenario: Commit operations served through the git entry point commit a dirty working tree
     Given a fresh git repository on branch "main" with one committed file
     And the working tree gains an uncommitted file "notes.txt"
@@ -221,12 +227,14 @@ Feature: Widened public surface for the ADW switchover
     And the repository's latest commit message is "adw: commit notes"
     And the working tree is clean
 
+  @adw-18
   Scenario: Commit operations served through the git entry point report nothing to commit on a clean working tree
     Given a fresh git repository on branch "main" with one committed file
     When the commit operations from the git entry point commit the working tree with message "adw: nothing to commit"
     Then the commit operations report nothing was committed
     And the repository still has exactly one commit
 
+  @adw-18
   Scenario: Pushing through the git entry point a branch whose remote was moved underneath it is refused with the manual remedy and leaves the remote untouched
     Given a fresh git repository on branch "feature/switchover" with one committed file
     And the branch "feature/switchover" is published to a local remote
@@ -256,12 +264,14 @@ Feature: Widened public surface for the ADW switchover
   # @paysdoc/devplatform/git — branchOps
   # -------------------------------------------------------------------------
 
+  @adw-18
   Scenario: Branch operations served through the git entry point report the checked-out branch
     Given a fresh git repository on branch "main" with one committed file
     And the repository checks out a new branch "feature/switchover"
     When the branch operations from the git entry point read the current branch
     Then the reported current branch is "feature/switchover"
 
+  @adw-18
   Scenario: Branch operations served through the git entry point refuse to delete a protected branch
     Given a fresh git repository on branch "main" with one committed file
     And the repository checks out a new branch "feature/switchover"
@@ -269,6 +279,7 @@ Feature: Widened public surface for the ADW switchover
     Then the branch operations report the branch was not deleted
     And the repository has a local branch "main"
 
+  @adw-18
   Scenario: Branch operations served through the git entry point delete an unprotected local branch
     Given a fresh git repository on branch "main" with one committed file
     And the repository also has a local branch "feature/stale"
