@@ -57,3 +57,10 @@ bun run test:e2e --tags "@{tag}"
 
 ## Run Regression Scenarios
 bun run test:e2e --tags "@regression"
+
+
+## Test Directory
+src
+
+## Test Framework
+vitest
