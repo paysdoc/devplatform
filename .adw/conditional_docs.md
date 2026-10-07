@@ -9,7 +9,9 @@
   - Owns:
     - src/git/**
   - Conditions:
-    - When working on the forge-neutral git/worktree core module: identity bootstrap, branch
+    - When working on the forge-neutral git/worktree core module: `GitContext`, identity bootstrap, branch/commit/remote/read/claim/worktree ops, repo workspaces
+    - When changing the argv-array executor contract (`ExecFn`, `GitContext.exec(argv, options)`, the `(argv, cwd) => string` op runners) or spawning git without a shell
+    - When troubleshooting shell injection or quoting failures in git commands (commit messages, paths, refs, branch names)
 
 - app_docs/forge-providers.md
   - Owns:
@@ -25,7 +27,9 @@
   - Owns:
     - src/providers/github/**
   - Conditions:
-    - When working on the GitHub forge adapter: the `gh` CLI command runner, issue/PR parsers and
+    - When working on the GitHub forge adapter: the `gh` CLI command runner, issue/PR/label/secret/board command builders and parsers
+    - When adding or changing a `gh` command builder (builders return argv `string[]`; values stay one element, never quoted or interpolated)
+    - When troubleshooting shell injection or quoting failures in `gh` commands (PR/issue titles, labels, search queries, GraphQL variables)
 
 - app_docs/gitlab-provider.md
   - Owns:
@@ -59,7 +63,8 @@
     - scripts/checkGitGhGuard.ts
     - scripts/guard/**
   - Conditions:
-    - When working on the CI git/gh shell-out guard or the unsanctioned-construction guard
+    - When working on the CI git/gh shell-out guard, the `shell-command-string` rule, or the unsanctioned-construction guard
+    - When the guard flags a string or template literal starting with `git ` or `gh ` inside `src/git` or `src/providers/github`
 
 - app_docs/feature-wdjsgu-package-build-export-package-build.md
   - Owns:
@@ -78,4 +83,5 @@
     - cucumber.js
     - features/**
   - Conditions:
-    - When working on the Cucumber/Gherkin BDD scenario suite (`bun run test:e2e`): per-issue
+    - When working on the Cucumber/Gherkin BDD scenario suite (`bun run test:e2e`): per-issue features, step definitions, support layer (`world.ts`, `gitFixture.ts`, `ghCliFake.ts`, `stubGh.ts`)
+    - When writing BDD steps that record or assert git/gh argv (`argvCommands.steps.ts`, `feature-18.feature`)
