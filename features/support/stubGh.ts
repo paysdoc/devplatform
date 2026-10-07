@@ -1,7 +1,7 @@
 /**
  * A stub `gh` executable placed first on `PATH`, for the hermetic scenarios
  * that drive a real spawn without a real GitHub CLI: the two `ghAuthToken()`
- * scenarios (issue #11) and the pull-request-creation scenario. `ghAuthToken`
+ * scenarios and the pull-request-creation scenario. `ghAuthToken`
  * and the default executor both spawn `gh` straight from `PATH`, so this is
  * the only way to drive them without the real tool. `PATH` is not one of the
  * World's managed env keys, so the caller is responsible for restoring it

@@ -44,10 +44,6 @@ interface RepoApiLike {
   runGraphQL(query: string, variables?: Record<string, string | number>): string;
 }
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
 function contextOf(world: DevPlatformWorld): GitContext {
   assert.ok(world.ghContext, 'no git context was declared for this scenario');
   return world.ghContext;
@@ -124,10 +120,6 @@ function nulList(output: string): string[] {
   return output.split('\0').filter((entry) => entry !== '');
 }
 
-// ---------------------------------------------------------------------------
-// Given
-// ---------------------------------------------------------------------------
-
 Given('these values, each carrying characters a shell would reinterpret', function (this: DevPlatformWorld, table: DataTable) {
   this.hazardValues = table.hashes().map((row) => row['value']);
 });
@@ -180,10 +172,6 @@ Given('a source tree whose {string} holds the call', function (this: DevPlatform
   fs.writeFileSync(target, `${call}\n`);
   this.guardTreeDir = tree;
 });
-
-// ---------------------------------------------------------------------------
-// When — values handed through public entry points to the executor recorder
-// ---------------------------------------------------------------------------
 
 When('a GitHub code host created through the providers entry point opens a pull request from {string} into {string} with the body {string} once per value, with that value as its title', async function (this: DevPlatformWorld, sourceBranch: string, targetBranch: string, body: string) {
   const codeHost = await codeHostOf(this);
@@ -250,10 +238,6 @@ When('the git context removes and commits {string} once per value, with that val
 When('the git context makes an empty claim commit once per value, with that value as the commit message', function (this: DevPlatformWorld) {
   for (const message of this.hazardValues) contextOf(this).commitAllowEmpty(message, RECORDED_WORKTREE);
 });
-
-// ---------------------------------------------------------------------------
-// When — the default executor
-// ---------------------------------------------------------------------------
 
 When('a GitHub code host created through the providers entry point opens a pull request from {string} into {string} with the body {string}, titled', async function (this: DevPlatformWorld, sourceBranch: string, targetBranch: string, body: string, title: string) {
   const codeHost = await codeHostOf(this);
@@ -345,10 +329,6 @@ When(
   },
 );
 
-// ---------------------------------------------------------------------------
-// Then — recorded invocations
-// ---------------------------------------------------------------------------
-
 Then('{string} ran once per value, receiving that value unchanged as the argument after {string}', function (this: DevPlatformWorld, command: string, flag: string) {
   const calls = expectOncePerValue(this, command);
   this.hazardValues.forEach((value, i) => {
@@ -397,10 +377,6 @@ Then('the code host reports pull request #{int} at {string}', function (this: De
   assert.deepEqual(this.codeHostPullRequest, { url, number });
 });
 
-// ---------------------------------------------------------------------------
-// Then — real git
-// ---------------------------------------------------------------------------
-
 Then('the repository\'s latest commit message is exactly that message', function (this: DevPlatformWorld) {
   assert.ok(this.committedMessage !== undefined, 'no commit message was declared for this scenario');
   assert.equal(this.runner(['git', 'log', '-1', '--format=%B'], repoDirOf(this)), this.committedMessage);
@@ -440,10 +416,6 @@ Then('the workspace {string} is a clone of that repository at the same commit', 
     this.runner(['git', 'rev-parse', 'HEAD'], repoDirOf(this)),
   );
 });
-
-// ---------------------------------------------------------------------------
-// Then — the guard
-// ---------------------------------------------------------------------------
 
 Then('the guard report names {string}', function (this: DevPlatformWorld, file: string) {
   assert.ok(this.subprocess, 'the guard was not run');

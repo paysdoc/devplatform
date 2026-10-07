@@ -1,4 +1,4 @@
-// gh CLI argv builders for PR list/create/merge/review operations — GitHub forge adapter (#792).
+// gh CLI argv builders for PR list/create/merge/review operations — GitHub forge adapter.
 
 export function findPRByBranchCmd(owner: string, repo: string, branchName: string): string[] {
   return [

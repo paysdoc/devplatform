@@ -1,4 +1,4 @@
-// gh CLI argv builders for label create/apply operations — GitHub forge adapter (#792).
+// gh CLI argv builders for label create/apply operations — GitHub forge adapter.
 
 export function createLabelCmd(owner: string, repo: string, name: string, color: string, description: string): string[] {
   return ['gh', 'label', 'create', name, '--repo', `${owner}/${repo}`, '--color', color, '--description', description, '--force'];

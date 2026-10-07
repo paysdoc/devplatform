@@ -1,4 +1,4 @@
-// gh CLI argv builders for issue read/write operations — GitHub forge adapter (#792).
+// gh CLI argv builders for issue read/write operations — GitHub forge adapter.
 
 const ISSUE_FIELDS =
   'number,title,body,state,author,assignees,labels,milestone,comments,createdAt,updatedAt,closedAt,url';
