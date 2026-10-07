@@ -22,7 +22,7 @@ const GIT_IDENTITY = {
 };
 
 interface SpyCall {
-  command: string;
+  argv: readonly string[];
   cwd: string;
   env: NodeJS.ProcessEnv;
   input?: string;
@@ -30,8 +30,8 @@ interface SpyCall {
 
 function makeSpyExec(stdout = 'seam-answer\n'): { exec: ExecFn; calls: SpyCall[] } {
   const calls: SpyCall[] = [];
-  const exec: ExecFn = (command, options) => {
-    calls.push({ command, cwd: options.cwd, env: { ...options.env }, input: options.input });
+  const exec: ExecFn = (argv, options) => {
+    calls.push({ argv, cwd: options.cwd, env: { ...options.env }, input: options.input });
     return stdout;
   };
   return { exec, calls };
@@ -61,21 +61,21 @@ function buildContext(overrides: Partial<GitContextOptions> = {}, exec: ExecFn):
 }
 
 describe('createGhCommandRunner', () => {
-  it('sends the command string to the executor verbatim', () => {
+  it('sends the argv to the executor verbatim', () => {
     const { exec, calls } = makeSpyExec();
     const runner = createGhCommandRunner(buildContext({}, exec));
 
-    runner.run('gh api user --jq .login');
+    runner.run(['gh', 'api', 'user', '--jq', '.login']);
 
     expect(calls).toHaveLength(1);
-    expect(calls[0].command).toBe('gh api user --jq .login');
+    expect(calls[0].argv).toEqual(['gh', 'api', 'user', '--jq', '.login']);
   });
 
   it('returns the executor\'s answer', () => {
     const { exec } = makeSpyExec('adapter-seam-answer\n');
     const runner = createGhCommandRunner(buildContext({}, exec));
 
-    const result = runner.run('gh api user --jq .login');
+    const result = runner.run(['gh', 'api', 'user', '--jq', '.login']);
 
     expect(result).toBe('adapter-seam-answer');
   });
@@ -84,7 +84,7 @@ describe('createGhCommandRunner', () => {
     const { exec, calls } = makeSpyExec();
     const runner = createGhCommandRunner(buildContext({ selfHost: false }, exec));
 
-    runner.run('gh api user');
+    runner.run(['gh', 'api', 'user']);
 
     expect(calls[0].cwd).toBe(FRAMEWORK_ROOT);
   });
@@ -93,7 +93,7 @@ describe('createGhCommandRunner', () => {
     const { exec, calls } = makeSpyExec();
     const runner = createGhCommandRunner(buildContext({ selfHost: true }, exec));
 
-    runner.run('gh api user');
+    runner.run(['gh', 'api', 'user']);
 
     expect(calls[0].cwd).toBe(FRAMEWORK_ROOT);
   });
@@ -102,7 +102,7 @@ describe('createGhCommandRunner', () => {
     const { exec, calls } = makeSpyExec();
     const runner = createGhCommandRunner(buildContext({}, exec));
 
-    runner.run('gh api user');
+    runner.run(['gh', 'api', 'user']);
 
     expect(calls[0].env.GH_TOKEN).toBe('token-default');
     expect(calls[0].env.GIT_AUTHOR_NAME).toBe(GIT_IDENTITY.authorName);
@@ -115,7 +115,7 @@ describe('createGhCommandRunner', () => {
     const { exec, calls } = makeSpyExec();
     const runner = createGhCommandRunner(buildContext({}, exec));
 
-    runner.run('gh api graphql', { purpose: 'alternateIdentity' });
+    runner.run(['gh', 'api', 'graphql'], { purpose: 'alternateIdentity' });
 
     expect(calls[0].env.GH_TOKEN).toBe('token-alternate');
   });
@@ -124,7 +124,7 @@ describe('createGhCommandRunner', () => {
     const { exec, calls } = makeSpyExec();
     const runner = createGhCommandRunner(buildContext({}, exec));
 
-    runner.run('gh api user', { purpose: 'default' });
+    runner.run(['gh', 'api', 'user'], { purpose: 'default' });
 
     expect(calls[0].env.GH_TOKEN).toBe('token-default');
   });
@@ -133,7 +133,7 @@ describe('createGhCommandRunner', () => {
     const { exec, calls } = makeSpyExec();
     const runner = createGhCommandRunner(buildContext({}, exec));
 
-    runner.run('gh api graphql --input -', { input: '{"query":"..."}' });
+    runner.run(['gh', 'api', 'graphql', '--input', '-'], { input: '{"query":"..."}' });
 
     expect(calls[0].input).toBe('{"query":"..."}');
   });
@@ -142,7 +142,7 @@ describe('createGhCommandRunner', () => {
     const { exec, calls } = makeSpyExec();
     const runner = createGhCommandRunner(buildContext({}, exec));
 
-    runner.run('gh api user');
+    runner.run(['gh', 'api', 'user']);
 
     expect(calls[0].input).toBeUndefined();
   });
@@ -152,7 +152,7 @@ describe('createGhCommandRunner', () => {
     const { exec } = makeSpyExec();
     const runner = createGhCommandRunner(buildContext({}, exec));
 
-    runner.run('gh api user');
+    runner.run(['gh', 'api', 'user']);
 
     expect(process.env).toEqual(before);
   });

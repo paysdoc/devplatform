@@ -25,7 +25,7 @@ function validOptions(overrides: Partial<GitContextOptions> = {}): GitContextOpt
 }
 
 interface SpyCall {
-  command: string;
+  argv: readonly string[];
   cwd: string;
   env: NodeJS.ProcessEnv;
   input?: string;
@@ -33,8 +33,8 @@ interface SpyCall {
 
 function makeSpyExec(stdout = 'main\n'): { exec: ExecFn; calls: SpyCall[] } {
   const calls: SpyCall[] = [];
-  const exec: ExecFn = (command, options) => {
-    calls.push({ command, cwd: options.cwd, env: options.env, input: options.input });
+  const exec: ExecFn = (argv, options) => {
+    calls.push({ argv, cwd: options.cwd, env: options.env, input: options.input });
     return stdout;
   };
   return { exec, calls };
@@ -47,7 +47,7 @@ describe('remoteUrl() command and env', () => {
     const { exec, calls } = makeSpyExec('git@github.com:acme/webapp.git\n');
     const ctx = new GitContext(validOptions({ owner: 'acme', repo: 'webapp' }), { exec });
     ctx.remoteUrl();
-    expect(calls[0].command).toBe('git remote get-url origin');
+    expect(calls[0].argv).toEqual(['git', 'remote', 'get-url', 'origin']);
   });
 
   it('passes cwd equal to the context base path when no arg given', () => {
@@ -230,7 +230,7 @@ describe('resolveGitDir() command and env', () => {
     const { exec, calls } = makeSpyExec('/srv/adw/repos/acme/webapp/.git/worktrees/feat\n');
     const ctx = new GitContext(validOptions(), { exec });
     ctx.resolveGitDir(worktreePath);
-    expect(calls[0].command).toBe('git rev-parse --git-dir');
+    expect(calls[0].argv).toEqual(['git', 'rev-parse', '--git-dir']);
   });
 
   it('passes the supplied worktree path as cwd', () => {
@@ -286,7 +286,7 @@ describe('currentBranchSymbolic() command and env', () => {
     const { exec, calls } = makeSpyExec('feature-issue-1-foo\n');
     const ctx = new GitContext(validOptions(), { exec });
     ctx.currentBranchSymbolic(worktreePath);
-    expect(calls[0].command).toBe('git symbolic-ref --short HEAD');
+    expect(calls[0].argv).toEqual(['git', 'symbolic-ref', '--short', 'HEAD']);
   });
 
   it('passes the supplied worktree path as cwd', () => {
@@ -329,7 +329,7 @@ describe('worktreeRegistration() command and env', () => {
     const { exec, calls } = makeSpyExec(porcelainFor(worktreePath));
     const ctx = new GitContext(validOptions(), { exec });
     ctx.worktreeRegistration(worktreePath);
-    expect(calls[0].command).toBe('git worktree list --porcelain');
+    expect(calls[0].argv).toEqual(['git', 'worktree', 'list', '--porcelain']);
   });
 
   it('passes the supplied worktree path as cwd', () => {
@@ -387,7 +387,7 @@ describe('worktreeBranches() command and env', () => {
     const { exec, calls } = makeSpyExec(porcelainWithBranches);
     const ctx = new GitContext(validOptions(), { exec });
     ctx.worktreeBranches();
-    expect(calls[0].command).toBe('git worktree list --porcelain');
+    expect(calls[0].argv).toEqual(['git', 'worktree', 'list', '--porcelain']);
   });
 
   it('defaults cwd to the context base path', () => {
@@ -436,7 +436,7 @@ describe('localBranches() command and env', () => {
     const { exec, calls } = makeSpyExec(branchListOutput);
     const ctx = new GitContext(validOptions(), { exec });
     ctx.localBranches();
-    expect(calls[0].command).toBe('git branch --list');
+    expect(calls[0].argv).toEqual(['git', 'branch', '--list']);
   });
 
   it('defaults cwd to the context base path', () => {
@@ -487,7 +487,7 @@ describe('mainRepoPath() command and env', () => {
     const { exec, calls } = makeSpyExec(porcelainWithMain);
     const ctx = new GitContext(validOptions(), { exec });
     ctx.mainRepoPath();
-    expect(calls[0].command).toBe('git worktree list --porcelain');
+    expect(calls[0].argv).toEqual(['git', 'worktree', 'list', '--porcelain']);
   });
 
   it('defaults cwd to the context base path', () => {
@@ -536,11 +536,11 @@ describe('mainRepoPath() command and env', () => {
 describe('fetchRemote() command and env', () => {
   const worktreePath = '/srv/adw/repos/acme/webapp/.worktrees/feature-issue-1-foo';
 
-  it('builds git fetch origin "<branch>"', () => {
+  it('builds git fetch origin <branch>', () => {
     const { exec, calls } = makeSpyExec('');
     const ctx = new GitContext(validOptions(), { exec });
     ctx.fetchRemote('main', worktreePath);
-    expect(calls[0].command).toBe('git fetch origin "main"');
+    expect(calls[0].argv).toEqual(['git', 'fetch', 'origin', 'main']);
   });
 
   it('passes the supplied cwd', () => {
@@ -582,25 +582,25 @@ describe('fetchRemote() command and env', () => {
 describe('mergeBranch() command and env', () => {
   const worktreePath = '/srv/adw/repos/acme/webapp/.worktrees/feature-issue-1-foo';
 
-  it('issues git merge "<ref>" with no flags when opts is omitted', () => {
+  it('issues git merge <ref> with no flags when opts is omitted', () => {
     const { exec, calls } = makeSpyExec('');
     const ctx = new GitContext(validOptions(), { exec });
     ctx.mergeBranch('origin/main', worktreePath);
-    expect(calls[0].command).toBe('git merge "origin/main"');
+    expect(calls[0].argv).toEqual(['git', 'merge', 'origin/main']);
   });
 
   it('includes --no-commit --no-ff flags', () => {
     const { exec, calls } = makeSpyExec('');
     const ctx = new GitContext(validOptions(), { exec });
     ctx.mergeBranch('origin/main', worktreePath, { noCommit: true, noFf: true });
-    expect(calls[0].command).toBe('git merge --no-commit --no-ff "origin/main"');
+    expect(calls[0].argv).toEqual(['git', 'merge', '--no-commit', '--no-ff', 'origin/main']);
   });
 
   it('includes --no-edit flag', () => {
     const { exec, calls } = makeSpyExec('');
     const ctx = new GitContext(validOptions(), { exec });
     ctx.mergeBranch('origin/main', worktreePath, { noEdit: true });
-    expect(calls[0].command).toBe('git merge --no-edit "origin/main"');
+    expect(calls[0].argv).toEqual(['git', 'merge', '--no-edit', 'origin/main']);
   });
 
   it('passes the supplied cwd', () => {
@@ -635,7 +635,7 @@ describe('abortMerge() command and env', () => {
     const { exec, calls } = makeSpyExec('');
     const ctx = new GitContext(validOptions(), { exec });
     ctx.abortMerge(worktreePath);
-    expect(calls[0].command).toBe('git merge --abort');
+    expect(calls[0].argv).toEqual(['git', 'merge', '--abort']);
   });
 
   it('passes the supplied cwd', () => {
@@ -674,7 +674,7 @@ describe('logSince() command and env', () => {
     const { exec, calls } = makeSpyExec('commit output\n');
     const ctx = new GitContext(validOptions(), { exec });
     ctx.logSince({ since: 'X', grep: '^regression-promotion:', oneline: true });
-    expect(calls[0].command).toBe('git log --since="X" --grep="^regression-promotion:" --no-merges --oneline');
+    expect(calls[0].argv).toEqual(['git', 'log', '--since=X', '--grep=^regression-promotion:', '--no-merges', '--oneline']);
     expect(calls[0].cwd).toBe(ctx.basePath);
   });
 
@@ -682,7 +682,21 @@ describe('logSince() command and env', () => {
     const { exec, calls } = makeSpyExec('diff output\n');
     const ctx = new GitContext(validOptions(), { exec });
     ctx.logSince({ since: 'X', patch: true, pathspec: 'features/per-issue/feature-*.feature' });
-    expect(calls[0].command).toBe('git log --since="X" --no-merges -p -- features/per-issue/feature-*.feature');
+    expect(calls[0].argv).toEqual(['git', 'log', '--since=X', '--no-merges', '-p', '--', 'features/per-issue/feature-*.feature']);
+  });
+
+  it('passes since, grep and pathspec values containing spaces and quotes as exactly one argument each', () => {
+    const { exec, calls } = makeSpyExec('');
+    const ctx = new GitContext(validOptions(), { exec });
+    ctx.logSince({
+      since: '2 weeks ago',
+      grep: `it's "done" $(x)`,
+      patch: true,
+      pathspec: 'docs/release notes/*.md',
+    });
+    expect(calls[0].argv).toEqual([
+      'git', 'log', '--since=2 weeks ago', `--grep=it's "done" $(x)`, '--no-merges', '-p', '--', 'docs/release notes/*.md',
+    ]);
   });
 
   it('honors an explicit cwd', () => {
@@ -736,11 +750,11 @@ describe('logSince() command and env', () => {
 describe('lsRemote() command and env', () => {
   const worktreePath = '/srv/adw/repos/acme/webapp/.worktrees/feature-issue-1-foo';
 
-  it('issues git ls-remote origin "<branch>"', () => {
+  it('issues git ls-remote origin <branch>', () => {
     const { exec, calls } = makeSpyExec('abc123\trefs/heads/main\n');
     const ctx = new GitContext(validOptions(), { exec });
     ctx.lsRemote('main', worktreePath);
-    expect(calls[0].command).toBe('git ls-remote origin "main"');
+    expect(calls[0].argv).toEqual(['git', 'ls-remote', 'origin', 'main']);
   });
 
   it('passes the supplied cwd', () => {
@@ -808,11 +822,11 @@ describe('addDetachedWorktree() command and env', () => {
   const baseCwd = '/srv/adw/repos/acme/webapp';
   const tmpdir = '/tmp/adw-claim-abc123';
 
-  it('builds git worktree add --detach "<path>" "<ref>"', () => {
+  it('builds git worktree add --detach <path> <ref>', () => {
     const { exec, calls } = makeSpyExec('');
     const ctx = new GitContext(validOptions(), { exec });
     ctx.addDetachedWorktree(tmpdir, 'origin/main', baseCwd);
-    expect(calls[0].command).toBe(`git worktree add --detach "${tmpdir}" "origin/main"`);
+    expect(calls[0].argv).toEqual(['git', 'worktree', 'add', '--detach', tmpdir, 'origin/main']);
   });
 
   it('passes the supplied cwd', () => {
@@ -856,11 +870,11 @@ describe('addDetachedWorktree() command and env', () => {
 describe('commitAllowEmpty() command and env', () => {
   const tmpdir = '/tmp/adw-claim-abc123';
 
-  it('builds git commit --allow-empty -m "<message>"', () => {
+  it('builds git commit --allow-empty -m <message>', () => {
     const { exec, calls } = makeSpyExec('');
     const ctx = new GitContext(validOptions(), { exec });
     ctx.commitAllowEmpty('ADW upgrade in progress: abc123 [nonce1]', tmpdir);
-    expect(calls[0].command).toBe('git commit --allow-empty -m "ADW upgrade in progress: abc123 [nonce1]"');
+    expect(calls[0].argv).toEqual(['git', 'commit', '--allow-empty', '-m', 'ADW upgrade in progress: abc123 [nonce1]']);
   });
 
   it('passes the supplied cwd', () => {
@@ -902,18 +916,18 @@ describe('commitAllowEmpty() command and env', () => {
 describe('pushHeadToBranch() command and env', () => {
   const tmpdir = '/tmp/adw-claim-abc123';
 
-  it('builds git push origin "HEAD:refs/heads/<branch>"', () => {
+  it('builds git push origin HEAD:refs/heads/<branch>', () => {
     const { exec, calls } = makeSpyExec('');
     const ctx = new GitContext(validOptions(), { exec });
     ctx.pushHeadToBranch('adw-upgrade-deadbeef', tmpdir);
-    expect(calls[0].command).toBe('git push origin "HEAD:refs/heads/adw-upgrade-deadbeef"');
+    expect(calls[0].argv).toEqual(['git', 'push', 'origin', 'HEAD:refs/heads/adw-upgrade-deadbeef']);
   });
 
   it('does NOT contain --force (lock-correctness guard)', () => {
     const { exec, calls } = makeSpyExec('');
     const ctx = new GitContext(validOptions(), { exec });
     ctx.pushHeadToBranch('adw-upgrade-deadbeef', tmpdir);
-    expect(calls[0].command).not.toContain('--force');
+    expect(calls[0].argv.some((arg) => arg.startsWith('--force'))).toBe(false);
   });
 
   it('passes the supplied cwd', () => {
@@ -956,11 +970,11 @@ describe('removeDetachedWorktree() command and env', () => {
   const baseCwd = '/srv/adw/repos/acme/webapp';
   const tmpdir = '/tmp/adw-claim-abc123';
 
-  it('builds git worktree remove --force "<path>"', () => {
+  it('builds git worktree remove --force <path>', () => {
     const { exec, calls } = makeSpyExec('');
     const ctx = new GitContext(validOptions(), { exec });
     ctx.removeDetachedWorktree(tmpdir, baseCwd);
-    expect(calls[0].command).toBe(`git worktree remove --force "${tmpdir}"`);
+    expect(calls[0].argv).toEqual(['git', 'worktree', 'remove', '--force', tmpdir]);
   });
 
   it('passes the supplied cwd', () => {

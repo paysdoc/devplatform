@@ -2,11 +2,11 @@
  * Commit/push operation orchestration for GitContext. Exported from the
  * `./git` entry point since issue #11 — alongside `isLeaseRejection` — so ADW's
  * regression steps can drive it directly with their own runner. Every function
- * still takes an injected `(command, cwd) => string` runner; nothing here
+ * still takes an injected `(argv, cwd) => string` runner; nothing here
  * spawns a process itself.
  */
 
-type Runner = (command: string, cwd: string) => string;
+type Runner = (argv: readonly string[], cwd: string) => string;
 
 type ExecError = { stderr?: unknown; stdout?: unknown; message?: unknown };
 
@@ -30,10 +30,9 @@ function leaseErrorMessage(branch: string, error: unknown): string {
   );
 }
 
-function pathspecSuffix(excludePaths?: readonly string[]): string {
-  if (!excludePaths || excludePaths.length === 0) return '';
-  const tokens = excludePaths.map(p => `':(exclude)${p}'`).join(' ');
-  return ` -- '.' ${tokens}`;
+function pathspecSuffix(excludePaths?: readonly string[]): string[] {
+  if (!excludePaths || excludePaths.length === 0) return [];
+  return ['--', '.', ...excludePaths.map(p => `:(exclude)${p}`)];
 }
 
 /**
@@ -44,9 +43,8 @@ function pathspecSuffix(excludePaths?: readonly string[]): string {
  */
 function gitignoredSubset(run: Runner, cwd: string, paths: readonly string[]): ReadonlySet<string> {
   if (paths.length === 0) return new Set();
-  const tokens = paths.map(p => `'${p}'`).join(' ');
   try {
-    const output = run(`git check-ignore ${tokens}`, cwd);
+    const output = run(['git', 'check-ignore', ...paths], cwd);
     return new Set(output.split('\n').map(line => line.trim()).filter(Boolean));
   } catch {
     return new Set();
@@ -67,11 +65,11 @@ function committableExcludePaths(run: Runner, cwd: string, excludePaths?: readon
 }
 
 function commitChanges(run: Runner, message: string, cwd: string, opts?: { excludePaths?: readonly string[] }): boolean {
-  const suffix = pathspecSuffix(committableExcludePaths(run, cwd, opts?.excludePaths));
-  const status = run(`git status --porcelain${suffix}`, cwd);
+  const pathspec = pathspecSuffix(committableExcludePaths(run, cwd, opts?.excludePaths));
+  const status = run(['git', 'status', '--porcelain', ...pathspec], cwd);
   if (!status.trim()) return false;
-  run(`git add -A${suffix}`, cwd);
-  run(`git commit -m "${message.replace(/"/g, '\\"')}"`, cwd);
+  run(['git', 'add', '-A', ...pathspec], cwd);
+  run(['git', 'commit', '-m', message], cwd);
   return true;
 }
 
@@ -83,11 +81,10 @@ function commitChanges(run: Runner, message: string, cwd: string, opts?: { exclu
  */
 function removeAndCommitPaths(run: Runner, paths: readonly string[], message: string, cwd: string): boolean {
   if (paths.length === 0) return false;
-  const tokens = paths.map(p => `'${p}'`).join(' ');
-  run(`git rm -f --ignore-unmatch -- ${tokens}`, cwd);
-  const status = run(`git status --porcelain -- ${tokens}`, cwd);
+  run(['git', 'rm', '-f', '--ignore-unmatch', '--', ...paths], cwd);
+  const status = run(['git', 'status', '--porcelain', '--', ...paths], cwd);
   if (!status.trim()) return false;
-  run(`git commit -m "${message.replace(/"/g, '\\"')}" -- ${tokens}`, cwd);
+  run(['git', 'commit', '-m', message, '--', ...paths], cwd);
   return true;
 }
 
@@ -99,22 +96,21 @@ function removeAndCommitPaths(run: Runner, paths: readonly string[], message: st
  */
 function addAndCommitPaths(run: Runner, paths: readonly string[], message: string, cwd: string): boolean {
   if (paths.length === 0) return false;
-  const tokens = paths.map(p => `'${p}'`).join(' ');
-  run(`git add -- ${tokens}`, cwd);
-  const status = run(`git status --porcelain -- ${tokens}`, cwd);
+  run(['git', 'add', '--', ...paths], cwd);
+  const status = run(['git', 'status', '--porcelain', '--', ...paths], cwd);
   if (!status.trim()) return false;
-  run(`git commit -m "${message.replace(/"/g, '\\"')}" -- ${tokens}`, cwd);
+  run(['git', 'commit', '-m', message, '--', ...paths], cwd);
   return true;
 }
 
 function pushBranch(run: Runner, branch: string, cwd: string): void {
   try {
-    run(`git fetch origin "${branch}"`, cwd);
+    run(['git', 'fetch', 'origin', branch], cwd);
   } catch {
     // first push — no remote ref yet, proceed
   }
   try {
-    run(`git push --force-with-lease --force-if-includes -u origin "${branch}"`, cwd);
+    run(['git', 'push', '--force-with-lease', '--force-if-includes', '-u', 'origin', branch], cwd);
   } catch (error) {
     if (isLeaseRejection(error)) {
       throw new Error(leaseErrorMessage(branch, error));
@@ -124,11 +120,11 @@ function pushBranch(run: Runner, branch: string, cwd: string): void {
 }
 
 function getHeadTreeHash(run: Runner, cwd: string): string {
-  return run('git rev-parse "HEAD^{tree}"', cwd);
+  return run(['git', 'rev-parse', 'HEAD^{tree}'], cwd);
 }
 
 function hasUncommittedChanges(run: Runner, cwd: string): boolean {
-  return run('git status --porcelain', cwd).trim().length > 0;
+  return run(['git', 'status', '--porcelain'], cwd).trim().length > 0;
 }
 
 export const commitOps = {

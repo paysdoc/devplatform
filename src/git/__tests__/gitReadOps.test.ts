@@ -25,15 +25,15 @@ function validOptions(overrides: Partial<GitContextOptions> = {}): GitContextOpt
 }
 
 interface SpyCall {
-  command: string;
+  argv: readonly string[];
   cwd: string;
   env: NodeJS.ProcessEnv;
 }
 
 function makeSpyExec(stdout = 'main\n'): { exec: ExecFn; calls: SpyCall[] } {
   const calls: SpyCall[] = [];
-  const exec: ExecFn = (command, options) => {
-    calls.push({ command, cwd: options.cwd, env: options.env });
+  const exec: ExecFn = (argv, options) => {
+    calls.push({ argv, cwd: options.cwd, env: options.env });
     return stdout;
   };
   return { exec, calls };
@@ -48,14 +48,14 @@ describe('lsFiles() command and env', () => {
     const { exec, calls } = makeSpyExec('.claude/commands/install.md\n');
     const ctx = new GitContext(validOptions(), { exec });
     ctx.lsFiles(worktreePath, '.claude/commands/');
-    expect(calls[0].command).toBe('git ls-files ".claude/commands/"');
+    expect(calls[0].argv).toEqual(['git', 'ls-files', '.claude/commands/']);
   });
 
   it('builds git ls-files without prefix when prefix is omitted', () => {
     const { exec, calls } = makeSpyExec('README.md\npackage.json\n');
     const ctx = new GitContext(validOptions(), { exec });
     ctx.lsFiles(worktreePath);
-    expect(calls[0].command).toBe('git ls-files');
+    expect(calls[0].argv).toEqual(['git', 'ls-files']);
   });
 
   it('passes the supplied cwd', () => {
@@ -124,7 +124,7 @@ describe('headShort() command and env', () => {
     const { exec, calls } = makeSpyExec('abc1234\n');
     const ctx = new GitContext(validOptions(), { exec });
     ctx.headShort('/some/cwd');
-    expect(calls[0].command).toBe('git rev-parse --short HEAD');
+    expect(calls[0].argv).toEqual(['git', 'rev-parse', '--short', 'HEAD']);
   });
 
   it('defaults cwd to the context base path when no arg given', () => {
@@ -194,7 +194,14 @@ describe('diff() command and env', () => {
     const { exec, calls } = makeSpyExec('diff output\n');
     const ctx = new GitContext(validOptions(), { exec });
     ctx.diff('main...HEAD', worktreePath);
-    expect(calls[0].command).toBe('git diff main...HEAD');
+    expect(calls[0].argv).toEqual(['git', 'diff', 'main...HEAD']);
+  });
+
+  it('passes a range containing whitespace as exactly one argument, never word-split', () => {
+    const { exec, calls } = makeSpyExec('');
+    const ctx = new GitContext(validOptions(), { exec });
+    ctx.diff('main...HEAD --output=pwned', worktreePath);
+    expect(calls[0].argv).toEqual(['git', 'diff', 'main...HEAD --output=pwned']);
   });
 
   it('passes the supplied cwd', () => {
@@ -255,7 +262,7 @@ describe('log() command and env', () => {
     const { exec, calls } = makeSpyExec('2024-01-01T00:00:00Z build-agent: feat: #1\n');
     const ctx = new GitContext(validOptions(), { exec });
     ctx.log('feature-issue-1-demo');
-    expect(calls[0].command).toBe('git log "feature-issue-1-demo" --format="%aI %s" --no-merges');
+    expect(calls[0].argv).toEqual(['git', 'log', 'feature-issue-1-demo', '--format=%aI %s', '--no-merges']);
   });
 
   it('defaults cwd to the context base path when no cwd is given', () => {
@@ -321,11 +328,11 @@ describe('log() command and env', () => {
 // ── show() ───────────────────────────────────────────────────────────────────
 
 describe('show() command and env', () => {
-  it('builds exactly git show "origin/main:.adw-version"', () => {
+  it('builds exactly git show origin/main:.adw-version', () => {
     const { exec, calls } = makeSpyExec('abc123\n');
     const ctx = new GitContext(validOptions(), { exec });
     ctx.show('origin/main', '.adw-version', '/some/cwd');
-    expect(calls[0].command).toBe('git show "origin/main:.adw-version"');
+    expect(calls[0].argv).toEqual(['git', 'show', 'origin/main:.adw-version']);
   });
 
   it('passes the supplied cwd', () => {
@@ -395,21 +402,34 @@ describe('logSince() command and env', () => {
     const { exec, calls } = makeSpyExec('commit-output\n');
     const ctx = new GitContext(validOptions(), { exec });
     ctx.logSince({ since: '2024-01-01', grep: '^regression-promotion:', oneline: true });
-    expect(calls[0].command).toBe('git log --since="2024-01-01" --grep="^regression-promotion:" --no-merges --oneline');
+    expect(calls[0].argv).toEqual([
+      'git', 'log', '--since=2024-01-01', '--grep=^regression-promotion:', '--no-merges', '--oneline',
+    ]);
   });
 
   it('assembles denominator command: since + no-merges + patch + pathspec', () => {
     const { exec, calls } = makeSpyExec('diff-output\n');
     const ctx = new GitContext(validOptions(), { exec });
     ctx.logSince({ since: '2024-01-01', patch: true, pathspec: 'features/per-issue/feature-*.feature' });
-    expect(calls[0].command).toBe('git log --since="2024-01-01" --no-merges -p -- features/per-issue/feature-*.feature');
+    expect(calls[0].argv).toEqual([
+      'git', 'log', '--since=2024-01-01', '--no-merges', '-p', '--', 'features/per-issue/feature-*.feature',
+    ]);
   });
 
   it('assembles bare command: since + no-merges only', () => {
     const { exec, calls } = makeSpyExec('');
     const ctx = new GitContext(validOptions(), { exec });
     ctx.logSince({ since: '2024-01-01' });
-    expect(calls[0].command).toBe('git log --since="2024-01-01" --no-merges');
+    expect(calls[0].argv).toEqual(['git', 'log', '--since=2024-01-01', '--no-merges']);
+  });
+
+  it('keeps since, grep and pathspec values containing whitespace as one argument each', () => {
+    const { exec, calls } = makeSpyExec('');
+    const ctx = new GitContext(validOptions(), { exec });
+    ctx.logSince({ since: '2 weeks ago', grep: 'two words', pathspec: 'features/my feature.feature' });
+    expect(calls[0].argv).toEqual([
+      'git', 'log', '--since=2 weeks ago', '--grep=two words', '--no-merges', '--', 'features/my feature.feature',
+    ]);
   });
 
   it('defaults cwd to the context base path when no cwd is given', () => {

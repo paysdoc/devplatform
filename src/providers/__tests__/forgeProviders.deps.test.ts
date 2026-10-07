@@ -65,8 +65,8 @@ describe('forgeProviders — deps.github seams', () => {
   it("deps.github.resolveLabelDefinition is consulted on applyLabel's lazy-create path", () => {
     const resolveLabelDefinition = vi.fn().mockReturnValue({ name: 'adw:blocked', color: 'b60205', description: 'x' });
     let editCalls = 0;
-    const exec: ExecFn = (command) => {
-      if (command.includes('issue edit')) {
+    const exec: ExecFn = (argv) => {
+      if (argv.join(' ').includes('issue edit')) {
         editCalls += 1;
         if (editCalls === 1) throw new Error('label not found');
       }

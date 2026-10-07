@@ -5,17 +5,25 @@
 An AST-based CI check, ported from `AI_Dev_Workflow`'s `adws/checkGitGhGuard.ts` +
 `adws/guard/`, that stops the library's spawn chokepoint from eroding as agents modify it. It
 runs via `bun run lint:git-guard` (`scripts/checkGitGhGuard.ts`) and fails CI (exit 1) on
-either of two independent violations.
+any of three independent violations.
 
 ## Responsibilities
 
 - **`git-gh-shellout` rule** — walks every scannable `.ts`/`.tsx` file (via the TypeScript
   compiler API, so string literals inside comments are never false positives) and flags any
   call expression whose first argument is a string/template literal matching
-  `/^(git|gh)(\s|$)/`. Exempt from this rule only: `src/git` (the git core — the only package
-  that may run git commands) and `src/providers/github` (the GitHub forge adapter — the only
-  package whose `gh` command strings may feed the core's executor). `isExemptPackage` matches
-  a directory itself or any path beneath it.
+  `/^(git|gh)(\s|$)/`, or an array literal whose element 0 is exactly `git` or `gh` (an argv
+  array, reported as the command line it spells). Exempt from this rule only: `src/git` (the
+  git core — the only package that may run git commands) and `src/providers/github` (the
+  GitHub forge adapter — the only package whose `gh` argv arrays may feed the core's
+  executor). `isExemptPackage` matches a directory itself or any path beneath it.
+- **`shell-command-string` rule** (`scripts/guard/shellCommandStringRule.ts`) — the converse
+  scope: applied **only inside** those two exempt packages, where a command must be an argv
+  array (element 0 the program, each later element one argument), never one string a shell
+  would parse. It flags any string or template literal, wherever it appears — a call argument,
+  a builder's return value, an array element — whose text matches `/^(git|gh)\s/`. Outside the
+  exempt packages `git-gh-shellout` already reports that shape at a call's first argument, so
+  each file gets exactly one of `git-gh-shellout` and `shell-command-string`.
 - **`unsanctioned-construction` rule** — flags a bare-identifier call to one of the seven
   adapter factories (`createGitHubIssueTracker`, `createGitHubCodeHost`,
   `createGitHubBoardManager`, `createGitLabCodeHost`, `createGitLabBoardManager`,
@@ -24,14 +32,15 @@ either of two independent violations.
   (`SANCTIONED_CONSTRUCTION_SITES`, `scripts/guard/constructionRule.ts`) has exactly one
   permanent entry: `src/providers/forgeProviders.ts`. Nothing may ever be added to it — a new
   construction site must call `forgeProviders(...)` instead.
-- Unlike the shell-out rule, the construction rule is **not** exempted for `src/git/` or
+- Unlike the `git-gh-shellout` rule, the construction rule is **not** exempted for `src/git/` or
   `src/providers/github/` — it walks the whole tree. In this library those two packages are
   almost the entire repo, so exempting them (as ADW did, via its single pruning walk) would
   leave the rule guarding almost nothing. Neither package calls the adapter factories or
   `new GitContext` outside its own tests (verified 2026-09-10).
 - `main()` prints the exempt-package list and the sanctioned-site list on every run, then
-  either two PASS lines (exit 0) or one `file:line [rule] command` line per violation plus a
-  remedy line per rule (exit 1).
+  either three PASS lines (exit 0) — no shell-outs outside the exempt packages, git/gh
+  commands inside them are argv arrays, construction confined — or one
+  `file:line [rule] command` line per violation plus a remedy line per rule (exit 1).
 
 ## Contracts & Invariants
 
@@ -45,9 +54,18 @@ either of two independent violations.
   never flagged, only a call.
 - `isSanctionedConstructionSite` does exact path matching only — a directory prefix (e.g.
   `src/providers`) is never sanctioned.
+- The `shell-command-string` pattern needs whitespace after the program, so the bare program
+  name (`'git'`, `'gh'`, an argv's element 0) never matches, and only a literal that *opens*
+  with the program is judged: `'github.com/acme/widget'`, `'ghost town'`, `'gitignore rules'`
+  and `'run git status first'` all pass. A template literal is judged by its head text and
+  reported as that head plus `${...}`.
+- `git-gh-shellout` recognises an argv array only as a call's first argument, and only when
+  element 0 is a string literal (or substitution-free template literal) exactly `git` or
+  `gh` — `['curl', …]` and `[]` are not flagged. Each non-literal element renders as `${...}`
+  in the report (e.g. `git commit -m ${...}`).
 - Every console string the guard prints is indented (starts with at least one space, or a
   leading `\n`) so the guard's own remedy/report text never starts with `git `/`gh ` at
-  position 0 and self-flags under the shell-out rule.
+  position 0 and self-flags under the `git-gh-shellout` rule.
 - `scripts/checkGitGhGuard.ts` and `scripts/guard/*.ts` are themselves inside the whole-tree
   walk (neither directory is in `EXEMPT_DIR_NAMES` or `EXEMPT_PACKAGES`) — the guard scans
   itself on every run.
@@ -78,3 +96,8 @@ either of two independent violations.
 - A new legitimate adapter or context factory must be added to `PROVIDER_CONSTRUCTORS`/
   `CONTEXT_CONSTRUCTORS` by name (`scripts/guard/constructionRule.ts`) — the rule will not
   infer it from a `create*` naming pattern.
+- A log or error message inside `src/git` or `src/providers/github` that **starts** with
+  `git ` or `gh ` is flagged: `shell-command-string` cannot tell a message from a command
+  line and is deliberately conservative, so `'git fetch failed'` fails exactly as
+  `'git fetch origin'` would. Reword the message (`'Could not run git fetch'`) — there is no
+  exemption to add.

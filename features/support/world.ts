@@ -16,7 +16,7 @@ import type { GhCliFakeState } from './ghCliFake.js';
 setDefaultTimeout(30_000);
 
 /** Matches the `exec` seam `readGitConfigIdentity` accepts. */
-export type ExecStub = (cmd: string, opts: unknown) => string;
+export type ExecStub = (argv: readonly string[], opts: unknown) => string;
 
 /** Structural stand-in for `GitHubAppConfig` — avoids importing an adapter-internal type into the step layer. */
 export interface AppConfigInput {
@@ -135,7 +135,7 @@ export class DevPlatformWorld extends World {
   execRecorder: ExecFn = () => {
     throw new Error('no executor recorder was configured for this scenario');
   };
-  execRecorderCalls?: Array<{ command: string; env: NodeJS.ProcessEnv }>;
+  execRecorderCalls?: Array<{ argv: readonly string[]; env: NodeJS.ProcessEnv; input?: string }>;
   ghRepoApiInstance?: { defaultBranch(): string };
   ghRepoApiDefaultBranchResult?: string;
 
@@ -144,7 +144,7 @@ export class DevPlatformWorld extends World {
   repoDir?: string;
   remoteDir?: string;
   remoteAheadSha?: string;
-  runner: (command: string, cwd: string) => string = () => {
+  runner: (argv: readonly string[], cwd: string) => string = () => {
     throw new Error('no git repository was created for this scenario');
   };
   commitReport?: boolean;
@@ -153,6 +153,21 @@ export class DevPlatformWorld extends World {
   deleteBranchResult?: boolean;
   pushFailureStderr?: string;
   leaseVerdict?: boolean;
+
+  /** The hazard table's `value` column, in order — each carries characters a shell would reinterpret. */
+  hazardValues: string[] = [];
+  /** True when `stubGhDir` holds the recording stub rather than a canned-answer one, so Then steps read invocations from disk instead of the executor recorder. */
+  stubGhRecording = false;
+  /** The title the stub-`gh` scenario opened its pull request with, for its Then step to compare against what `gh` received. */
+  pullRequestTitle?: string;
+  codeHostPullRequest?: { readonly url: string; readonly number: number };
+  /** The message the last real-git commit When step committed with. */
+  committedMessage?: string;
+  shownContent?: string;
+  worktreePath?: string;
+  clonedWorkspacePath?: string;
+  /** The temporary source tree the guard scenarios write their one file into and run the guard over. */
+  guardTreeDir?: string;
 
   private savedEnv = new Map<string, string | undefined>();
 

@@ -20,7 +20,7 @@ import { DevPlatformWorld } from '../support/world.js';
 import { loadGit, resolveExport } from '../support/publicSurfaceLoader.js';
 import { configureCloneIdentity, createThrowawayRepo, makeGitRunner } from '../support/gitFixture.js';
 
-type Runner = (command: string, cwd: string) => string;
+type Runner = (argv: readonly string[], cwd: string) => string;
 
 interface CommitOpsNamespace {
   commitChanges(run: Runner, message: string, cwd: string): boolean;
@@ -33,7 +33,7 @@ interface BranchOpsNamespace {
 type IsLeaseRejectionFn = (error: unknown) => boolean;
 
 function hasLocalBranch(run: Runner, dir: string, name: string): boolean {
-  const output = run('git branch --list', dir);
+  const output = run(['git', 'branch', '--list'], dir);
   return output.split('\n').some((line) => line.replace(/^\*?\s+/, '').trim() === name);
 }
 
@@ -54,12 +54,12 @@ Given('the working tree gains an uncommitted file {string}', function (this: Dev
 
 Given('the repository checks out a new branch {string}', function (this: DevPlatformWorld, branch: string) {
   assert.ok(this.repoDir, 'no repository was created for this scenario');
-  this.runner(`git checkout -b ${branch}`, this.repoDir);
+  this.runner(['git', 'checkout', '-b', branch], this.repoDir);
 });
 
 Given('the repository also has a local branch {string}', function (this: DevPlatformWorld, branch: string) {
   assert.ok(this.repoDir, 'no repository was created for this scenario');
-  this.runner(`git branch ${branch}`, this.repoDir);
+  this.runner(['git', 'branch', branch], this.repoDir);
 });
 
 // ---------------------------------------------------------------------------
@@ -70,9 +70,9 @@ Given('the branch {string} is published to a local remote', function (this: DevP
   assert.ok(this.repoDir, 'no repository was created for this scenario');
   const remoteDir = fs.mkdtempSync(path.join(os.tmpdir(), 'devplatform-remote-'));
   this.gitCleanupDirs.push(remoteDir);
-  this.runner(`git init --bare -b ${branch}`, remoteDir);
-  this.runner(`git remote add origin "${remoteDir}"`, this.repoDir);
-  this.runner(`git push -u origin ${branch}`, this.repoDir);
+  this.runner(['git', 'init', '--bare', '-b', branch], remoteDir);
+  this.runner(['git', 'remote', 'add', 'origin', remoteDir], this.repoDir);
+  this.runner(['git', 'push', '-u', 'origin', branch], this.repoDir);
   this.remoteDir = remoteDir;
 });
 
@@ -80,20 +80,20 @@ Given('the remote branch {string} gains a commit the local repository has never 
   assert.ok(this.remoteDir, 'no local remote was published for this scenario');
   const cloneDir = fs.mkdtempSync(path.join(os.tmpdir(), 'devplatform-clone-'));
   this.gitCleanupDirs.push(cloneDir);
-  this.runner(`git clone -b ${branch} "${this.remoteDir}" "${cloneDir}"`, os.tmpdir());
+  this.runner(['git', 'clone', '-b', branch, this.remoteDir, cloneDir], os.tmpdir());
   configureCloneIdentity(this.runner, cloneDir);
   fs.writeFileSync(path.join(cloneDir, 'from-other-clone.txt'), 'seen only by the remote\n');
-  this.runner('git add -A', cloneDir);
-  this.runner('git commit -m "commit the first repo has never seen"', cloneDir);
-  this.runner(`git push origin ${branch}`, cloneDir);
-  this.remoteAheadSha = this.runner('git rev-parse HEAD', cloneDir);
+  this.runner(['git', 'add', '-A'], cloneDir);
+  this.runner(['git', 'commit', '-m', 'commit the first repo has never seen'], cloneDir);
+  this.runner(['git', 'push', 'origin', branch], cloneDir);
+  this.remoteAheadSha = this.runner(['git', 'rev-parse', 'HEAD'], cloneDir);
 });
 
 Given('the local branch gains a commit {string}', function (this: DevPlatformWorld, message: string) {
   assert.ok(this.repoDir, 'no repository was created for this scenario');
   fs.writeFileSync(path.join(this.repoDir, 'local-work.txt'), 'local work\n');
-  this.runner('git add -A', this.repoDir);
-  this.runner(`git commit -m "${message}"`, this.repoDir);
+  this.runner(['git', 'add', '-A'], this.repoDir);
+  this.runner(['git', 'commit', '-m', message], this.repoDir);
 });
 
 // ---------------------------------------------------------------------------
@@ -169,17 +169,17 @@ Then('the commit operations report nothing was committed', function (this: DevPl
 
 Then('the repository\'s latest commit message is {string}', function (this: DevPlatformWorld, expected: string) {
   assert.ok(this.repoDir, 'no repository was created for this scenario');
-  assert.equal(this.runner('git log -1 --format=%s', this.repoDir), expected);
+  assert.equal(this.runner(['git', 'log', '-1', '--format=%s'], this.repoDir), expected);
 });
 
 Then('the working tree is clean', function (this: DevPlatformWorld) {
   assert.ok(this.repoDir, 'no repository was created for this scenario');
-  assert.equal(this.runner('git status --porcelain', this.repoDir), '');
+  assert.equal(this.runner(['git', 'status', '--porcelain'], this.repoDir), '');
 });
 
 Then('the repository still has exactly one commit', function (this: DevPlatformWorld) {
   assert.ok(this.repoDir, 'no repository was created for this scenario');
-  assert.equal(this.runner('git rev-list --count HEAD', this.repoDir), '1');
+  assert.equal(this.runner(['git', 'rev-list', '--count', 'HEAD'], this.repoDir), '1');
 });
 
 Then('the push is refused with a message naming {string}', function (this: DevPlatformWorld, named: string) {
@@ -196,7 +196,7 @@ Then('the refusal names the manual remedy {string}', function (this: DevPlatform
 
 Then('the remote branch {string} still points at the commit the local repository has never seen', function (this: DevPlatformWorld, branch: string) {
   assert.ok(this.remoteDir, 'no local remote was published for this scenario');
-  assert.equal(this.runner(`git rev-parse ${branch}`, this.remoteDir), this.remoteAheadSha);
+  assert.equal(this.runner(['git', 'rev-parse', branch], this.remoteDir), this.remoteAheadSha);
 });
 
 // ---------------------------------------------------------------------------

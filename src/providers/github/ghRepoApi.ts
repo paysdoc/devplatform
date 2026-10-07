@@ -90,9 +90,9 @@ function moveIssueToStatus(
 function ghRepoOps(run: GhCommandRunner['run'], owner: string, repo: string): GhRepoOps {
   return {
     defaultBranch: () =>
-      run(`gh repo view ${owner}/${repo} --json defaultBranchRef --jq .defaultBranchRef.name`),
+      run(['gh', 'repo', 'view', `${owner}/${repo}`, '--json', 'defaultBranchRef', '--jq', '.defaultBranchRef.name']),
 
-    authenticatedUser: () => run('gh api user'),
+    authenticatedUser: () => run(['gh', 'api', 'user']),
 
     createLabel: (name, color, description) => {
       run(createLabelCmd(owner, repo, name, color, description));

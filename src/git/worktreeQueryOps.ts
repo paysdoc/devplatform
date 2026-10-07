@@ -5,7 +5,7 @@
 
 import * as path from 'path';
 
-export type Runner = (command: string, cwd: string) => string;
+export type Runner = (argv: readonly string[], cwd: string) => string;
 
 export interface FsDeps {
   existsSync: (p: string) => boolean;
@@ -21,7 +21,7 @@ export interface WorktreeForIssueResult {
  */
 function listWorktrees(run: Runner, baseCwd: string): string[] {
   try {
-    const output = run('git worktree list --porcelain', baseCwd);
+    const output = run(['git', 'worktree', 'list', '--porcelain'], baseCwd);
     const worktrees: string[] = [];
     for (const line of output.split('\n')) {
       if (line.startsWith('worktree ')) {
@@ -47,7 +47,7 @@ function findWorktreeForIssue(
 ): WorktreeForIssueResult | null {
   try {
     const pattern = new RegExp('^(' + prefixes.join('|') + ')-issue-' + issueNumber + '-');
-    const output = run('git worktree list --porcelain', baseCwd);
+    const output = run(['git', 'worktree', 'list', '--porcelain'], baseCwd);
     const lines = output.split('\n');
 
     let currentWorktreePath: string | null = null;
@@ -89,7 +89,7 @@ function getWorktreeForBranch(
   branchName: string,
 ): string | null {
   try {
-    const output = run('git worktree list --porcelain', baseCwd);
+    const output = run(['git', 'worktree', 'list', '--porcelain'], baseCwd);
     const lines = output.split('\n');
     let currentWorktreePath: string | null = null;
 
@@ -117,7 +117,7 @@ function getWorktreeForBranch(
  * Throws if no such entry is found — preserves the throw-on-failure contract of the legacy caller.
  */
 function mainRepoPath(run: Runner, cwd: string): string {
-  const output = run('git worktree list --porcelain', cwd);
+  const output = run(['git', 'worktree', 'list', '--porcelain'], cwd);
   for (const line of output.split('\n')) {
     if (line.startsWith('worktree ')) {
       const wtPath = line.substring('worktree '.length);
@@ -133,7 +133,7 @@ function mainRepoPath(run: Runner, cwd: string): string {
  */
 function worktreeBranches(run: Runner, cwd: string): string[] {
   try {
-    const output = run('git worktree list --porcelain', cwd);
+    const output = run(['git', 'worktree', 'list', '--porcelain'], cwd);
     const branches: string[] = [];
     for (const line of output.split('\n')) {
       if (line.startsWith('branch ')) {

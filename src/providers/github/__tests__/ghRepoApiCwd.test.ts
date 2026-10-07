@@ -29,21 +29,21 @@ function validOptions(overrides: Partial<GitContextOptions> = {}): GitContextOpt
 }
 
 interface SpyCall {
-  command: string;
+  argv: readonly string[];
   cwd: string;
   env: NodeJS.ProcessEnv;
 }
 
 function makeSpyExec(stdout = 'main\n'): { exec: ExecFn; calls: SpyCall[] } {
   const calls: SpyCall[] = [];
-  const exec: ExecFn = (command, options) => {
-    calls.push({ command, cwd: options.cwd, env: options.env });
+  const exec: ExecFn = (argv, options) => {
+    calls.push({ argv, cwd: options.cwd, env: options.env });
     return stdout;
   };
   return { exec, calls };
 }
 
-/** Every one of the 35 relocated operations. Return value is not asserted, only (command, cwd, env). */
+/** Every one of the 35 relocated operations. Return value is not asserted, only (argv, cwd, env). */
 interface MethodCase {
   name: string;
   invoke: (gh: GhRepoApi) => unknown;
@@ -104,9 +104,9 @@ describe('reproduction: a repo-API call succeeds on a host that has never cloned
   });
 
   function makeConditionalExec(payload: string): ExecFn {
-    return (_command, options) => {
+    return (_argv, options) => {
       if (!fs.existsSync(options.cwd)) {
-        throw new Error('spawnSync /bin/sh ENOENT');
+        throw new Error('spawnSync gh ENOENT');
       }
       return payload;
     };
@@ -174,11 +174,12 @@ describe('repo-API commands never inherit the ambient process cwd', () => {
 
 describe('anti-drift guard: every repo-API command still names the target repository explicitly', () => {
   for (const { name, invoke } of repoApiMethods().filter((m) => !REPO_FREE_METHODS.has(m.name))) {
-    it(`${name}() command string contains "acme/webapp"`, () => {
+    // A substring over the joined argv, not an element match: REST paths embed the pair in one element (repos/acme/webapp/...).
+    it(`${name}() joined argv contains "acme/webapp"`, () => {
       const { exec, calls } = makeSpyExec();
       const ctx = new GitContext(validOptions({ owner: 'acme', repo: 'webapp' }), { exec });
       invoke(createGhRepoApi(ctx));
-      expect(calls[0].command).toContain('acme/webapp');
+      expect(calls[0].argv.join(' ')).toContain('acme/webapp');
     });
   }
 

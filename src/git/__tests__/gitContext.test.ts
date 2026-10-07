@@ -3,7 +3,7 @@ import * as os from 'os';
 import * as fs from 'fs';
 import { describe, it, expect, afterEach } from 'vitest';
 import { GitContext } from '../gitContext.js';
-import type { GitContextOptions, TokenProvider, CredentialRequest } from '../types.js';
+import type { GitContextOptions, ExecFn, TokenProvider, CredentialRequest } from '../types.js';
 import { createLiteralTokenProvider } from '../literalTokenProvider.js';
 
 const FRAMEWORK_ROOT = '/srv/adw/framework';
@@ -246,24 +246,24 @@ describe('commandEnv', () => {
 
 describe('remotes()', () => {
   it('issues git remote with the context base path as cwd when no cwd provided', () => {
-    const calls: Array<{ command: string; cwd: string }> = [];
-    const fakeExec = (command: string, options: { cwd: string }) => {
-      calls.push({ command, cwd: options.cwd });
+    const calls: Array<{ argv: readonly string[]; cwd: string }> = [];
+    const fakeExec: ExecFn = (argv, options) => {
+      calls.push({ argv, cwd: options.cwd });
       return 'origin\n';
     };
-    const ctx = new GitContext(validOptions({ selfHost: true }), { exec: fakeExec as never });
+    const ctx = new GitContext(validOptions({ selfHost: true }), { exec: fakeExec });
     ctx.remotes();
-    expect(calls[0].command).toBe('git remote');
+    expect(calls[0].argv).toEqual(['git', 'remote']);
     expect(calls[0].cwd).toBe(FRAMEWORK_ROOT);
   });
 
   it('passes explicit cwd override to the exec', () => {
-    const calls: Array<{ command: string; cwd: string }> = [];
-    const fakeExec = (command: string, options: { cwd: string }) => {
-      calls.push({ command, cwd: options.cwd });
+    const calls: Array<{ argv: readonly string[]; cwd: string }> = [];
+    const fakeExec: ExecFn = (argv, options) => {
+      calls.push({ argv, cwd: options.cwd });
       return 'origin\n';
     };
-    const ctx = new GitContext(validOptions({ selfHost: true }), { exec: fakeExec as never });
+    const ctx = new GitContext(validOptions({ selfHost: true }), { exec: fakeExec });
     ctx.remotes('/some/worktree');
     expect(calls[0].cwd).toBe('/some/worktree');
   });
@@ -294,26 +294,29 @@ describe('remotes()', () => {
 
 describe('gitConfigUser()', () => {
   it('returns name and email when both git config reads succeed', () => {
-    let callCount = 0;
+    const argvs: Array<readonly string[]> = [];
     const ctx = new GitContext(validOptions(), {
-      exec: (cmd: string) => {
-        callCount++;
-        if (cmd.includes('user.name')) return 'Alice\n' as never;
-        if (cmd.includes('user.email')) return 'alice@example.com\n' as never;
-        return '' as never;
+      exec: (argv) => {
+        argvs.push(argv);
+        if (argv.includes('user.name')) return 'Alice\n';
+        if (argv.includes('user.email')) return 'alice@example.com\n';
+        return '';
       },
     });
     const result = ctx.gitConfigUser();
     expect(result).toEqual({ name: 'Alice', email: 'alice@example.com' });
-    expect(callCount).toBe(2);
+    expect(argvs).toEqual([
+      ['git', 'config', 'user.name'],
+      ['git', 'config', 'user.email'],
+    ]);
   });
 
   it('returns null for name when git config user.name throws', () => {
     const ctx = new GitContext(validOptions(), {
-      exec: (cmd: string) => {
-        if (cmd.includes('user.name')) throw new Error('unset');
-        if (cmd.includes('user.email')) return 'alice@example.com\n' as never;
-        return '' as never;
+      exec: (argv) => {
+        if (argv.includes('user.name')) throw new Error('unset');
+        if (argv.includes('user.email')) return 'alice@example.com\n';
+        return '';
       },
     });
     const result = ctx.gitConfigUser();
@@ -323,10 +326,10 @@ describe('gitConfigUser()', () => {
 
   it('returns null for email when git config user.email throws', () => {
     const ctx = new GitContext(validOptions(), {
-      exec: (cmd: string) => {
-        if (cmd.includes('user.name')) return 'Alice\n' as never;
-        if (cmd.includes('user.email')) throw new Error('unset');
-        return '' as never;
+      exec: (argv) => {
+        if (argv.includes('user.name')) return 'Alice\n';
+        if (argv.includes('user.email')) throw new Error('unset');
+        return '';
       },
     });
     const result = ctx.gitConfigUser();
@@ -345,9 +348,9 @@ describe('gitConfigUser()', () => {
   it('passes explicit cwd to both reads', () => {
     const cwds: string[] = [];
     const ctx = new GitContext(validOptions(), {
-      exec: (cmd: string, opts: { cwd: string }) => {
+      exec: (_argv, opts) => {
         cwds.push(opts.cwd);
-        return 'value\n' as never;
+        return 'value\n';
       },
     });
     ctx.gitConfigUser('/custom/cwd');
@@ -367,19 +370,16 @@ describe('gitConfigUser()', () => {
 // ── exec() — public forge-neutral executor ──────────────────────────────────
 
 interface ExecCall {
-  command: string;
+  argv: readonly string[];
   cwd: string;
   env: NodeJS.ProcessEnv;
   input?: string;
 }
 
-function makeSpyExec(stdout = 'main\n'): {
-  exec: (command: string, options: { cwd: string; env: NodeJS.ProcessEnv; input?: string }) => string;
-  calls: ExecCall[];
-} {
+function makeSpyExec(stdout = 'main\n'): { exec: ExecFn; calls: ExecCall[] } {
   const calls: ExecCall[] = [];
-  const exec = (command: string, options: { cwd: string; env: NodeJS.ProcessEnv; input?: string }): string => {
-    calls.push({ command, cwd: options.cwd, env: options.env, input: options.input });
+  const exec: ExecFn = (argv, options) => {
+    calls.push({ argv, cwd: options.cwd, env: options.env, input: options.input });
     return stdout;
   };
   return { exec, calls };
@@ -389,24 +389,24 @@ describe('exec() — public forge-neutral executor', () => {
   const originalCwd = process.cwd();
   afterEach(() => process.chdir(originalCwd));
 
-  it('passes the command to the fake verbatim and untransformed', () => {
+  it('passes the argv to the fake verbatim and untransformed', () => {
     const { exec, calls } = makeSpyExec();
     const ctx = new GitContext(validOptions(), { exec });
-    ctx.exec("printf '%s' 'no-forge-meaning'", { cwd: { kind: 'workspace' }, env: {} });
-    expect(calls[0].command).toBe("printf '%s' 'no-forge-meaning'");
+    ctx.exec(['printf', '%s', 'no-forge-meaning'], { cwd: { kind: 'workspace' }, env: {} });
+    expect(calls[0].argv).toEqual(['printf', '%s', 'no-forge-meaning']);
   });
 
   it('workspace class with no path records the context base path (target context)', () => {
     const { exec, calls } = makeSpyExec();
     const ctx = new GitContext(validOptions({ selfHost: false }), { exec });
-    ctx.exec('git status', { cwd: { kind: 'workspace' }, env: {} });
+    ctx.exec(['git', 'status'], { cwd: { kind: 'workspace' }, env: {} });
     expect(calls[0].cwd).toBe(ctx.basePath);
   });
 
   it('workspace class with no path records the context base path (self-host context)', () => {
     const { exec, calls } = makeSpyExec();
     const ctx = new GitContext(validOptions({ selfHost: true }), { exec });
-    ctx.exec('git status', { cwd: { kind: 'workspace' }, env: {} });
+    ctx.exec(['git', 'status'], { cwd: { kind: 'workspace' }, env: {} });
     expect(calls[0].cwd).toBe(ctx.basePath);
     expect(calls[0].cwd).toBe(FRAMEWORK_ROOT);
   });
@@ -415,14 +415,14 @@ describe('exec() — public forge-neutral executor', () => {
     const { exec, calls } = makeSpyExec();
     const ctx = new GitContext(validOptions(), { exec });
     const worktreePath = '/srv/adw/repos/acme/webapp/.worktrees/feature-x';
-    ctx.exec('git status', { cwd: { kind: 'workspace', path: worktreePath }, env: {} });
+    ctx.exec(['git', 'status'], { cwd: { kind: 'workspace', path: worktreePath }, env: {} });
     expect(calls[0].cwd).toBe(worktreePath);
   });
 
   it('frameworkRoot class records the injected framework root for a target context, distinct from basePath', () => {
     const { exec, calls } = makeSpyExec();
     const ctx = new GitContext(validOptions({ selfHost: false }), { exec });
-    ctx.exec('gh api user', { cwd: { kind: 'frameworkRoot' }, env: {} });
+    ctx.exec(['gh', 'api', 'user'], { cwd: { kind: 'frameworkRoot' }, env: {} });
     expect(calls[0].cwd).toBe(FRAMEWORK_ROOT);
     expect(calls[0].cwd).not.toBe(ctx.basePath);
   });
@@ -431,7 +431,7 @@ describe('exec() — public forge-neutral executor', () => {
     const { exec, calls } = makeSpyExec();
     const ctx = new GitContext(validOptions({ selfHost: false }), { exec });
     process.chdir(os.tmpdir());
-    ctx.exec('gh api user', { cwd: { kind: 'frameworkRoot' }, env: {} });
+    ctx.exec(['gh', 'api', 'user'], { cwd: { kind: 'frameworkRoot' }, env: {} });
     expect(calls[0].cwd).toBe(FRAMEWORK_ROOT);
     expect(calls[0].cwd).not.toBe(process.cwd());
   });
@@ -439,15 +439,15 @@ describe('exec() — public forge-neutral executor', () => {
   it('records the caller-supplied credential env verbatim', () => {
     const { exec, calls } = makeSpyExec();
     const ctx = new GitContext(validOptions(), { exec });
-    ctx.exec('gh api user', { cwd: { kind: 'frameworkRoot' }, env: { GH_TOKEN: 'call-scoped-token' } });
+    ctx.exec(['gh', 'api', 'user'], { cwd: { kind: 'frameworkRoot' }, env: { GH_TOKEN: 'call-scoped-token' } });
     expect(calls[0].env.GH_TOKEN).toBe('call-scoped-token');
   });
 
   it('two calls on the same context with different env values record different tokens', () => {
     const { exec, calls } = makeSpyExec();
     const ctx = new GitContext(validOptions(), { exec });
-    ctx.exec('gh api user', { cwd: { kind: 'frameworkRoot' }, env: { GH_TOKEN: 'token-first' } });
-    ctx.exec('gh api user', { cwd: { kind: 'frameworkRoot' }, env: { GH_TOKEN: 'token-second' } });
+    ctx.exec(['gh', 'api', 'user'], { cwd: { kind: 'frameworkRoot' }, env: { GH_TOKEN: 'token-first' } });
+    ctx.exec(['gh', 'api', 'user'], { cwd: { kind: 'frameworkRoot' }, env: { GH_TOKEN: 'token-second' } });
     expect(calls[0].env.GH_TOKEN).toBe('token-first');
     expect(calls[1].env.GH_TOKEN).toBe('token-second');
   });
@@ -455,7 +455,7 @@ describe('exec() — public forge-neutral executor', () => {
   it('inherits PATH from process.env when the overlay does not mention it', () => {
     const { exec, calls } = makeSpyExec();
     const ctx = new GitContext(validOptions(), { exec });
-    ctx.exec('git status', { cwd: { kind: 'workspace' }, env: { GH_TOKEN: 'tok' } });
+    ctx.exec(['git', 'status'], { cwd: { kind: 'workspace' }, env: { GH_TOKEN: 'tok' } });
     expect(calls[0].env.PATH).toBe(process.env.PATH);
   });
 
@@ -463,7 +463,7 @@ describe('exec() — public forge-neutral executor', () => {
     const { exec } = makeSpyExec();
     const ctx = new GitContext(validOptions(), { exec });
     const overlay = { GH_TOKEN: 'tok' };
-    ctx.exec('git status', { cwd: { kind: 'workspace' }, env: overlay });
+    ctx.exec(['git', 'status'], { cwd: { kind: 'workspace' }, env: overlay });
     expect(overlay).toEqual({ GH_TOKEN: 'tok' });
   });
 
@@ -471,7 +471,7 @@ describe('exec() — public forge-neutral executor', () => {
     const before = process.env['GH_TOKEN'];
     const { exec } = makeSpyExec();
     const ctx = new GitContext(validOptions(), { exec });
-    ctx.exec('git status', { cwd: { kind: 'workspace' }, env: { GH_TOKEN: 'ephemeral' } });
+    ctx.exec(['git', 'status'], { cwd: { kind: 'workspace' }, env: { GH_TOKEN: 'ephemeral' } });
     expect(process.env['GH_TOKEN']).toBe(before);
   });
 
@@ -480,27 +480,27 @@ describe('exec() — public forge-neutral executor', () => {
     const ctx = new GitContext(validOptions(), {
       exec: () => { throw new Error('gh: unauthenticated'); },
     });
-    expect(() => ctx.exec('git status', { cwd: { kind: 'workspace' }, env: { GH_TOKEN: 'ephemeral' } })).toThrow();
+    expect(() => ctx.exec(['git', 'status'], { cwd: { kind: 'workspace' }, env: { GH_TOKEN: 'ephemeral' } })).toThrow();
     expect(process.env['GH_TOKEN']).toBe(before);
   });
 
   it('passes input to the fake when supplied', () => {
     const { exec, calls } = makeSpyExec();
     const ctx = new GitContext(validOptions(), { exec });
-    ctx.exec('gh api graphql --input -', { cwd: { kind: 'frameworkRoot' }, env: {}, input: 'stdin-payload' });
+    ctx.exec(['gh', 'api', 'graphql', '--input', '-'], { cwd: { kind: 'frameworkRoot' }, env: {}, input: 'stdin-payload' });
     expect(calls[0].input).toBe('stdin-payload');
   });
 
   it('leaves input undefined when omitted', () => {
     const { exec, calls } = makeSpyExec();
     const ctx = new GitContext(validOptions(), { exec });
-    ctx.exec('git status', { cwd: { kind: 'workspace' }, env: {} });
+    ctx.exec(['git', 'status'], { cwd: { kind: 'workspace' }, env: {} });
     expect(calls[0].input).toBeUndefined();
   });
 
   it('trims trailing whitespace from the fake output', () => {
     const ctx = new GitContext(validOptions(), { exec: () => 'main\n' as never });
-    expect(ctx.exec('git branch --show-current', { cwd: { kind: 'workspace' }, env: {} })).toBe('main');
+    expect(ctx.exec(['git', 'branch', '--show-current'], { cwd: { kind: 'workspace' }, env: {} })).toBe('main');
   });
 
   describe('ENOENT rewrap through the public entry', () => {
@@ -512,10 +512,10 @@ describe('exec() — public forge-neutral executor', () => {
           validOptions({ frameworkRepoRoot, targetReposDir, owner: 'acme', repo: 'webapp', selfHost: false }),
           {
             exec: () => {
-              throw Object.assign(new Error('spawnSync /bin/sh ENOENT'), {
+              throw Object.assign(new Error('spawnSync git ENOENT'), {
                 code: 'ENOENT',
-                syscall: 'spawnSync /bin/sh',
-                path: '/bin/sh',
+                syscall: 'spawnSync git',
+                path: 'git',
               });
             },
           },
@@ -523,7 +523,7 @@ describe('exec() — public forge-neutral executor', () => {
         expect(fs.existsSync(ctx.basePath)).toBe(false);
         let caught: unknown;
         try {
-          ctx.exec('git status', { cwd: { kind: 'workspace' }, env: {} });
+          ctx.exec(['git', 'status'], { cwd: { kind: 'workspace' }, env: {} });
         } catch (err) {
           caught = err;
         }
@@ -532,6 +532,7 @@ describe('exec() — public forge-neutral executor', () => {
         expect(error.message).toContain(ctx.basePath);
         expect(error.message).toContain('acme/webapp');
         expect(error.message).toContain('selfHost=false');
+        expect(error.message).toContain('git status');
         expect(error.code).toBe('ENOENT');
         expect(error.cause).toBeDefined();
       } finally {
@@ -546,7 +547,7 @@ describe('exec() — public forge-neutral executor', () => {
     const ctx = new GitContext(validOptions(), { exec: () => { throw sentinel; } });
     let caught: unknown;
     try {
-      ctx.exec('git status', { cwd: { kind: 'workspace' }, env: {} });
+      ctx.exec(['git', 'status'], { cwd: { kind: 'workspace' }, env: {} });
     } catch (err) {
       caught = err;
     }
@@ -554,33 +555,40 @@ describe('exec() — public forge-neutral executor', () => {
   });
 
   it('does not rewrap an ENOENT whose cwd genuinely exists — propagates verbatim', () => {
-    const sentinel = Object.assign(new Error('spawnSync /bin/sh ENOENT'), { code: 'ENOENT' });
+    const sentinel = Object.assign(new Error('spawnSync git ENOENT'), { code: 'ENOENT' });
     const ctx = new GitContext(validOptions(), {
       exec: () => { throw sentinel; },
       fsDeps: { existsSync: () => true, mkdirSync: () => {}, copyFileSync: () => {}, rmSync: () => {} },
     });
     let caught: unknown;
     try {
-      ctx.exec('git status', { cwd: { kind: 'workspace' }, env: {} });
+      ctx.exec(['git', 'status'], { cwd: { kind: 'workspace' }, env: {} });
     } catch (err) {
       caught = err;
     }
     expect(caught).toBe(sentinel);
   });
 
-  it('throws on an empty command', () => {
+  it('throws on an empty argv', () => {
     const ctx = new GitContext(validOptions(), { exec: () => 'out' as never });
-    expect(() => ctx.exec('', { cwd: { kind: 'workspace' }, env: {} })).toThrow(/GitContext/);
+    expect(() => ctx.exec([], { cwd: { kind: 'workspace' }, env: {} })).toThrow(/GitContext/);
   });
 
-  it('throws on a whitespace-only command', () => {
+  it('throws on a whitespace-only program', () => {
     const ctx = new GitContext(validOptions(), { exec: () => 'out' as never });
-    expect(() => ctx.exec('   ', { cwd: { kind: 'workspace' }, env: {} })).toThrow(/GitContext/);
+    expect(() => ctx.exec(['   '], { cwd: { kind: 'workspace' }, env: {} })).toThrow(/GitContext/);
+  });
+
+  it('rejects a command string with an argv-array error, before anything is spawned', () => {
+    const { exec, calls } = makeSpyExec();
+    const ctx = new GitContext(validOptions(), { exec });
+    expect(() => ctx.exec('git status' as never, { cwd: { kind: 'workspace' }, env: {} })).toThrow(/GitContext: exec takes an argv array/);
+    expect(calls).toEqual([]);
   });
 
   it('throws on an empty explicit worktree path', () => {
     const ctx = new GitContext(validOptions(), { exec: () => 'out' as never });
-    expect(() => ctx.exec('git status', { cwd: { kind: 'workspace', path: '' }, env: {} })).toThrow(/GitContext/);
+    expect(() => ctx.exec(['git', 'status'], { cwd: { kind: 'workspace', path: '' }, env: {} })).toThrow(/GitContext/);
   });
 });
 
@@ -593,8 +601,8 @@ describe('exec() options admit no forge-specific parameter', () => {
     // @ts-expect-error usePat is not part of ExecOptions — the executor is forge-neutral by contract.
     // If a future change re-adds a GitHub-specific parameter to ExecOptions, this directive goes
     // unused and fails the type-check (adw-790 §14).
-    ctx.exec('gh api user', { cwd: { kind: 'frameworkRoot' }, env: {}, usePat: true });
-    expect(calls[0].command).toBe('gh api user');
+    ctx.exec(['gh', 'api', 'user'], { cwd: { kind: 'frameworkRoot' }, env: {}, usePat: true });
+    expect(calls[0].argv).toEqual(['gh', 'api', 'user']);
     expect(calls[0].cwd).toBe(FRAMEWORK_ROOT);
   });
 });

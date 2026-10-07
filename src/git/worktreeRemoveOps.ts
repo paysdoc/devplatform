@@ -7,7 +7,7 @@ import * as path from 'path';
 import type { Logger } from './types.js';
 import { killProcessesInDirectory } from './processCleanup.js';
 
-type Runner = (command: string, cwd: string) => string;
+type Runner = (argv: readonly string[], cwd: string) => string;
 
 interface FsDeps {
   existsSync: (p: string) => boolean;
@@ -15,7 +15,7 @@ interface FsDeps {
 }
 
 function parseWorktreeBranches(run: Runner, baseCwd: string): Map<string, string> {
-  const output = run('git worktree list --porcelain', baseCwd);
+  const output = run(['git', 'worktree', 'list', '--porcelain'], baseCwd);
   const lines = output.split('\n');
   const result = new Map<string, string>();
   let currentPath: string | null = null;
@@ -50,7 +50,7 @@ function pruneAndRmWorktreeDir(
   }
   try {
     killProcs(worktreePath);
-    run('git worktree prune', baseCwd);
+    run(['git', 'worktree', 'prune'], baseCwd);
     fs.rmSync(worktreePath, { recursive: true, force: true });
     log(`Removed orphaned worktree directory at ${worktreePath}`, 'info');
     deleteLocalBranchFn(branchName);
@@ -76,7 +76,7 @@ function removeWorktree(
 ): boolean {
   killProcs(worktreePath);
   try {
-    run(`git worktree remove "${worktreePath}" --force`, baseCwd);
+    run(['git', 'worktree', 'remove', worktreePath, '--force'], baseCwd);
     log(`Removed worktree for branch '${branchName}' at ${worktreePath}`, 'success');
     deleteLocalBranchFn(branchName);
     return true;
@@ -120,7 +120,7 @@ function removeOneWorktree(
 ): boolean {
   killProcs(wtPath);
   try {
-    run(`git worktree remove "${wtPath}" --force`, baseCwd);
+    run(['git', 'worktree', 'remove', wtPath, '--force'], baseCwd);
     log(`Removed worktree at ${wtPath}`, 'success');
     if (branchName) deleteLocalBranchFn(branchName);
     return true;
@@ -142,7 +142,7 @@ function removeWorktreesForIssue(
   killProcs: (dir: string) => void = killProcessesInDirectory,
 ): number {
   try {
-    const output = run('git worktree list --porcelain', baseCwd);
+    const output = run(['git', 'worktree', 'list', '--porcelain'], baseCwd);
     const worktrees: string[] = [];
     for (const line of output.split('\n')) {
       if (line.startsWith('worktree ')) {
@@ -170,7 +170,7 @@ function removeWorktreesForIssue(
       }
     }
 
-    try { run('git worktree prune', baseCwd); } catch (pruneError) {
+    try { run(['git', 'worktree', 'prune'], baseCwd); } catch (pruneError) {
       log(`Failed to prune worktrees: ${pruneError}`, 'error');
     }
 

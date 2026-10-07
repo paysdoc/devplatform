@@ -9,12 +9,14 @@
 
 /**
  * Injectable command runner seam — exists for hermetic testing and
- * standalone-package reuse. The default is a thin execSync wrapper;
+ * standalone-package reuse. A command is an argv array: element 0 is the
+ * program and every later element reaches it as exactly one argument, so no
+ * value is ever parsed by a shell. The default is a thin execFileSync wrapper;
  * tests inject a spy that records invocations without spawning real processes.
  *
  * The optional `input` field passes data to the child process's stdin.
  */
-export type ExecFn = (command: string, options: { cwd: string; env: NodeJS.ProcessEnv; input?: string }) => string;
+export type ExecFn = (argv: readonly string[], options: { cwd: string; env: NodeJS.ProcessEnv; input?: string }) => string;
 
 /**
  * The working-directory CLASS a command belongs to — the caller's declaration,
@@ -38,7 +40,7 @@ export type ExecWorkingDirectory =
  * Options for {@link GitContext.exec}, the package's public forge-neutral
  * executor. Deliberately carries no forge semantics — no credential
  * selection, no PAT-versus-installation-token discrimination, no `--repo`
- * awareness. `command` stays a separate, first positional parameter on
+ * awareness. The argv stays a separate, first positional parameter on
  * `exec` (not folded into this object) so the `git-gh-shellout` CI guard
  * keeps inspecting it.
  */

@@ -37,7 +37,14 @@ sits between the co-located `vitest` unit suites and manual verification.
   issue behind a scripted `fetchFn`, tracker via the factory or constructed directly from a client),
   and `forgeMetadataPackaging.steps.ts` (the three `@packaging` type-check `When` steps, each
   driven through `typeCheckInConsumer()` and asserted only via the shared `Then the subprocess
-  exits {int}` step).
+  exits {int}` step). `argvCommands.steps.ts` holds the steps for `feature-18.feature` (git and
+  gh commands reach their program as an argument list, never through a shell). It observes
+  commands three ways: the executor recorder `ghRepoApi.steps.ts` installs behind a
+  `GitContext`, a recording stub `gh` first on `PATH` behind the default executor, and real
+  throwaway git repositories behind the default executor. It also runs the repository's
+  dev-only `scripts/checkGitGhGuard.ts` as a subprocess over a throwaway source tree, and
+  type-checks in the packed consumer that an injected runner taking an argv is accepted and one
+  taking a command string is rejected.
 - `features/support/ghCliFake.ts` (issue #16) — a projection-aware GitHub CLI fake shared by the
   GitHub scenarios: holds one issue and a list of pull requests, answers `gh issue view <n> …
   --json <fields>` / `gh pr list … --state all --json <fields> …` with the held data projected to
@@ -51,10 +58,14 @@ sits between the co-located `vitest` unit suites and manual verification.
   modules: resolves a name off the providers/git barrel or throws a message naming the missing
   export and its subpath.
 - `features/support/gitFixture.ts` — real throwaway git repository fixtures (issue #11): an
-  isolated `(command, cwd) => string` runner and a helper that initialises a repository with one
-  committed file, used by the `commitOps`/`branchOps` scenarios.
+  isolated `(argv, cwd) => string` runner (spawned without a shell, as the library does) and a
+  helper that initialises a repository with one committed file, used by the
+  `commitOps`/`branchOps` scenarios.
 - `features/support/stubGh.ts` — installs a stub `gh` executable first on `PATH` for the
-  `ghAuthToken()` reader scenarios (issue #11).
+  `ghAuthToken()` reader scenarios (issue #11). `installRecordingStubGh` installs one that
+  records instead of answering — each invocation's full argv (NUL-separated, so quotes and
+  newlines survive) and the standard input of `pr create` — and `readStubGhInvocations` reads
+  them back in call order.
 - `features/support/packagedConsumer.ts` — the packaging fixture shared by every `@packaging`
   scenario: packs the real tarball (`npm pack`, which runs `prepack` → `bun run build`) once per
   cucumber process, installs it into a throwaway consumer project, and exposes helpers to run or

@@ -132,16 +132,16 @@ Given('the environment advertises a GitHub App with app id {string} and slug {st
 });
 
 Given('git config reports user {string} with email {string}', function (this: DevPlatformWorld, name: string, email: string) {
-  this.execStub = (cmd: string) => {
-    if (cmd.includes('user.name')) return `${name}\n`;
-    if (cmd.includes('user.email')) return `${email}\n`;
-    throw new Error(`unexpected git command in a scenario stub: ${cmd}`);
+  this.execStub = (argv) => {
+    if (argv.includes('user.name')) return `${name}\n`;
+    if (argv.includes('user.email')) return `${email}\n`;
+    throw new Error(`unexpected git command in a scenario stub: ${argv.join(' ')}`);
   };
 });
 
 Given('git config reports no identity', function (this: DevPlatformWorld) {
-  this.execStub = (cmd: string) => {
-    throw new Error(`git config is unavailable in this scenario: ${cmd}`);
+  this.execStub = (argv) => {
+    throw new Error(`git config is unavailable in this scenario: ${argv.join(' ')}`);
   };
 });
 

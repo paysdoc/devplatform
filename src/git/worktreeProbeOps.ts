@@ -8,11 +8,11 @@ import * as path from 'path';
 
 export type WorktreeRegistration = 'healthy' | 'locked' | 'prunable' | 'missing';
 
-type Runner = (command: string, cwd: string) => string;
+type Runner = (argv: readonly string[], cwd: string) => string;
 
 function resolveGitDir(run: Runner, worktreePath: string): string | null {
   try {
-    const raw = run('git rev-parse --git-dir', worktreePath).trim();
+    const raw = run(['git', 'rev-parse', '--git-dir'], worktreePath).trim();
     return path.isAbsolute(raw) ? raw : path.resolve(worktreePath, raw);
   } catch {
     return null;
@@ -21,7 +21,7 @@ function resolveGitDir(run: Runner, worktreePath: string): string | null {
 
 function currentBranchSymbolic(run: Runner, worktreePath: string): string | null {
   try {
-    return run('git symbolic-ref --short HEAD', worktreePath).trim() || null;
+    return run(['git', 'symbolic-ref', '--short', 'HEAD'], worktreePath).trim() || null;
   } catch {
     return null;
   }
@@ -29,7 +29,7 @@ function currentBranchSymbolic(run: Runner, worktreePath: string): string | null
 
 function worktreeRegistration(run: Runner, worktreePath: string): WorktreeRegistration {
   try {
-    const output = run('git worktree list --porcelain', worktreePath);
+    const output = run(['git', 'worktree', 'list', '--porcelain'], worktreePath);
     const lines = output.split('\n');
     let currentPath: string | null = null;
     let isLocked = false;

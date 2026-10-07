@@ -28,7 +28,7 @@ let consumerDirPromise: Promise<string> | undefined;
  * suite itself runs under `--import tsx`, and the consumer project — a clean
  * install of nothing but the tarball — cannot resolve `tsx`.
  */
-function childEnv(): NodeJS.ProcessEnv {
+export function childEnv(): NodeJS.ProcessEnv {
   const { NODE_OPTIONS: _dropped, ...rest } = process.env;
   return rest;
 }

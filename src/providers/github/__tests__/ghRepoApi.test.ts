@@ -26,7 +26,7 @@ function validOptions(overrides: Partial<GitContextOptions> = {}): GitContextOpt
 }
 
 interface SpyCall {
-  command: string;
+  argv: readonly string[];
   cwd: string;
   env: NodeJS.ProcessEnv;
   input?: string;
@@ -34,11 +34,17 @@ interface SpyCall {
 
 function makeSpyExec(stdout = 'main\n'): { exec: ExecFn; calls: SpyCall[] } {
   const calls: SpyCall[] = [];
-  const exec: ExecFn = (command, options) => {
-    calls.push({ command, cwd: options.cwd, env: options.env, input: options.input });
+  const exec: ExecFn = (argv, options) => {
+    calls.push({ argv, cwd: options.cwd, env: options.env, input: options.input });
     return stdout;
   };
   return { exec, calls };
+}
+
+// Undefined for an absent flag, so a missing flag fails the assertion rather than reading an unrelated element.
+function valueAfter(argv: readonly string[], flag: string): string | undefined {
+  const index = argv.indexOf(flag);
+  return index === -1 ? undefined : argv[index + 1];
 }
 
 // ── defaultBranch() ──────────────────────────────────────────────────────────
@@ -48,8 +54,8 @@ describe('defaultBranch() command, cwd and env', () => {
     const { exec, calls } = makeSpyExec();
     const ctx = new GitContext(validOptions({ owner: 'myorg', repo: 'myrepo' }), { exec });
     createGhRepoApi(ctx).defaultBranch();
-    expect(calls[0].command).toBe(
-      'gh repo view myorg/myrepo --json defaultBranchRef --jq .defaultBranchRef.name',
+    expect(calls[0].argv).toEqual(
+      ['gh', 'repo', 'view', 'myorg/myrepo', '--json', 'defaultBranchRef', '--jq', '.defaultBranchRef.name'],
     );
   });
 
@@ -107,8 +113,8 @@ describe('listOpenIssues() command and env', () => {
     const { exec, calls } = makeSpyExec('[]');
     const ctx = new GitContext(validOptions({ owner: 'acme', repo: 'webapp' }), { exec });
     createGhRepoApi(ctx).listOpenIssues({ fields: ['number', 'comments'], limit: 100 });
-    expect(calls[0].command).toBe(
-      'gh issue list --repo acme/webapp --state open --json number,comments --limit 100',
+    expect(calls[0].argv).toEqual(
+      ['gh', 'issue', 'list', '--repo', 'acme/webapp', '--state', 'open', '--json', 'number,comments', '--limit', '100'],
     );
   });
 
@@ -116,17 +122,18 @@ describe('listOpenIssues() command and env', () => {
     const { exec, calls } = makeSpyExec('[]');
     const ctx = new GitContext(validOptions({ owner: 'acme', repo: 'webapp' }), { exec });
     createGhRepoApi(ctx).listOpenIssues({ fields: ['number', 'title'], search: 'docs-bloat: app_docs/foo.md', limit: 5 });
-    expect(calls[0].command).toBe(
-      'gh issue list --repo acme/webapp --state open --json number,title --search "docs-bloat: app_docs/foo.md" --limit 5',
-    );
+    expect(calls[0].argv).toEqual([
+      'gh', 'issue', 'list', '--repo', 'acme/webapp', '--state', 'open', '--json', 'number,title',
+      '--search', 'docs-bloat: app_docs/foo.md', '--limit', '5',
+    ]);
   });
 
   it('honours an explicit state', () => {
     const { exec, calls } = makeSpyExec('[]');
     const ctx = new GitContext(validOptions({ owner: 'acme', repo: 'webapp' }), { exec });
     createGhRepoApi(ctx).listOpenIssues({ fields: ['number', 'state'], state: 'all', limit: 5 });
-    expect(calls[0].command).toBe(
-      'gh issue list --repo acme/webapp --state all --json number,state --limit 5',
+    expect(calls[0].argv).toEqual(
+      ['gh', 'issue', 'list', '--repo', 'acme/webapp', '--state', 'all', '--json', 'number,state', '--limit', '5'],
     );
   });
 
@@ -134,7 +141,7 @@ describe('listOpenIssues() command and env', () => {
     const { exec, calls } = makeSpyExec('[]');
     const ctx = new GitContext(validOptions({ owner: 'acme', repo: 'webapp' }), { exec });
     createGhRepoApi(ctx).listOpenIssues({ fields: ['number'] });
-    expect(calls[0].command).toBe('gh issue list --repo acme/webapp --state open --json number');
+    expect(calls[0].argv).toEqual(['gh', 'issue', 'list', '--repo', 'acme/webapp', '--state', 'open', '--json', 'number']);
   });
 
   it('passes cwd equal to the framework repo root', () => {
@@ -169,12 +176,12 @@ describe('listOpenIssues() command and env', () => {
 // ── issueComments() ──────────────────────────────────────────────────────────
 
 describe('issueComments() command and env', () => {
-  it("builds the exact command with --jq '.comments'", () => {
+  it('builds the exact command with --jq .comments', () => {
     const { exec, calls } = makeSpyExec('[]');
     const ctx = new GitContext(validOptions({ owner: 'acme', repo: 'webapp' }), { exec });
     createGhRepoApi(ctx).issueComments(42);
-    expect(calls[0].command).toBe(
-      "gh issue view 42 --repo acme/webapp --json comments --jq '.comments'",
+    expect(calls[0].argv).toEqual(
+      ['gh', 'issue', 'view', '42', '--repo', 'acme/webapp', '--json', 'comments', '--jq', '.comments'],
     );
   });
 
@@ -214,7 +221,7 @@ describe('issueLabels() command', () => {
     const { exec, calls } = makeSpyExec('[]');
     const ctx = new GitContext(validOptions({ owner: 'acme', repo: 'webapp' }), { exec });
     createGhRepoApi(ctx).issueLabels(28);
-    expect(calls[0].command).toBe('gh issue view 28 --repo acme/webapp --json labels');
+    expect(calls[0].argv).toEqual(['gh', 'issue', 'view', '28', '--repo', 'acme/webapp', '--json', 'labels']);
   });
 });
 
@@ -225,8 +232,8 @@ describe('fetchMergedPRs() command and env', () => {
     const { exec, calls } = makeSpyExec('[]');
     const ctx = new GitContext(validOptions({ owner: 'acme', repo: 'webapp' }), { exec });
     createGhRepoApi(ctx).fetchMergedPRs();
-    expect(calls[0].command).toBe(
-      'gh pr list --repo acme/webapp --state merged --json body,mergedAt --limit 200',
+    expect(calls[0].argv).toEqual(
+      ['gh', 'pr', 'list', '--repo', 'acme/webapp', '--state', 'merged', '--json', 'body,mergedAt', '--limit', '200'],
     );
   });
 
@@ -234,8 +241,8 @@ describe('fetchMergedPRs() command and env', () => {
     const { exec, calls } = makeSpyExec('[]');
     const ctx = new GitContext(validOptions({ owner: 'acme', repo: 'webapp' }), { exec });
     createGhRepoApi(ctx).fetchMergedPRs(50);
-    expect(calls[0].command).toBe(
-      'gh pr list --repo acme/webapp --state merged --json body,mergedAt --limit 50',
+    expect(calls[0].argv).toEqual(
+      ['gh', 'pr', 'list', '--repo', 'acme/webapp', '--state', 'merged', '--json', 'body,mergedAt', '--limit', '50'],
     );
   });
 
@@ -277,7 +284,7 @@ describe('createPR() head-branch contract', () => {
     const { exec, calls } = makeSpyExec('https://github.com/acme/webapp/pull/12\n');
     const ctx = new GitContext(validOptions({ owner: 'acme', repo: 'webapp' }), { exec });
     createGhRepoApi(ctx).createPR('My title', 'body text', 'feature-issue-7-do-thing', 'dev');
-    expect(calls[0].command).toContain('--head "feature-issue-7-do-thing"');
+    expect(valueAfter(calls[0].argv, '--head')).toBe('feature-issue-7-do-thing');
   });
 
   it('does not rely on the cwd-inferred head (head differs from base path branch)', () => {
@@ -285,39 +292,39 @@ describe('createPR() head-branch contract', () => {
     const { exec, calls } = makeSpyExec('main\n');
     const ctx = new GitContext(validOptions(), { exec });
     createGhRepoApi(ctx).createPR('T', 'b', 'feature-issue-99-x', 'dev');
-    expect(calls[0].command).toContain('--head "feature-issue-99-x"');
-    expect(calls[0].command).toContain('--base dev');
+    expect(valueAfter(calls[0].argv, '--head')).toBe('feature-issue-99-x');
+    expect(valueAfter(calls[0].argv, '--base')).toBe('dev');
   });
 
   it('passes the PR body via --body-file - on stdin', () => {
     const { exec, calls } = makeSpyExec('https://github.com/acme/webapp/pull/1\n');
     const ctx = new GitContext(validOptions(), { exec });
     createGhRepoApi(ctx).createPR('T', 'the body', 'feature-issue-1-y');
-    expect(calls[0].command).toContain('--body-file -');
+    expect(valueAfter(calls[0].argv, '--body-file')).toBe('-');
     expect(calls[0].input).toBe('the body');
   });
 });
 
 describe('createPR() with optional labels', () => {
-  it('appends --label for each label in the command string', () => {
+  it('appends --label for each label in the argv', () => {
     const { exec, calls } = makeSpyExec('https://github.com/acme/webapp/pull/12\n');
     const ctx = new GitContext(validOptions({ owner: 'acme', repo: 'webapp' }), { exec });
     createGhRepoApi(ctx).createPR('My title', 'body text', 'feature-issue-7-do-thing', 'dev', ['regression-promotion']);
-    expect(calls[0].command).toContain("--label 'regression-promotion'");
+    expect(valueAfter(calls[0].argv, '--label')).toBe('regression-promotion');
   });
 
   it('emits no --label when labels array is empty', () => {
     const { exec, calls } = makeSpyExec('https://github.com/acme/webapp/pull/12\n');
     const ctx = new GitContext(validOptions(), { exec });
     createGhRepoApi(ctx).createPR('T', 'b', 'feature-issue-1-x', 'dev', []);
-    expect(calls[0].command).not.toContain('--label');
+    expect(calls[0].argv.join(' ')).not.toContain('--label');
   });
 
   it('emits no --label when labels parameter is omitted (backward-compat)', () => {
     const { exec, calls } = makeSpyExec('https://github.com/acme/webapp/pull/12\n');
     const ctx = new GitContext(validOptions(), { exec });
     createGhRepoApi(ctx).createPR('T', 'b', 'feature-issue-1-x');
-    expect(calls[0].command).not.toContain('--label');
+    expect(calls[0].argv.join(' ')).not.toContain('--label');
   });
 
   it('passes cwd equal to the framework repo root', () => {
@@ -335,7 +342,7 @@ describe('setSecret() command and env', () => {
     const { exec, calls } = makeSpyExec('');
     const ctx = new GitContext(validOptions({ owner: 'acme', repo: 'webapp' }), { exec });
     createGhRepoApi(ctx).setSecret('MY_SECRET', 'the-value');
-    expect(calls[0].command).toBe('gh secret set MY_SECRET --repo acme/webapp --body -');
+    expect(calls[0].argv).toEqual(['gh', 'secret', 'set', 'MY_SECRET', '--repo', 'acme/webapp', '--body', '-']);
   });
 
   it('uses the context primary token (not the PAT) even when a PAT is configured', () => {
@@ -345,12 +352,12 @@ describe('setSecret() command and env', () => {
     expect(calls[0].env.GH_TOKEN).toBe('primary-token');
   });
 
-  it('pipes the secret value via stdin input (not in the command string)', () => {
+  it('pipes the secret value via stdin input (not in the argv)', () => {
     const { exec, calls } = makeSpyExec('');
     const ctx = new GitContext(validOptions(), { exec });
     createGhRepoApi(ctx).setSecret('MY_SECRET', 'super-secret-value');
     expect(calls[0].input).toBe('super-secret-value');
-    expect(calls[0].command).not.toContain('super-secret-value');
+    expect(calls[0].argv.join(' ')).not.toContain('super-secret-value');
   });
 
   it('passes cwd equal to the framework repo root', () => {
@@ -376,7 +383,7 @@ describe('runGraphQLInput() command and env', () => {
     const { exec, calls } = makeSpyExec('{}');
     const ctx = new GitContext(validOptions(), { exec });
     createGhRepoApi(ctx).runGraphQLInput({ query: 'mutation{}', variables: { ids: ['a', 'b'] } });
-    expect(calls[0].command).toBe('gh api graphql --input -');
+    expect(calls[0].argv).toEqual(['gh', 'api', 'graphql', '--input', '-']);
   });
 
   it('pipes JSON.stringify(body) via stdin input', () => {
@@ -424,7 +431,9 @@ describe('runGraphQL() command and purpose', () => {
     const { exec, calls } = makeSpyExec('{}');
     const ctx = new GitContext(validOptions(), { exec });
     createGhRepoApi(ctx).runGraphQL('query{viewer{login}}', { limit: 5, name: 'x' });
-    expect(calls[0].command).toBe("gh api graphql -f query='query{viewer{login}}' -F limit=5 -f name='x'");
+    expect(calls[0].argv).toEqual(
+      ['gh', 'api', 'graphql', '-f', 'query=query{viewer{login}}', '-F', 'limit=5', '-f', 'name=x'],
+    );
   });
 
   it('uses the PAT (alternateIdentity purpose) when configured', () => {
@@ -442,7 +451,7 @@ describe('fetchPRChangedFiles() command and env', () => {
     const { exec, calls } = makeSpyExec('{"files":[]}');
     const ctx = new GitContext(validOptions({ owner: 'acme', repo: 'webapp' }), { exec });
     createGhRepoApi(ctx).fetchPRChangedFiles(7);
-    expect(calls[0].command).toBe('gh pr view 7 --repo acme/webapp --json files');
+    expect(calls[0].argv).toEqual(['gh', 'pr', 'view', '7', '--repo', 'acme/webapp', '--json', 'files']);
   });
 
   it('passes cwd equal to the framework repo root', () => {
@@ -469,7 +478,7 @@ describe('approvePR() purpose routing', () => {
     const ctx = new GitContext(validOptions({ tokenProvider: createLiteralTokenProvider('primary-token', 'pat-token') }), { exec });
     createGhRepoApi(ctx).approvePR(7);
     expect(calls[0].env.GH_TOKEN).toBe('pat-token');
-    expect(calls[0].command).toBe('gh pr review 7 --approve --repo acme/webapp');
+    expect(calls[0].argv).toEqual(['gh', 'pr', 'review', '7', '--approve', '--repo', 'acme/webapp']);
   });
 });
 
@@ -490,8 +499,8 @@ describe('moveIssueToStatus()', () => {
   function makeSequencedExec(responses: string[]): { exec: ExecFn; calls: SpyCall[] } {
     const calls: SpyCall[] = [];
     let i = 0;
-    const exec: ExecFn = (command, options) => {
-      calls.push({ command, cwd: options.cwd, env: options.env, input: options.input });
+    const exec: ExecFn = (argv, options) => {
+      calls.push({ argv, cwd: options.cwd, env: options.env, input: options.input });
       return responses[i++] ?? '{}';
     };
     return { exec, calls };
@@ -550,7 +559,7 @@ describe('moveIssueToStatus()', () => {
     const ctx = new GitContext(validOptions(), { exec });
     expect(createGhRepoApi(ctx).moveIssueToStatus(28, 'In Progress')).toBe(true);
     expect(calls.length).toBe(4);
-    expect(calls[3].command).toContain('updateProjectV2ItemFieldValue');
+    expect(calls[3].argv.find((arg) => arg.startsWith('query='))).toContain('updateProjectV2ItemFieldValue');
     expect(calls.every((c) => c.env.GH_TOKEN !== undefined)).toBe(true);
   });
 

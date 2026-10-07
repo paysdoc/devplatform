@@ -29,12 +29,14 @@ export function validOptions(overrides: Partial<GitContextOptions> = {}): GitCon
   };
 }
 
-export interface SpyCall { command: string; env: NodeJS.ProcessEnv }
+/** `command` is `argv` joined with spaces — a display and substring-dispatch view only, never what the executor received. */
+export interface SpyCall { argv: readonly string[]; command: string; env: NodeJS.ProcessEnv }
 
 export function makeSpyExec(responses: ReadonlyMap<string, string> = new Map()): { exec: ExecFn; calls: SpyCall[] } {
   const calls: SpyCall[] = [];
-  const exec: ExecFn = (command, options) => {
-    calls.push({ command, env: { ...options.env } });
+  const exec: ExecFn = (argv, options) => {
+    const command = argv.join(' ');
+    calls.push({ argv, command, env: { ...options.env } });
     for (const [pattern, response] of responses) {
       if (command.includes(pattern)) return response;
     }

@@ -5,7 +5,7 @@
 
 import * as path from 'path';
 
-type Runner = (command: string, cwd: string) => string;
+type Runner = (argv: readonly string[], cwd: string) => string;
 
 interface FsDeps {
   existsSync: (p: string) => boolean;
@@ -13,7 +13,7 @@ interface FsDeps {
 }
 
 function resolveGitDir(run: Runner, worktreePath: string): string {
-  const raw = run('git rev-parse --git-dir', worktreePath);
+  const raw = run(['git', 'rev-parse', '--git-dir'], worktreePath);
   return path.isAbsolute(raw) ? raw : path.resolve(worktreePath, raw);
 }
 
@@ -21,7 +21,7 @@ function abortMerge(run: Runner, fs: FsDeps, worktreePath: string, gitDir: strin
   const mergeHead = path.join(gitDir, 'MERGE_HEAD');
   if (!fs.existsSync(mergeHead)) return;
   try {
-    run('git merge --abort', worktreePath);
+    run(['git', 'merge', '--abort'], worktreePath);
     return;
   } catch {
     // fallback to fs removal
@@ -38,7 +38,7 @@ function abortRebase(run: Runner, fs: FsDeps, worktreePath: string, gitDir: stri
   const rebaseMerge = path.join(gitDir, 'rebase-merge');
   if (!fs.existsSync(rebaseApply) && !fs.existsSync(rebaseMerge)) return;
   try {
-    run('git rebase --abort', worktreePath);
+    run(['git', 'rebase', '--abort'], worktreePath);
     return;
   } catch {
     // fallback to fs removal
@@ -53,17 +53,17 @@ function resetWorktree(run: Runner, fs: FsDeps, worktreePath: string, branch: st
   abortRebase(run, fs, worktreePath, gitDir);
 
   try {
-    run(`git fetch origin "${branch}"`, worktreePath);
+    run(['git', 'fetch', 'origin', branch], worktreePath);
   } catch (error) {
     throw new Error(`Failed to fetch origin/${branch} in ${worktreePath}: ${error}`);
   }
   try {
-    run(`git reset --hard "origin/${branch}"`, worktreePath);
+    run(['git', 'reset', '--hard', `origin/${branch}`], worktreePath);
   } catch (error) {
     throw new Error(`Failed to reset to origin/${branch} in ${worktreePath}: ${error}`);
   }
   try {
-    run('git clean -fdx', worktreePath);
+    run(['git', 'clean', '-fdx'], worktreePath);
   } catch (error) {
     throw new Error(`Failed to clean worktree ${worktreePath}: ${error}`);
   }

@@ -2,12 +2,13 @@
  * Diagnoses a spawn failure caused by a missing working directory and turns
  * it into an error naming the path and repository identity.
  *
- * Node resolves a spawn's cwd before exec'ing the shell, so a nonexistent
- * cwd surfaces as an ENOENT on the shell binary itself rather than on the
- * directory. The message differs by runtime (node: "spawnSync /bin/sh
- * ENOENT"; bun: "ENOENT: no such file or directory, posix_spawn '/bin/sh'")
- * but `code` does not (verified 2026-07-30) — detection keys off `code`,
- * never the message.
+ * Node resolves a spawn's cwd before exec'ing the program, so a nonexistent
+ * cwd surfaces as an ENOENT on the spawned program itself (`git`, `gh`)
+ * rather than on the directory — indistinguishable by `code` from a program
+ * that is genuinely missing, which is why the caller's existence probe, not
+ * the error, decides. The message differs by runtime (node: "spawnSync git
+ * ENOENT"; bun: "ENOENT: no such file or directory, posix_spawn 'git'") but
+ * `code` does not — detection keys off `code`, never the message.
  *
  * Pure — no fs, no spawn. The existence probe is injected by the caller.
  */

@@ -130,27 +130,30 @@ describe('readGitConfigIdentity', () => {
   });
 
   it('returns the git-config identity exactly as git config holds it', () => {
-    const fakeExec = (cmd: string) => {
-      if (cmd === 'git config user.name') return 'Config Bot\n';
-      if (cmd === 'git config user.email') return 'config@bot.dev\n';
-      throw new Error(`Unexpected: ${cmd}`);
+    const calls: Array<readonly string[]> = [];
+    const fakeExec = (argv: readonly string[]) => {
+      calls.push(argv);
+      if (argv.join(' ') === 'git config user.name') return 'Config Bot\n';
+      if (argv.join(' ') === 'git config user.email') return 'config@bot.dev\n';
+      throw new Error(`Unexpected: ${argv.join(' ')}`);
     };
-    const identity = readGitConfigIdentity({ exec: fakeExec as never });
+    const identity = readGitConfigIdentity({ exec: fakeExec });
     expect(identity).toEqual({
       authorName: 'Config Bot',
       authorEmail: 'config@bot.dev',
       committerName: 'Config Bot',
       committerEmail: 'config@bot.dev',
     });
+    expect(calls).toEqual([['git', 'config', 'user.name'], ['git', 'config', 'user.email']]);
   });
 
   it('returns null when git config resolves an empty name or email', () => {
-    const fakeExec = (cmd: string) => {
-      if (cmd === 'git config user.name') return '';
-      if (cmd === 'git config user.email') return 'config@bot.dev\n';
-      throw new Error(`Unexpected: ${cmd}`);
+    const fakeExec = (argv: readonly string[]) => {
+      if (argv.join(' ') === 'git config user.name') return '';
+      if (argv.join(' ') === 'git config user.email') return 'config@bot.dev\n';
+      throw new Error(`Unexpected: ${argv.join(' ')}`);
     };
-    expect(readGitConfigIdentity({ exec: fakeExec as never })).toBeNull();
+    expect(readGitConfigIdentity({ exec: fakeExec })).toBeNull();
   });
 });
 

@@ -6,7 +6,7 @@ import { makeCtx, makeSpyExec, makeCapturingLogger, FRAMEWORK_ROOT } from './git
 
 const REPO_ID: RepoIdentifier = { owner: 'acme', repo: 'widget', platform: Platform.GitHub };
 
-describe('GitHubCodeHost — command strings', () => {
+describe('GitHubCodeHost — command argv', () => {
   it('fetchPRDetails spawns the exact gh pr view command from the framework root', () => {
     const json = JSON.stringify({ number: 7, title: 'T', body: '', state: 'OPEN', headRefName: 'x', baseRefName: 'main', url: 'https://x' });
     const { exec, calls } = makeSpyExec(new Map([['gh pr view 7', json]]));
@@ -14,7 +14,9 @@ describe('GitHubCodeHost — command strings', () => {
 
     codeHost.fetchPullRequest(7);
 
-    expect(calls[0].command).toBe('gh pr view 7 --repo acme/widget --json number,title,body,state,headRefName,baseRefName,url');
+    expect(calls[0].argv).toEqual([
+      'gh', 'pr', 'view', '7', '--repo', 'acme/widget', '--json', 'number,title,body,state,headRefName,baseRefName,url',
+    ]);
     expect(calls[0].cwd).toBe(FRAMEWORK_ROOT);
   });
 
@@ -24,7 +26,7 @@ describe('GitHubCodeHost — command strings', () => {
 
     codeHost.isPullRequestApproved(7);
 
-    expect(calls[0].command).toBe('gh pr view 7 --repo acme/widget --json reviewDecision,reviews');
+    expect(calls[0].argv).toEqual(['gh', 'pr', 'view', '7', '--repo', 'acme/widget', '--json', 'reviewDecision,reviews']);
   });
 
   it('approvePR carries the elevated credential (alternate literal)', () => {
@@ -34,7 +36,7 @@ describe('GitHubCodeHost — command strings', () => {
 
     codeHost.approvePullRequest(7);
 
-    expect(calls[0].command).toBe('gh pr review 7 --approve --repo acme/widget');
+    expect(calls[0].argv).toEqual(['gh', 'pr', 'review', '7', '--approve', '--repo', 'acme/widget']);
     expect(calls[0].env.GH_TOKEN).toBe('pat-alt');
   });
 
@@ -44,7 +46,7 @@ describe('GitHubCodeHost — command strings', () => {
 
     codeHost.mergePullRequest(7);
 
-    expect(calls[0].command).toBe('gh pr merge 7 --merge --repo acme/widget');
+    expect(calls[0].argv).toEqual(['gh', 'pr', 'merge', '7', '--merge', '--repo', 'acme/widget']);
   });
 
   it('fetchPRList spawns gh pr list --state open', () => {
@@ -53,7 +55,7 @@ describe('GitHubCodeHost — command strings', () => {
 
     codeHost.listOpenPullRequests();
 
-    expect(calls[0].command).toBe('gh pr list --repo acme/widget --state open --json number,headRefName,updatedAt');
+    expect(calls[0].argv).toEqual(['gh', 'pr', 'list', '--repo', 'acme/widget', '--state', 'open', '--json', 'number,headRefName,updatedAt']);
   });
 
   it('findPRByBranch spawns gh pr list --head', () => {
@@ -62,7 +64,7 @@ describe('GitHubCodeHost — command strings', () => {
 
     codeHost.findPullRequestByBranch('feature-x');
 
-    expect(calls[0].command).toContain('gh pr list --repo acme/widget --head "feature-x"');
+    expect(calls[0].argv.slice(0, 7)).toEqual(['gh', 'pr', 'list', '--repo', 'acme/widget', '--head', 'feature-x']);
   });
 });
 
@@ -159,7 +161,9 @@ describe('GitHubCodeHost — parse and map', () => {
     const raw = [{ number: 1, body: 'Closes #1', state: 'MERGED', mergedAt: '2024-01-01', updatedAt: '2024-01-01T00:00:00Z', url: 'https://github.com/acme/widget/pull/1' }];
     const { exec, calls } = makeSpyExec(new Map([['--state all', JSON.stringify(raw)]]));
     const result = createGitHubCodeHost(makeCtx({}, exec), REPO_ID).listPullRequests();
-    expect(calls[0].command).toBe('gh pr list --repo acme/widget --state all --json number,body,state,mergedAt,updatedAt,url --limit 200');
+    expect(calls[0].argv).toEqual([
+      'gh', 'pr', 'list', '--repo', 'acme/widget', '--state', 'all', '--json', 'number,body,state,mergedAt,updatedAt,url', '--limit', '200',
+    ]);
     expect(result).toEqual(raw);
     expect(result[0].updatedAt).toBe('2024-01-01T00:00:00Z');
     expect(result[0].url).toBe('https://github.com/acme/widget/pull/1');

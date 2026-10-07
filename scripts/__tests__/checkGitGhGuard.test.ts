@@ -1,6 +1,7 @@
 /**
  * checkGitGhGuard.test.ts — scanFiles behavioural assertions for the ported
- * git/gh guard (two rules: 'git-gh-shellout', 'unsanctioned-construction').
+ * git/gh guard (three rules: 'git-gh-shellout', 'shell-command-string',
+ * 'unsanctioned-construction').
  *
  * Drives the exported scanFiles() over in-memory fixture paths + sources,
  * proving both directions per rule: a violation is caught, a legal shape
@@ -78,8 +79,23 @@ describe('scanFiles — git-gh-shellout rule', () => {
 });
 
 describe('scanFiles — the per-rule exemption (AC1)', () => {
-  it('the same execSync("git status") source is zero violations inside src/git/ and inside src/providers/github/, but one violation elsewhere', () => {
+  it('the same execSync("git status") source is a shell-command-string violation inside src/git/ and inside src/providers/github/, and a git-gh-shellout violation elsewhere', () => {
     mockReadFileSync.mockReturnValue('const x = execSync("git status");\n');
+
+    const atGitCore = scanFiles(['src/git/branchOps.ts'], '/repo');
+    const atGitHubAdapter = scanFiles(['src/providers/github/ghCommandRunner.ts'], '/repo');
+    const atJira = scanFiles(['src/providers/jira/jiraApiClient.ts'], '/repo');
+
+    expect(atGitCore.violations).toHaveLength(1);
+    expect(atGitCore.violations[0].rule).toBe('shell-command-string');
+    expect(atGitHubAdapter.violations).toHaveLength(1);
+    expect(atGitHubAdapter.violations[0].rule).toBe('shell-command-string');
+    expect(atJira.violations).toHaveLength(1);
+    expect(atJira.violations[0].rule).toBe('git-gh-shellout');
+  });
+
+  it('the argv form run(["git", "status"], cwd) is zero violations inside both exempt packages and one git-gh-shellout violation elsewhere', () => {
+    mockReadFileSync.mockReturnValue("run(['git', 'status'], cwd);\n");
 
     const atGitCore = scanFiles(['src/git/branchOps.ts'], '/repo');
     const atGitHubAdapter = scanFiles(['src/providers/github/ghCommandRunner.ts'], '/repo');
@@ -98,6 +114,115 @@ describe('scanFiles — the per-rule exemption (AC1)', () => {
 
     expect(violations).toHaveLength(1);
     expect(violations[0].rule).toBe('git-gh-shellout');
+  });
+});
+
+describe('scanFiles — git-gh-shellout recognises an argv array literal as a call\'s first argument', () => {
+  it('flags ctx.exec([\'gh\', ...]) outside the exempt packages, with the argv rendered as the command it spells', () => {
+    mockReadFileSync.mockReturnValue("ctx.exec(['gh', 'api', 'user'], opts);\n");
+
+    const { violations } = scanFiles(['src/providers/jira/jiraApiClient.ts'], '/repo');
+
+    expect(violations).toHaveLength(1);
+    expect(violations[0].rule).toBe('git-gh-shellout');
+    expect(violations[0].command.startsWith('gh api user')).toBe(true);
+  });
+
+  it('renders a non-literal argv element as ${...}', () => {
+    mockReadFileSync.mockReturnValue("run(['git', 'commit', '-m', message], cwd);\n");
+
+    const { violations } = scanFiles(['src/providers/jira/jiraApiClient.ts'], '/repo');
+
+    expect(violations).toHaveLength(1);
+    expect(violations[0].command).toBe('git commit -m ${...}');
+  });
+
+  it('does not flag an argv array whose program is neither git nor gh', () => {
+    mockReadFileSync.mockReturnValue("run(['curl', '-s', url], cwd);\nrun([], cwd);\n");
+
+    const { violations } = scanFiles(['src/providers/jira/jiraApiClient.ts'], '/repo');
+
+    expect(violations).toHaveLength(0);
+  });
+
+  it('execSync("git status") in a non-exempt file is still exactly one violation — the new rules do not double-report', () => {
+    mockReadFileSync.mockReturnValue('execSync("git status");\n');
+
+    const { violations } = scanFiles(['src/providers/jira/jiraApiClient.ts'], '/repo');
+
+    expect(violations).toHaveLength(1);
+  });
+});
+
+describe('scanFiles — shell-command-string rule', () => {
+  it('flags a template-literal commit command passed to a runner in src/git/commitOps.ts', () => {
+    mockReadFileSync.mockReturnValue('run(`git commit -m "${message}"`, cwd);\n');
+
+    const { violations } = scanFiles(['src/git/commitOps.ts'], '/repo');
+
+    expect(violations).toHaveLength(1);
+    expect(violations[0].rule).toBe('shell-command-string');
+    expect(violations[0].file).toBe('src/git/commitOps.ts');
+    expect(violations[0].line).toBe(1);
+    expect(violations[0].command).toBe('git commit -m "${...}');
+  });
+
+  it('flags a builder that returns a gh command line, not only a call argument', () => {
+    mockReadFileSync.mockReturnValue("export function createPRCmd(title: string) {\n  return `gh pr create --title '${title}'`;\n}\n");
+
+    const { violations } = scanFiles(['src/providers/github/commands/prCommands.ts'], '/repo');
+
+    expect(violations).toHaveLength(1);
+    expect(violations[0].rule).toBe('shell-command-string');
+    expect(violations[0].line).toBe(2);
+  });
+
+  it("flags the constant 'gh auth token' command line that ghAuthToken used to run through a shell", () => {
+    mockReadFileSync.mockReturnValue("execSync('gh auth token');\n");
+
+    const { violations } = scanFiles(['src/providers/github/ghAuthToken.ts'], '/repo');
+
+    expect(violations).toHaveLength(1);
+    expect(violations[0].rule).toBe('shell-command-string');
+  });
+
+  it('flags a command line used as an array element', () => {
+    mockReadFileSync.mockReturnValue("const argv = ['git status', 'x'];\n");
+
+    const { violations } = scanFiles(['src/git/branchOps.ts'], '/repo');
+
+    expect(violations).toHaveLength(1);
+    expect(violations[0].rule).toBe('shell-command-string');
+  });
+
+  it('does not flag argv arrays: the bare program name is not a command line', () => {
+    mockReadFileSync.mockReturnValue(
+      "execFileSync('gh', ['auth', 'token']);\nconst build = () => ['gh', 'pr', 'create', '--title', title];\nrun(['git', 'commit', '-m', message], cwd);\n",
+    );
+
+    const inGitCore = scanFiles(['src/git/commitOps.ts'], '/repo');
+    const inGitHubAdapter = scanFiles(['src/providers/github/commands/prCommands.ts'], '/repo');
+
+    expect(inGitCore.violations).toHaveLength(0);
+    expect(inGitHubAdapter.violations).toHaveLength(0);
+  });
+
+  it('does not flag a literal that merely contains a command line, or a word that starts with git or gh', () => {
+    mockReadFileSync.mockReturnValue(
+      "const a = 'run git status first';\nconst b = 'github.com/acme/widget';\nconst c = 'ghost town';\nconst d = 'gitignore rules';\n",
+    );
+
+    const { violations } = scanFiles(['src/git/branchOps.ts'], '/repo');
+
+    expect(violations).toHaveLength(0);
+  });
+
+  it('is not applied outside the exempt packages, where git-gh-shellout already reports the shape', () => {
+    mockReadFileSync.mockReturnValue('const message = `git commit -m ${subject}`;\n');
+
+    const { violations } = scanFiles(['src/providers/jira/jiraApiClient.ts'], '/repo');
+
+    expect(violations).toHaveLength(0);
   });
 });
 

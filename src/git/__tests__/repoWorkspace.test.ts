@@ -9,6 +9,8 @@ import type { WorkspaceExecFn } from '../repoWorkspace.js';
 
 const TARGET_REPOS_DIR = '/srv/adw/repos';
 
+const isGitClone = (argv: readonly string[]): boolean => argv[0] === 'git' && argv[1] === 'clone';
+
 // ---------------------------------------------------------------------------
 // getTargetRepoWorkspacePath
 // ---------------------------------------------------------------------------
@@ -48,8 +50,8 @@ describe('isRepoCloned', () => {
 
 describe('ensureRepoWorkspace — not cloned: clones the URL it is given, verbatim (issue #793)', () => {
   it('calls exec with git clone when workspace is absent', () => {
-    const execCalls: string[] = [];
-    const fakeExec: WorkspaceExecFn = (cmd) => { execCalls.push(cmd); };
+    const execCalls: Array<readonly string[]> = [];
+    const fakeExec: WorkspaceExecFn = (argv) => { execCalls.push(argv); };
 
     ensureRepoWorkspace('acme', 'webapp', 'https://github.com/acme/webapp', {
       targetReposDir: TARGET_REPOS_DIR,
@@ -59,14 +61,14 @@ describe('ensureRepoWorkspace — not cloned: clones the URL it is given, verbat
       log: () => {},
     });
 
-    const cloneCall = execCalls.find(c => c.includes('git clone'));
+    const cloneCall = execCalls.find(isGitClone);
     expect(cloneCall).toBeDefined();
     expect(cloneCall!).toContain('https://github.com/acme/webapp');
   });
 
   it('clones a GitHub HTTPS URL verbatim — no rewrite to SSH', () => {
-    const execCalls: string[] = [];
-    const fakeExec: WorkspaceExecFn = (cmd) => { execCalls.push(cmd); };
+    const execCalls: Array<readonly string[]> = [];
+    const fakeExec: WorkspaceExecFn = (argv) => { execCalls.push(argv); };
 
     ensureRepoWorkspace('acme', 'webapp', 'https://github.com/acme/webapp.git', {
       targetReposDir: TARGET_REPOS_DIR,
@@ -76,8 +78,8 @@ describe('ensureRepoWorkspace — not cloned: clones the URL it is given, verbat
       log: () => {},
     });
 
-    const cloneCall = execCalls.find(c => c.includes('git clone'));
-    expect(cloneCall).toBe('git clone "https://github.com/acme/webapp.git" "' + path.join(TARGET_REPOS_DIR, 'acme', 'webapp') + '"');
+    const cloneCall = execCalls.find(isGitClone);
+    expect(cloneCall).toEqual(['git', 'clone', 'https://github.com/acme/webapp.git', path.join(TARGET_REPOS_DIR, 'acme', 'webapp')]);
   });
 
   it('returns the computed workspace path', () => {
@@ -99,8 +101,8 @@ describe('ensureRepoWorkspace — not cloned: clones the URL it is given, verbat
 
 describe('ensureRepoWorkspace — already cloned: fetches and reads default branch', () => {
   it('runs git fetch origin when workspace already exists', () => {
-    const execCalls: string[] = [];
-    const fakeExec: WorkspaceExecFn = (cmd) => { execCalls.push(cmd); };
+    const execCalls: Array<readonly string[]> = [];
+    const fakeExec: WorkspaceExecFn = (argv) => { execCalls.push(argv); };
 
     ensureRepoWorkspace('acme', 'webapp', 'https://github.com/acme/webapp', {
       targetReposDir: TARGET_REPOS_DIR,
@@ -110,7 +112,7 @@ describe('ensureRepoWorkspace — already cloned: fetches and reads default bran
       log: () => {},
     });
 
-    expect(execCalls).toContain('git fetch origin');
+    expect(execCalls).toContainEqual(['git', 'fetch', 'origin']);
   });
 
   it('calls getDefaultBranch through the injected thunk (bound-auth runner)', () => {
@@ -129,8 +131,8 @@ describe('ensureRepoWorkspace — already cloned: fetches and reads default bran
   });
 
   it('does NOT call git clone when workspace already exists', () => {
-    const execCalls: string[] = [];
-    const fakeExec: WorkspaceExecFn = (cmd) => { execCalls.push(cmd); };
+    const execCalls: Array<readonly string[]> = [];
+    const fakeExec: WorkspaceExecFn = (argv) => { execCalls.push(argv); };
 
     ensureRepoWorkspace('acme', 'webapp', 'https://github.com/acme/webapp', {
       targetReposDir: TARGET_REPOS_DIR,
@@ -140,6 +142,6 @@ describe('ensureRepoWorkspace — already cloned: fetches and reads default bran
       log: () => {},
     });
 
-    expect(execCalls.some(c => c.includes('git clone'))).toBe(false);
+    expect(execCalls.some(isGitClone)).toBe(false);
   });
 });

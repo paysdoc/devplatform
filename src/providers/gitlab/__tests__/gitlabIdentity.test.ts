@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
+import { isDeepStrictEqual } from 'util';
 import { resolveGitLabBootstrapGitIdentity, GITLAB_BOT_FALLBACK_IDENTITY } from '../gitlabIdentity.js';
-import type { GitConfigIdentityDeps } from '../../../git/bootstrapIdentity.js';
 
 describe('resolveGitLabBootstrapGitIdentity — resolution order', () => {
   it('environment wins when GIT_AUTHOR_*/GIT_COMMITTER_* are complete', () => {
@@ -16,14 +16,14 @@ describe('resolveGitLabBootstrapGitIdentity — resolution order', () => {
   });
 
   it('falls back to git config when the environment carries no identity', () => {
-    const fakeExec = (cmd: string, _opts: unknown) => {
-      if (cmd === 'git config user.name') return 'Local Dev\n';
-      if (cmd === 'git config user.email') return 'local-dev@example.com\n';
-      throw new Error(`Unexpected: ${cmd}`);
+    const fakeExec = (argv: readonly string[]): string => {
+      if (isDeepStrictEqual(argv, ['git', 'config', 'user.name'])) return 'Local Dev\n';
+      if (isDeepStrictEqual(argv, ['git', 'config', 'user.email'])) return 'local-dev@example.com\n';
+      throw new Error(`Unexpected: ${argv.join(' ')}`);
     };
     const identity = resolveGitLabBootstrapGitIdentity({
       env: {},
-      exec: fakeExec as unknown as GitConfigIdentityDeps['exec'],
+      exec: fakeExec,
     });
     expect(identity.authorName).toBe('Local Dev');
     expect(identity.authorEmail).toBe('local-dev@example.com');

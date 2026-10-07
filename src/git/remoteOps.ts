@@ -7,10 +7,10 @@
  * because aborting with no merge in progress is a benign no-op).
  */
 
-type Runner = (command: string, cwd: string) => string;
+type Runner = (argv: readonly string[], cwd: string) => string;
 
 function fetchRemote(run: Runner, branch: string, cwd: string): string {
-  return run(`git fetch origin "${branch}"`, cwd);
+  return run(['git', 'fetch', 'origin', branch], cwd);
 }
 
 function mergeBranch(
@@ -20,21 +20,21 @@ function mergeBranch(
   opts: { noCommit?: boolean; noFf?: boolean; noEdit?: boolean } = {},
 ): void {
   const flags = [
-    opts.noCommit && '--no-commit',
-    opts.noFf && '--no-ff',
-    opts.noEdit && '--no-edit',
-  ].filter(Boolean).join(' ');
-  run(flags ? `git merge ${flags} "${ref}"` : `git merge "${ref}"`, cwd);
+    ...(opts.noCommit ? ['--no-commit'] : []),
+    ...(opts.noFf ? ['--no-ff'] : []),
+    ...(opts.noEdit ? ['--no-edit'] : []),
+  ];
+  run(['git', 'merge', ...flags, ref], cwd);
 }
 
 function abortMerge(run: Runner, cwd: string): void {
   try {
-    run('git merge --abort', cwd);
+    run(['git', 'merge', '--abort'], cwd);
   } catch { /* no merge in progress — ignore */ }
 }
 
 function lsRemote(run: Runner, branch: string, cwd: string): string {
-  return run(`git ls-remote origin "${branch}"`, cwd);
+  return run(['git', 'ls-remote', 'origin', branch], cwd);
 }
 
 export const remoteOps = { fetchRemote, mergeBranch, abortMerge, lsRemote };
