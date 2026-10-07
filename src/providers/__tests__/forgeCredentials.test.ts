@@ -3,8 +3,9 @@ import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
+import { isDeepStrictEqual } from 'util';
 import { createForgeCredentials } from '../forgeCredentials.js';
-import type { ForgeCredentials, ForgeCredentialDeps } from '../forgeCredentials.js';
+import type { ForgeCredentials } from '../forgeCredentials.js';
 import { UnknownForgeError, type CodeHostForge, type ForgeSelection } from '../forgeProviders.js';
 import { clearAppAuthCaches } from '../github/appAuth.js';
 import type { RunCurl, GitHubAppConfig } from '../github/appAuth.js';
@@ -157,17 +158,17 @@ describe('createForgeCredentials — github', () => {
   });
 
   it('appConfig: null, no PAT: the ghAuthToken seam serves the token, and gitIdentity resolves via the top-level exec seam', () => {
-    const fakeExec = (cmd: string) => {
-      if (cmd === 'git config user.name') return 'Config Bot\n';
-      if (cmd === 'git config user.email') return 'config@bot.dev\n';
-      throw new Error(`unexpected git command in test stub: ${cmd}`);
+    const fakeExec = (argv: readonly string[]): string => {
+      if (isDeepStrictEqual(argv, ['git', 'config', 'user.name'])) return 'Config Bot\n';
+      if (isDeepStrictEqual(argv, ['git', 'config', 'user.email'])) return 'config@bot.dev\n';
+      throw new Error(`unexpected git command in test stub: ${argv.join(' ')}`);
     };
     const credentials = createForgeCredentials({
       forge: GITHUB_SELECTION,
       identity: makeRepoId(),
       deps: {
         env: {},
-        exec: fakeExec as unknown as ForgeCredentialDeps['exec'],
+        exec: fakeExec,
         github: { appConfig: null, ghAuthToken: () => 'ghs-from-cli' },
       },
     });
@@ -282,17 +283,17 @@ describe('createForgeCredentials — gitlab', () => {
   });
 
   it('resolves identity via git config through the top-level exec seam', () => {
-    const fakeExec = (cmd: string) => {
-      if (cmd === 'git config user.name') return 'Local Dev\n';
-      if (cmd === 'git config user.email') return 'local-dev@example.com\n';
-      throw new Error(`unexpected git command in test stub: ${cmd}`);
+    const fakeExec = (argv: readonly string[]): string => {
+      if (isDeepStrictEqual(argv, ['git', 'config', 'user.name'])) return 'Local Dev\n';
+      if (isDeepStrictEqual(argv, ['git', 'config', 'user.email'])) return 'local-dev@example.com\n';
+      throw new Error(`unexpected git command in test stub: ${argv.join(' ')}`);
     };
     const credentials = createForgeCredentials({
       forge: GITLAB_SELECTION,
       identity: makeRepoId({ platform: Platform.GitLab }),
       deps: {
         env: {},
-        exec: fakeExec as unknown as ForgeCredentialDeps['exec'],
+        exec: fakeExec,
         gitlab: { token: 'glpat-configured', instanceUrl: 'https://gitlab.com' },
       },
     });

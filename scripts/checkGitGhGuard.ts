@@ -1,11 +1,16 @@
 /**
  * checkGitGhGuard.ts — CI guard: fail on direct git/gh shell-outs outside
- * the two structurally-exempt packages, or on ad-hoc provider/context
- * construction outside the sanctioned-site allowlist.
+ * the two structurally-exempt packages, on a git/gh command spelled as one
+ * string inside them, or on ad-hoc provider/context construction outside the
+ * sanctioned-site allowlist.
  *
- * Two independent rules:
+ * Three independent rules:
  *
  *  - 'git-gh-shellout' — implemented in this file (`walkNode`/`extractGitGhCommand`).
+ *    Recognises a call's first argument as a command string or as an argv
+ *    array literal whose element 0 is git or gh.
+ *  - 'shell-command-string' — `scripts/guard/shellCommandStringRule.ts`.
+ *    Applied only inside the exempt packages, which must build argv arrays.
  *  - 'unsanctioned-construction' — `scripts/guard/constructionRule.ts`.
  *
  * Ported from ADW's four-rule `adws/checkGitGhGuard.ts`. Two of ADW's rules
@@ -22,14 +27,14 @@
  * The shell-out exempt set is closed and named (EXEMPT_PACKAGES): exactly
  * two packages may shell out — the git core (`src/git`), which may run git
  * commands, and the GitHub forge adapter (`src/providers/github`), which may
- * issue gh commands by feeding command strings into the core's executor.
+ * issue gh commands by feeding argv arrays into the core's executor.
  *
  * Unlike ADW, EXEMPT_PACKAGES is not pruned from discovery: `collectTsFiles`
  * walks the whole tree once, pruning only EXEMPT_DIR_NAMES. `scanSource`
- * applies the shell-out rule only outside the exempt packages, but always
- * applies the construction rule (subject to its own allowlist) — see
- * `scripts/guard/constructionRule.ts`'s docblock for why the construction
- * rule cannot be pruned the way ADW pruned it.
+ * applies the shell-out rule only outside the exempt packages and the
+ * command-string rule only inside them, but always applies the construction
+ * rule (subject to its own allowlist) — see `scripts/guard/constructionRule.ts`'s
+ * docblock for why the construction rule cannot be pruned the way ADW pruned it.
  *
  * Any violation exits 1 (build fail).
  *
@@ -42,6 +47,7 @@ import * as path from 'node:path';
 import * as ts from 'typescript';
 import type { Violation, ViolationRule } from './guard/violationTypes.js';
 import { flagUnsanctionedConstruction } from './guard/constructionRule.js';
+import { flagShellCommandStrings } from './guard/shellCommandStringRule.js';
 import { printSanctionedConstructionSites } from './guard/guardReport.js';
 
 export type { Violation, ViolationRule };
@@ -60,7 +66,7 @@ const EXEMPT_DIR_NAMES = new Set([
 /**
  * The closed, CI-enforced set of packages permitted to shell out. Exactly
  * two: the git core, which may run git commands, and the GitHub forge
- * adapter, which may issue gh commands by feeding command strings into the
+ * adapter, which may issue gh commands by feeding argv arrays into the
  * core's executor (GitContext.exec) — never by spawning a process itself.
  */
 export const EXEMPT_PACKAGES = [
@@ -158,7 +164,9 @@ function scanSource(filePath: string, source: string): Violation[] {
 
   violations.push(...flagUnsanctionedConstruction(sourceFile, filePath));
 
-  if (!isExemptPackage(filePath)) {
+  if (isExemptPackage(filePath)) {
+    violations.push(...flagShellCommandStrings(sourceFile));
+  } else {
     walkNode(sourceFile, sourceFile, violations);
   }
 
@@ -184,7 +192,20 @@ function extractGitGhCommand(node: ts.Node): string | null {
   if (ts.isTemplateExpression(node) && GIT_GH_RE.test(node.head.text)) {
     return node.head.text + '${...}';
   }
+  if (ts.isArrayLiteralExpression(node)) return describeGitGhArgv(node);
   return null;
+}
+
+function literalText(node: ts.Node): string | null {
+  return ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node) ? node.text : null;
+}
+
+/** An argv array literal whose element 0 is git or gh, rendered as the command line it spells, non-literal elements as `${...}`. */
+function describeGitGhArgv(node: ts.ArrayLiteralExpression): string | null {
+  const [program, ...args] = node.elements;
+  const programName = program === undefined ? null : literalText(program);
+  if (programName !== 'git' && programName !== 'gh') return null;
+  return [programName, ...args.map((arg) => literalText(arg) ?? '${...}')].join(' ');
 }
 
 // ---------------------------------------------------------------------------
@@ -206,6 +227,7 @@ function main(): void {
 
   if (violations.length === 0) {
     console.log('  ✔ PASS  No direct git/gh shell-outs outside the exempt packages.');
+    console.log('  ✔ PASS  git/gh commands inside the exempt packages are argv arrays.');
     console.log('  ✔ PASS  Construction confined to the assembly module.\n');
     process.exit(0);
   }
@@ -216,6 +238,7 @@ function main(): void {
   }
   console.log(
     '\n  Remedy (git-gh-shellout): route through GitContext, or place the code inside src/git (git) or src/providers/github (gh).' +
+    '\n  Remedy (shell-command-string): build the command as an argv array, one element per argument, instead of one command-line string.' +
     '\n  Remedy (unsanctioned-construction): receive providers from forgeProviders(...) instead of constructing them.\n',
   );
 

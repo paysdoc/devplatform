@@ -23,7 +23,7 @@
  * The flagged-callee set is an EXPLICIT NAME SET, never a `create*` pattern:
  * near-misses that must NOT be caught are `createGhCommandRunner` and
  * `createGitHubTokenProvider` (auth/token plumbing, not a provider or
- * context) and `createIssueCmd`-style pure command-string builders. Function
+ * context) and `createIssueCmd`-style pure argv builders. Function
  * *declarations* are never flagged, only call/new expressions — and only
  * when the callee is a BARE IDENTIFIER: property-access callees
  * (`deps.forgeProviders(…)`, `d.forgeProviders(…)`) are an injected seam,

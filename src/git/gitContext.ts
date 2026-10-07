@@ -21,7 +21,7 @@
  * Forge adapters build their own classifier on top of the same primitives —
  * one resolves to the injected framework repo root (`ExecWorkingDirectory`'s
  * `frameworkRoot` class) for commands whose repository identity travels in
- * the command string, so a repo-independent command can run without the
+ * the argv, so a repo-independent command can run without the
  * target workspace ever having been cloned.
  *
  * `#run` assembles its credential environment through the **TokenProvider
@@ -44,7 +44,7 @@
  */
 
 import * as path from 'path';
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
 import { existsSync, mkdirSync, copyFileSync, rmSync } from 'fs';
 import type {
   GitContextOptions, GitIdentity, ExecFn, GitContextDeps, FsDeps, ExecOptions, ExecWorkingDirectory,
@@ -64,18 +64,22 @@ import { remoteOps } from './remoteOps.js';
 import { claimOps } from './claimOps.js';
 import { rewrapMissingWorkingDirectory } from './workingDirectoryGuard.js';
 
-/** Single real spawn site for the package — a thin execSync wrapper. */
-const defaultExec: ExecFn = (command, options) => {
+/**
+ * Single real spawn site for the package — a thin execFileSync wrapper. No
+ * shell is involved: each argv element after the program reaches it as
+ * exactly one argument, whatever characters it contains.
+ */
+const defaultExec: ExecFn = ([file, ...args], options) => {
   if (options.input !== undefined) {
-    return execSync(command, {
+    return execFileSync(file, args, {
       ...options,
       encoding: 'utf-8',
       input: options.input,
       stdio: ['pipe', 'pipe', 'pipe'],
       maxBuffer: 10 * 1024 * 1024,
-    }) as string;
+    });
   }
-  return execSync(command, { ...options, encoding: 'utf-8', maxBuffer: 10 * 1024 * 1024 }) as string;
+  return execFileSync(file, args, { ...options, encoding: 'utf-8', maxBuffer: 10 * 1024 * 1024 });
 };
 
 function assertCompleteIdentity(options: GitContextOptions): void {
@@ -203,10 +207,11 @@ export class GitContext {
    * Every git/gh operation in this class, and every future forge adapter
    * built on this package, reaches a child process through here.
    *
-   * `command` is the FIRST POSITIONAL parameter by contract, not a field on
-   * `options`: `adws/checkGitGhGuard.ts`'s `git-gh-shellout` rule only
-   * inspects a call's first argument, so an options-object form would
-   * silently disable that guard for every consumer of this method.
+   * `argv` is the FIRST POSITIONAL parameter by contract, not a field on
+   * `options`: the `git-gh-shellout` guard rule only inspects a call's first
+   * argument (a string literal, or the first element of an array literal), so
+   * an options-object form would silently disable that guard for every
+   * consumer of this method.
    *
    * `options.cwd` is a working-directory CLASS, never a bare path, and there
    * is no `process.cwd()` fallback — see `ExecWorkingDirectory`.
@@ -223,16 +228,19 @@ export class GitContext {
    * Deliberately forge-neutral: no credential-purpose parameter, no token
    * selection, no forge vocabulary anywhere in this signature.
    */
-  exec(command: string, options: ExecOptions): string {
-    if (!command.trim()) throw new Error('GitContext: exec command must not be empty');
+  exec(argv: readonly string[], options: ExecOptions): string {
+    if (!Array.isArray(argv)) {
+      throw new Error('GitContext: exec takes an argv array ([program, ...args]), not a command string');
+    }
+    if (!argv[0]?.trim()) throw new Error('GitContext: exec command must not be empty');
     const cwd = this.#resolveWorkingDirectory(options.cwd);
     const env = { ...process.env, ...options.env };
     try {
-      return this.#execFn(command, { cwd, env, input: options.input }).trim();
+      return this.#execFn(argv, { cwd, env, input: options.input }).trim();
     } catch (error) {
       throw rewrapMissingWorkingDirectory(
         error,
-        { cwd, command, owner: this.#owner, repo: this.#repo, selfHost: this.#selfHost },
+        { cwd, command: argv.join(' '), owner: this.#owner, repo: this.#repo, selfHost: this.#selfHost },
         this.#fsDeps.existsSync,
       );
     }
@@ -246,8 +254,8 @@ export class GitContext {
    * opts.cwd   — when provided, narrows the workspace class to this worktree path
    * opts.input — when provided, passes the string to the child's stdin
    */
-  #run(command: string, opts: { cwd?: string; input?: string } = {}): string {
-    return this.exec(command, {
+  #run(argv: readonly string[], opts: { cwd?: string; input?: string } = {}): string {
+    return this.exec(argv, {
       cwd: { kind: 'workspace', path: opts.cwd },
       env: this.commandEnv({}),
       input: opts.input,
@@ -257,56 +265,56 @@ export class GitContext {
   // ── Branch ops ───────────────────────────────────────────────────────────────
 
   getCurrentBranch(worktreePath?: string): string {
-    return branchOps.getCurrentBranch((cmd, cwd) => this.#run(cmd, { cwd }), worktreePath ?? this.#basePath);
+    return branchOps.getCurrentBranch((argv, cwd) => this.#run(argv, { cwd }), worktreePath ?? this.#basePath);
   }
 
   mergeLatestFromDefaultBranch(defaultBranch: string, worktreePath: string): void {
-    branchOps.mergeLatestFromDefaultBranch((cmd, cwd) => this.#run(cmd, { cwd }), defaultBranch, worktreePath);
+    branchOps.mergeLatestFromDefaultBranch((argv, cwd) => this.#run(argv, { cwd }), defaultBranch, worktreePath);
   }
 
   fetchAndResetToRemote(defaultBranch: string, worktreePath: string): void {
-    branchOps.fetchAndResetToRemote((cmd, cwd) => this.#run(cmd, { cwd }), defaultBranch, worktreePath);
+    branchOps.fetchAndResetToRemote((argv, cwd) => this.#run(argv, { cwd }), defaultBranch, worktreePath);
   }
 
   deleteLocalBranch(branch: string, worktreePath?: string): boolean {
-    return branchOps.deleteLocalBranch((cmd, cwd) => this.#run(cmd, { cwd }), branch, worktreePath ?? this.#basePath);
+    return branchOps.deleteLocalBranch((argv, cwd) => this.#run(argv, { cwd }), branch, worktreePath ?? this.#basePath);
   }
 
   deleteRemoteBranch(branch: string, worktreePath?: string): boolean {
-    return branchOps.deleteRemoteBranch((cmd, cwd) => this.#run(cmd, { cwd }), branch, worktreePath ?? this.#basePath);
+    return branchOps.deleteRemoteBranch((argv, cwd) => this.#run(argv, { cwd }), branch, worktreePath ?? this.#basePath);
   }
 
   // ── Commit/push ops ──────────────────────────────────────────────────────────
 
   commitChanges(message: string, worktreePath: string, opts?: { excludePaths?: readonly string[] }): boolean {
-    return commitOps.commitChanges((cmd, cwd) => this.#run(cmd, { cwd }), message, worktreePath, opts);
+    return commitOps.commitChanges((argv, cwd) => this.#run(argv, { cwd }), message, worktreePath, opts);
   }
 
   removeAndCommitPaths(paths: readonly string[], message: string, worktreePath: string): boolean {
-    return commitOps.removeAndCommitPaths((cmd, cwd) => this.#run(cmd, { cwd }), paths, message, worktreePath);
+    return commitOps.removeAndCommitPaths((argv, cwd) => this.#run(argv, { cwd }), paths, message, worktreePath);
   }
 
   addAndCommitPaths(paths: readonly string[], message: string, worktreePath: string): boolean {
-    return commitOps.addAndCommitPaths((cmd, cwd) => this.#run(cmd, { cwd }), paths, message, worktreePath);
+    return commitOps.addAndCommitPaths((argv, cwd) => this.#run(argv, { cwd }), paths, message, worktreePath);
   }
 
   pushBranch(branch: string, worktreePath: string): void {
-    commitOps.pushBranch((cmd, cwd) => this.#run(cmd, { cwd }), branch, worktreePath);
+    commitOps.pushBranch((argv, cwd) => this.#run(argv, { cwd }), branch, worktreePath);
   }
 
   getHeadTreeHash(worktreePath: string): string {
-    return commitOps.getHeadTreeHash((cmd, cwd) => this.#run(cmd, { cwd }), worktreePath);
+    return commitOps.getHeadTreeHash((argv, cwd) => this.#run(argv, { cwd }), worktreePath);
   }
 
   hasUncommittedChanges(worktreePath: string): boolean {
-    return commitOps.hasUncommittedChanges((cmd, cwd) => this.#run(cmd, { cwd }), worktreePath);
+    return commitOps.hasUncommittedChanges((argv, cwd) => this.#run(argv, { cwd }), worktreePath);
   }
 
   // ── Worktree reset op ────────────────────────────────────────────────────────
 
   resetWorktree(worktreePath: string, branch: string): void {
     worktreeResetOps.resetWorktree(
-      (cmd, cwd) => this.#run(cmd, { cwd }),
+      (argv, cwd) => this.#run(argv, { cwd }),
       this.#fsDeps,
       worktreePath,
       branch,
@@ -329,7 +337,7 @@ export class GitContext {
 
   createWorktree(branchName: string, baseBranch?: string): string {
     return worktreeCreateOps.createWorktree(
-      (cmd, cwd) => this.#run(cmd, { cwd }),
+      (argv, cwd) => this.#run(argv, { cwd }),
       this.#fsDeps,
       this.#log,
       this.#worktreePaths(branchName),
@@ -340,7 +348,7 @@ export class GitContext {
 
   createWorktreeForNewBranch(branchName: string, baseBranch?: string): string {
     return worktreeCreateOps.createWorktreeForNewBranch(
-      (cmd, cwd) => this.#run(cmd, { cwd }),
+      (argv, cwd) => this.#run(argv, { cwd }),
       this.#fsDeps,
       this.#log,
       this.#worktreePaths(branchName),
@@ -351,7 +359,7 @@ export class GitContext {
 
   ensureWorktree(branchName: string, baseBranch?: string): string {
     return worktreeCreateOps.ensureWorktree(
-      (cmd, cwd) => this.#run(cmd, { cwd }),
+      (argv, cwd) => this.#run(argv, { cwd }),
       this.#fsDeps,
       this.#log,
       this.#worktreePaths(branchName),
@@ -362,7 +370,7 @@ export class GitContext {
 
   getWorktreeForBranch(branchName: string): string | null {
     return worktreeQueryOps.getWorktreeForBranch(
-      (cmd, cwd) => this.#run(cmd, { cwd }),
+      (argv, cwd) => this.#run(argv, { cwd }),
       this.#fsDeps,
       this.#basePath,
       this.worktreePathFor(branchName),
@@ -372,14 +380,14 @@ export class GitContext {
 
   listWorktrees(): string[] {
     return worktreeQueryOps.listWorktrees(
-      (cmd, cwd) => this.#run(cmd, { cwd }),
+      (argv, cwd) => this.#run(argv, { cwd }),
       this.#basePath,
     );
   }
 
   findWorktreeForIssue(prefixes: readonly string[], issueNumber: number): WorktreeForIssueResult | null {
     return worktreeQueryOps.findWorktreeForIssue(
-      (cmd, cwd) => this.#run(cmd, { cwd }),
+      (argv, cwd) => this.#run(argv, { cwd }),
       this.#basePath,
       prefixes,
       issueNumber,
@@ -388,7 +396,7 @@ export class GitContext {
 
   removeWorktree(branchName: string): boolean {
     return worktreeRemoveOps.removeWorktree(
-      (cmd, cwd) => this.#run(cmd, { cwd }),
+      (argv, cwd) => this.#run(argv, { cwd }),
       this.#fsDeps,
       this.#log,
       this.worktreePathFor(branchName),
@@ -400,7 +408,7 @@ export class GitContext {
 
   removeWorktreesForIssue(issueNumber: number): number {
     return worktreeRemoveOps.removeWorktreesForIssue(
-      (cmd, cwd) => this.#run(cmd, { cwd }),
+      (argv, cwd) => this.#run(argv, { cwd }),
       this.#fsDeps,
       this.#log,
       this.#basePath,
@@ -419,22 +427,22 @@ export class GitContext {
   }
 
   remoteUrl(cwd?: string): string {
-    return this.#run('git remote get-url origin', { cwd });
+    return this.#run(['git', 'remote', 'get-url', 'origin'], { cwd });
   }
 
   remotes(cwd?: string): string[] {
-    return this.#run('git remote', { cwd }).split('\n').map(s => s.trim()).filter(Boolean);
+    return this.#run(['git', 'remote'], { cwd }).split('\n').map(s => s.trim()).filter(Boolean);
   }
 
   gitConfigUser(cwd?: string): { name: string | null; email: string | null } {
     let name: string | null = null;
     let email: string | null = null;
     try {
-      const n = this.#run('git config user.name', { cwd });
+      const n = this.#run(['git', 'config', 'user.name'], { cwd });
       name = n || null;
     } catch { /* unset key — expected non-error state */ }
     try {
-      const e = this.#run('git config user.email', { cwd });
+      const e = this.#run(['git', 'config', 'user.email'], { cwd });
       email = e || null;
     } catch { /* unset key — expected non-error state */ }
     return { name, email };
@@ -443,89 +451,89 @@ export class GitContext {
   // ── Worktree / branch probe reads ────────────────────────────────────────────
 
   resolveGitDir(worktreePath: string): string | null {
-    return worktreeProbeOps.resolveGitDir((cmd, cwd) => this.#run(cmd, { cwd }), worktreePath);
+    return worktreeProbeOps.resolveGitDir((argv, cwd) => this.#run(argv, { cwd }), worktreePath);
   }
 
   currentBranchSymbolic(worktreePath: string): string | null {
-    return worktreeProbeOps.currentBranchSymbolic((cmd, cwd) => this.#run(cmd, { cwd }), worktreePath);
+    return worktreeProbeOps.currentBranchSymbolic((argv, cwd) => this.#run(argv, { cwd }), worktreePath);
   }
 
   worktreeRegistration(worktreePath: string): WorktreeRegistration {
-    return worktreeProbeOps.worktreeRegistration((cmd, cwd) => this.#run(cmd, { cwd }), worktreePath);
+    return worktreeProbeOps.worktreeRegistration((argv, cwd) => this.#run(argv, { cwd }), worktreePath);
   }
 
   worktreeBranches(cwd?: string): string[] {
-    return worktreeQueryOps.worktreeBranches((cmd, c) => this.#run(cmd, { cwd: c }), cwd ?? this.#basePath);
+    return worktreeQueryOps.worktreeBranches((argv, c) => this.#run(argv, { cwd: c }), cwd ?? this.#basePath);
   }
 
   localBranches(cwd?: string): string[] {
-    return branchOps.localBranches((cmd, c) => this.#run(cmd, { cwd: c }), cwd ?? this.#basePath);
+    return branchOps.localBranches((argv, c) => this.#run(argv, { cwd: c }), cwd ?? this.#basePath);
   }
 
   mainRepoPath(cwd?: string): string {
-    return worktreeQueryOps.mainRepoPath((cmd, c) => this.#run(cmd, { cwd: c }), cwd ?? this.#basePath);
+    return worktreeQueryOps.mainRepoPath((argv, c) => this.#run(argv, { cwd: c }), cwd ?? this.#basePath);
   }
 
   // ── Remote fetch / merge / ls-remote ops ────────────────────────────────────
 
   fetchRemote(branch: string, cwd: string): void {
-    remoteOps.fetchRemote((cmd, c) => this.#run(cmd, { cwd: c }), branch, cwd);
+    remoteOps.fetchRemote((argv, c) => this.#run(argv, { cwd: c }), branch, cwd);
   }
 
   mergeBranch(ref: string, cwd: string, opts?: { noCommit?: boolean; noFf?: boolean; noEdit?: boolean }): void {
-    remoteOps.mergeBranch((cmd, c) => this.#run(cmd, { cwd: c }), ref, cwd, opts);
+    remoteOps.mergeBranch((argv, c) => this.#run(argv, { cwd: c }), ref, cwd, opts);
   }
 
   abortMerge(cwd: string): void {
-    remoteOps.abortMerge((cmd, c) => this.#run(cmd, { cwd: c }), cwd);
+    remoteOps.abortMerge((argv, c) => this.#run(argv, { cwd: c }), cwd);
   }
 
   lsRemote(branch: string, cwd?: string): string {
-    return remoteOps.lsRemote((cmd, c) => this.#run(cmd, { cwd: c }), branch, cwd ?? this.#basePath);
+    return remoteOps.lsRemote((argv, c) => this.#run(argv, { cwd: c }), branch, cwd ?? this.#basePath);
   }
 
   // ── Upgrade-claim distributed-lock ops ──────────────────────────────────────
 
   addDetachedWorktree(worktreePath: string, ref: string, cwd: string): void {
-    claimOps.addDetachedWorktree((cmd, c) => this.#run(cmd, { cwd: c }), worktreePath, ref, cwd);
+    claimOps.addDetachedWorktree((argv, c) => this.#run(argv, { cwd: c }), worktreePath, ref, cwd);
   }
 
   commitAllowEmpty(message: string, cwd: string): void {
-    claimOps.commitAllowEmpty((cmd, c) => this.#run(cmd, { cwd: c }), message, cwd);
+    claimOps.commitAllowEmpty((argv, c) => this.#run(argv, { cwd: c }), message, cwd);
   }
 
   pushHeadToBranch(branch: string, cwd: string): void {
-    claimOps.pushHeadToBranch((cmd, c) => this.#run(cmd, { cwd: c }), branch, cwd);
+    claimOps.pushHeadToBranch((argv, c) => this.#run(argv, { cwd: c }), branch, cwd);
   }
 
   removeDetachedWorktree(worktreePath: string, cwd: string): void {
-    claimOps.removeDetachedWorktree((cmd, c) => this.#run(cmd, { cwd: c }), worktreePath, cwd);
+    claimOps.removeDetachedWorktree((argv, c) => this.#run(argv, { cwd: c }), worktreePath, cwd);
   }
 
   // ── Git read ops ──────────────────────────────────────────────────────────────
 
   lsFiles(cwd: string, prefix?: string): string[] {
-    return gitReadOps.lsFiles((cmd, c) => this.#run(cmd, { cwd: c }), cwd, prefix);
+    return gitReadOps.lsFiles((argv, c) => this.#run(argv, { cwd: c }), cwd, prefix);
   }
 
   headShort(cwd?: string): string {
-    return gitReadOps.headShort((cmd, c) => this.#run(cmd, { cwd: c }), cwd ?? this.#basePath);
+    return gitReadOps.headShort((argv, c) => this.#run(argv, { cwd: c }), cwd ?? this.#basePath);
   }
 
   diff(range: string, cwd: string): string {
-    return gitReadOps.diff((cmd, c) => this.#run(cmd, { cwd: c }), range, cwd);
+    return gitReadOps.diff((argv, c) => this.#run(argv, { cwd: c }), range, cwd);
   }
 
   log(branchName: string, cwd?: string): string {
-    return gitReadOps.log((cmd, c) => this.#run(cmd, { cwd: c }), branchName, cwd ?? this.#basePath);
+    return gitReadOps.log((argv, c) => this.#run(argv, { cwd: c }), branchName, cwd ?? this.#basePath);
   }
 
   show(ref: string, filePath: string, cwd?: string): string {
-    return gitReadOps.show((cmd, c) => this.#run(cmd, { cwd: c }), ref, filePath, cwd ?? this.#basePath);
+    return gitReadOps.show((argv, c) => this.#run(argv, { cwd: c }), ref, filePath, cwd ?? this.#basePath);
   }
 
   logSince(opts: LogSinceOptions, cwd?: string): string {
-    return gitReadOps.logSince((cmd, c) => this.#run(cmd, { cwd: c }), opts, cwd ?? this.#basePath);
+    return gitReadOps.logSince((argv, c) => this.#run(argv, { cwd: c }), opts, cwd ?? this.#basePath);
   }
 
 }

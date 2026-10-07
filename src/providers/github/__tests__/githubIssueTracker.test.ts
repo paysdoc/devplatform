@@ -5,7 +5,7 @@ import { makeCtx, makeSpyExec, makeCapturingLogger, FRAMEWORK_ROOT } from './git
 
 const REPO_ID: RepoIdentifier = { owner: 'acme', repo: 'widget', platform: Platform.GitHub };
 
-describe('GitHubIssueTracker — command strings', () => {
+describe('GitHubIssueTracker — command argv', () => {
   it('fetchLabels(42) spawns the exact gh issue view command from the bound framework root, with the context token', async () => {
     const { exec, calls } = makeSpyExec();
     const ctx = makeCtx({}, exec);
@@ -13,7 +13,7 @@ describe('GitHubIssueTracker — command strings', () => {
 
     tracker.fetchLabels(42);
 
-    expect(calls[0].command).toBe('gh issue view 42 --repo acme/widget --json labels');
+    expect(calls[0].argv).toEqual(['gh', 'issue', 'view', '42', '--repo', 'acme/widget', '--json', 'labels']);
     expect(calls[0].cwd).toBe(FRAMEWORK_ROOT);
     expect(calls[0].env.GH_TOKEN).toBe('gh-token-abc');
   });
@@ -24,7 +24,7 @@ describe('GitHubIssueTracker — command strings', () => {
 
     tracker.createIssue('title', 'body text');
 
-    expect(calls[0].command).toContain("gh issue create --repo acme/widget --title 'title'");
+    expect(calls[0].argv).toEqual(['gh', 'issue', 'create', '--repo', 'acme/widget', '--title', 'title', '--body-file', '-']);
     expect(calls[0].input).toBe('body text');
   });
 });
@@ -267,15 +267,15 @@ describe('GitHubIssueTracker — applyLabel', () => {
     tracker.applyLabel(42, 'adw:feature');
 
     expect(calls).toHaveLength(1);
-    expect(calls[0].command).toContain('--add-label');
+    expect(calls[0].argv).toEqual(['gh', 'issue', 'edit', '42', '--repo', 'acme/widget', '--add-label', 'adw:feature']);
     expect(calls.some((c) => c.command.includes('gh label create'))).toBe(false);
   });
 
   it('not-found: warns, creates the label with the injected definition, retries once', () => {
     const { logger, logs } = makeCapturingLogger();
     let editCalls = 0;
-    const exec: ReturnType<typeof makeSpyExec>['exec'] = (command) => {
-      if (command.includes('issue edit')) {
+    const exec: ReturnType<typeof makeSpyExec>['exec'] = (argv) => {
+      if (argv.join(' ').includes('issue edit')) {
         editCalls++;
         if (editCalls === 1) throw new Error('label not found');
       }
@@ -292,14 +292,14 @@ describe('GitHubIssueTracker — applyLabel', () => {
   });
 
   it('persistent not-found: exactly one create, retry error propagates', () => {
-    const exec: ReturnType<typeof makeSpyExec>['exec'] = (command) => {
-      if (command.includes('issue edit')) throw new Error('label not found');
+    const exec: ReturnType<typeof makeSpyExec>['exec'] = (argv) => {
+      if (argv.join(' ').includes('issue edit')) throw new Error('label not found');
       return '';
     };
     let createCount = 0;
-    const wrappedExec: ReturnType<typeof makeSpyExec>['exec'] = (command, opts) => {
-      if (command.includes('gh label create')) createCount++;
-      return exec(command, opts);
+    const wrappedExec: ReturnType<typeof makeSpyExec>['exec'] = (argv, opts) => {
+      if (argv.join(' ').includes('gh label create')) createCount++;
+      return exec(argv, opts);
     };
     const tracker = createGitHubIssueTracker(makeCtx({}, wrappedExec), REPO_ID);
 
@@ -310,7 +310,8 @@ describe('GitHubIssueTracker — applyLabel', () => {
   it('non-"not found" error rethrows with an error log and no create', () => {
     const { logger, logs } = makeCapturingLogger();
     let sawCreate = false;
-    const exec: ReturnType<typeof makeSpyExec>['exec'] = (command) => {
+    const exec: ReturnType<typeof makeSpyExec>['exec'] = (argv) => {
+      const command = argv.join(' ');
       if (command.includes('gh label create')) sawCreate = true;
       if (command.includes('issue edit')) throw new Error('HTTP 500 Internal Server Error');
       return '';
@@ -323,10 +324,11 @@ describe('GitHubIssueTracker — applyLabel', () => {
   });
 
   it('with no resolveLabelDefinition injected, the create carries the ededed/empty-description default', () => {
-    let createCommand = '';
+    let createArgv: readonly string[] = [];
     let editCalls = 0;
-    const exec: ReturnType<typeof makeSpyExec>['exec'] = (command) => {
-      if (command.includes('gh label create')) createCommand = command;
+    const exec: ReturnType<typeof makeSpyExec>['exec'] = (argv) => {
+      const command = argv.join(' ');
+      if (command.includes('gh label create')) createArgv = argv;
       if (command.includes('issue edit')) {
         editCalls++;
         if (editCalls === 1) throw new Error('label not found');
@@ -337,8 +339,9 @@ describe('GitHubIssueTracker — applyLabel', () => {
 
     tracker.applyLabel(42, 'adw:blocked');
 
-    expect(createCommand).toContain('--color ededed');
-    expect(createCommand).toContain("--description ''");
+    expect(createArgv).toEqual([
+      'gh', 'label', 'create', 'adw:blocked', '--repo', 'acme/widget', '--color', 'ededed', '--description', '', '--force',
+    ]);
   });
 });
 

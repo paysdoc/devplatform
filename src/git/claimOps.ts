@@ -18,14 +18,14 @@
  * All errors except removeDetachedWorktree propagate to the caller.
  */
 
-type Runner = (command: string, cwd: string) => string;
+type Runner = (argv: readonly string[], cwd: string) => string;
 
 function addDetachedWorktree(run: Runner, worktreePath: string, ref: string, cwd: string): void {
-  run(`git worktree add --detach "${worktreePath}" "${ref}"`, cwd);
+  run(['git', 'worktree', 'add', '--detach', worktreePath, ref], cwd);
 }
 
 function commitAllowEmpty(run: Runner, message: string, cwd: string): void {
-  run(`git commit --allow-empty -m "${message.replace(/"/g, '\\"')}"`, cwd);
+  run(['git', 'commit', '--allow-empty', '-m', message], cwd);
 }
 
 /**
@@ -37,12 +37,12 @@ function commitAllowEmpty(run: Runner, message: string, cwd: string): void {
  * collapsing the exactly-one-winner election into a last-writer-wins race.
  */
 function pushHeadToBranch(run: Runner, branch: string, cwd: string): void {
-  run(`git push origin "HEAD:refs/heads/${branch}"`, cwd);
+  run(['git', 'push', 'origin', `HEAD:refs/heads/${branch}`], cwd);
 }
 
 function removeDetachedWorktree(run: Runner, worktreePath: string, cwd: string): void {
   try {
-    run(`git worktree remove --force "${worktreePath}"`, cwd);
+    run(['git', 'worktree', 'remove', '--force', worktreePath], cwd);
   } catch { /* best-effort cleanup */ }
 }
 

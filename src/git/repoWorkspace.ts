@@ -16,8 +16,8 @@
  * shim (`adws/core/targetRepoManager.ts`) before this module is called.
  */
 
-import { execSync } from 'child_process';
-import type { ExecSyncOptions } from 'child_process';
+import { execFileSync } from 'child_process';
+import type { ExecFileSyncOptions } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 import type { Logger } from './types.js';
@@ -27,14 +27,14 @@ import type { Logger } from './types.js';
 // ---------------------------------------------------------------------------
 
 /** Minimal exec seam shared by clone and fetch operations. */
-export type WorkspaceExecFn = (cmd: string, opts: { cwd?: string; stdio?: ExecSyncOptions['stdio']; encoding?: string }) => void;
+export type WorkspaceExecFn = (argv: readonly string[], opts: { cwd?: string; stdio?: ExecFileSyncOptions['stdio']; encoding?: string }) => void;
 
 export interface EnsureRepoWorkspaceDeps {
   /** Absolute path to the directory housing cloned target repos (injected from ADW env). */
   targetReposDir: string;
   /** Returns the default branch name, run under per-command veracious auth. */
   getDefaultBranch: () => string;
-  /** Override for hermetic tests; defaults to execSync. */
+  /** Override for hermetic tests; defaults to execFileSync. */
   exec?: WorkspaceExecFn;
   /** Override for hermetic tests; defaults to real fs. */
   fsDeps?: Pick<typeof fs, 'existsSync' | 'mkdirSync'>;
@@ -78,12 +78,12 @@ export function cloneRepo(
 ): void {
   const fsDeps = opts?.fsDeps ?? fs;
   const logFn = opts?.log ?? (() => {});
-  const execFn = opts?.exec ?? ((cmd, o) => { execSync(cmd, { ...o as ExecSyncOptions, encoding: 'utf-8' }); });
+  const execFn = opts?.exec ?? (([file, ...args], o) => { execFileSync(file, args, { ...o as ExecFileSyncOptions, encoding: 'utf-8' }); });
   const parentDir = path.dirname(workspacePath);
   fsDeps.mkdirSync(parentDir, { recursive: true });
 
   logFn(`Cloning ${cloneUrl} into ${workspacePath}...`, 'info');
-  execFn(`git clone "${cloneUrl}" "${workspacePath}"`, { stdio: 'pipe', encoding: 'utf-8' });
+  execFn(['git', 'clone', cloneUrl, workspacePath], { stdio: 'pipe', encoding: 'utf-8' });
   logFn(`Cloned ${cloneUrl} into ${workspacePath}`, 'success');
 }
 
@@ -112,13 +112,13 @@ export function ensureRepoWorkspace(
 ): string {
   const { targetReposDir, getDefaultBranch, log: logFn = () => {} } = deps;
   const fsDeps = deps.fsDeps ?? fs;
-  const execFn = deps.exec ?? ((cmd, opts) => { execSync(cmd, { ...(opts as ExecSyncOptions), encoding: 'utf-8', stdio: 'pipe' }); });
+  const execFn = deps.exec ?? (([file, ...args], opts) => { execFileSync(file, args, { ...(opts as ExecFileSyncOptions), encoding: 'utf-8', stdio: 'pipe' }); });
 
   const workspacePath = getTargetRepoWorkspacePath(owner, repo, targetReposDir);
 
   if (isRepoCloned(workspacePath, fsDeps)) {
     logFn(`Target repo ${owner}/${repo} already cloned at ${workspacePath}`, 'info');
-    execFn('git fetch origin', { cwd: workspacePath });
+    execFn(['git', 'fetch', 'origin'], { cwd: workspacePath });
     const defaultBranch = getDefaultBranch();
     logFn(`Fetched latest refs for ${defaultBranch} in ${workspacePath}`, 'success');
   } else {

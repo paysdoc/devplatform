@@ -89,6 +89,7 @@ Feature: Creation and update metadata on the forge domain model
   # Issue — createdAt and url, from the GitHub issue tracker
   # -------------------------------------------------------------------------
 
+  @adw-18
   Scenario: An issue fetched through a GitHub issue tracker carries the creation timestamp and URL GitHub reported for it
     Given a git context for "paysdoc/devplatform" whose executor answers like the GitHub CLI, returning only the fields a command requests
     And GitHub holds issue #42 created at "2026-09-01T10:15:00Z", last updated at "2026-09-22T16:40:00Z", with the URL "https://github.com/paysdoc/devplatform/issues/42"
@@ -124,6 +125,7 @@ Feature: Creation and update metadata on the forge domain model
   # PullRequestRecord — updatedAt and url, from the GitHub code host
   # -------------------------------------------------------------------------
 
+  @adw-18
   Scenario: Every pull request listed through a GitHub code host carries the update timestamp and URL GitHub reported for it
     Given a git context for "paysdoc/devplatform" whose executor answers like the GitHub CLI, returning only the fields a command requests
     And GitHub holds these pull requests

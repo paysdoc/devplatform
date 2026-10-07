@@ -2,7 +2,7 @@
  * A projection-aware GitHub CLI fake (issue #16): an `ExecFn` over mutable
  * held state — one issue, a list of pull requests — that answers
  * `gh issue view <n> … --json <fields>` and `gh pr list … --state all --json
- * <fields> …` with the held data projected to exactly the fields a command's
+ * <fields> …` with the held data projected to exactly the fields an argv's
  * `--json` list names, the way the real `gh` CLI does, and refuses any other
  * command by name so an unexpected one fails a scenario loudly instead of
  * silently returning nothing.
@@ -68,10 +68,11 @@ export function makeHeldPullRequest(
   };
 }
 
-function parseJsonFields(command: string): readonly string[] {
-  const match = command.match(/--json (\S+)/);
-  if (!match) throw new Error(`unexpected gh command (no --json projection): ${command}`);
-  return match[1].split(',');
+function parseJsonFields(argv: readonly string[]): readonly string[] {
+  const flagIndex = argv.indexOf('--json');
+  const fields = flagIndex === -1 ? undefined : argv[flagIndex + 1];
+  if (fields === undefined) throw new Error(`unexpected gh command (no --json projection): ${argv.join(' ')}`);
+  return fields.split(',');
 }
 
 function project<T extends object>(source: T, fields: readonly string[]): Partial<T> {
@@ -88,16 +89,17 @@ function project<T extends object>(source: T, fields: readonly string[]): Partia
 export function createGhCliFake(): { readonly exec: ExecFn; readonly state: GhCliFakeState } {
   const state: GhCliFakeState = { pullRequests: [] };
 
-  const exec: ExecFn = (command) => {
-    if (command.startsWith('gh issue view ')) {
-      if (!state.issue) throw new Error(`unexpected gh command (no issue held): ${command}`);
-      return JSON.stringify(project(state.issue, parseJsonFields(command)));
+  const exec: ExecFn = (argv) => {
+    const [program, subject, verb] = argv;
+    if (program === 'gh' && subject === 'issue' && verb === 'view') {
+      if (!state.issue) throw new Error(`unexpected gh command (no issue held): ${argv.join(' ')}`);
+      return JSON.stringify(project(state.issue, parseJsonFields(argv)));
     }
-    if (command.startsWith('gh pr list ') && command.includes('--state all')) {
-      const fields = parseJsonFields(command);
+    if (program === 'gh' && subject === 'pr' && verb === 'list' && argv[argv.indexOf('--state') + 1] === 'all') {
+      const fields = parseJsonFields(argv);
       return JSON.stringify(state.pullRequests.map((pr) => project(pr, fields)));
     }
-    throw new Error(`unexpected gh command: ${command}`);
+    throw new Error(`unexpected gh command: ${argv.join(' ')}`);
   };
 
   return { exec, state };

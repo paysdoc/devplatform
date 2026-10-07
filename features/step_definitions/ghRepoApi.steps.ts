@@ -30,8 +30,10 @@ const TEST_IDENTITY = {
 // ---------------------------------------------------------------------------
 
 Given('a git context for {string} with the literal credential {string}', function (this: DevPlatformWorld, repository: string, token: string) {
-  const { owner, repo } = parseRepository(repository, platformFor('github'));
-  const execFn: ExecFn = (command, options) => this.execRecorder(command, options);
+  const identity = parseRepository(repository, platformFor('github'));
+  const { owner, repo } = identity;
+  this.ghRepoId = identity;
+  const execFn: ExecFn = (argv, options) => this.execRecorder(argv, options);
   this.ghContext = new GitContext(
     {
       owner,
@@ -47,10 +49,10 @@ Given('a git context for {string} with the literal credential {string}', functio
 });
 
 Given('the context\'s executor is a recorder that answers every command with {string}', function (this: DevPlatformWorld, answer: string) {
-  const calls: Array<{ command: string; env: NodeJS.ProcessEnv }> = [];
+  const calls: NonNullable<DevPlatformWorld['execRecorderCalls']> = [];
   this.execRecorderCalls = calls;
-  this.execRecorder = (command, options) => {
-    calls.push({ command, env: options.env });
+  this.execRecorder = (argv, options) => {
+    calls.push({ argv, env: options.env, input: options.input });
     return answer;
   };
 });
@@ -86,6 +88,9 @@ Then('the recorder captured exactly one command', function (this: DevPlatformWor
 Then('the captured command names {string} and carries {string} set to {string}', function (this: DevPlatformWorld, named: string, envVar: string, envValue: string) {
   const call = this.execRecorderCalls?.[0];
   assert.ok(call, 'no command was captured');
-  assert.ok(call.command.includes(named), `expected the captured command to name "${named}", got: ${call.command}`);
+  assert.ok(
+    call.argv.some((element) => element.includes(named)),
+    `expected the captured command to name "${named}", got: ${call.argv.join(' ')}`,
+  );
   assert.equal(call.env[envVar], envValue);
 });

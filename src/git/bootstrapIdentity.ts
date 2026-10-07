@@ -14,7 +14,8 @@
  * No ADW-global imports. All I/O is behind injectable seams for hermetic testing.
  */
 
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
+import type { ExecFileSyncOptionsWithStringEncoding } from 'child_process';
 import type { GitIdentity } from './types.js';
 
 // ---------------------------------------------------------------------------
@@ -22,7 +23,7 @@ import type { GitIdentity } from './types.js';
 // ---------------------------------------------------------------------------
 
 export interface GitConfigIdentityDeps {
-  exec?: (cmd: string, opts: { encoding: 'utf-8'; cwd?: string; stdio?: unknown }) => string;
+  exec?: (argv: readonly string[], opts: { encoding: 'utf-8'; cwd?: string; stdio?: unknown }) => string;
   env?: NodeJS.ProcessEnv;
 }
 
@@ -36,7 +37,7 @@ export interface GitConfigIdentityDeps {
  * job, not the core's.
  */
 export function readOriginRemoteUrl(cwd?: string): string {
-  return execSync('git remote get-url origin', { encoding: 'utf-8', cwd }).trim();
+  return execFileSync('git', ['remote', 'get-url', 'origin'], { encoding: 'utf-8', cwd }).trim();
 }
 
 /**
@@ -45,7 +46,7 @@ export function readOriginRemoteUrl(cwd?: string): string {
  * degrade, the core does not guess.
  */
 export function readCurrentBranch(cwd?: string): string {
-  return execSync('git rev-parse --abbrev-ref HEAD', { encoding: 'utf-8', cwd }).trim();
+  return execFileSync('git', ['rev-parse', '--abbrev-ref', 'HEAD'], { encoding: 'utf-8', cwd }).trim();
 }
 
 // ---------------------------------------------------------------------------
@@ -76,10 +77,10 @@ export function readEnvGitIdentity(env: NodeJS.ProcessEnv): GitIdentity | null {
  * fallback of its own.
  */
 export function readGitConfigIdentity(deps: GitConfigIdentityDeps = {}): GitIdentity | null {
-  const exec = deps.exec ?? ((cmd, opts) => execSync(cmd, opts as Parameters<typeof execSync>[1]) as string);
+  const exec = deps.exec ?? (([file, ...args], opts) => execFileSync(file, args, opts as ExecFileSyncOptionsWithStringEncoding));
   try {
-    const name = exec('git config user.name', { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] }).trim();
-    const email = exec('git config user.email', { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] }).trim();
+    const name = exec(['git', 'config', 'user.name'], { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] }).trim();
+    const email = exec(['git', 'config', 'user.email'], { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] }).trim();
     if (name && email) {
       return { authorName: name, authorEmail: email, committerName: name, committerEmail: email };
     }

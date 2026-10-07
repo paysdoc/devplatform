@@ -9,7 +9,7 @@
  * module-level per-repository token cache is why this scenario mints for
  * `paysdoc/devplatform-mint`, a repository no other scenario mints for.
  *
- * `ghAuthToken` spawns `gh auth token` through the shell, so its two reader
+ * `ghAuthToken` spawns `gh` straight from `PATH`, so its two reader
  * scenarios put a stub `gh` executable first on `PATH` for the scenario's
  * duration (`stubGh.ts`; restored in `world.ts`'s `After` hook).
  */

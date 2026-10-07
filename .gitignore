@@ -59,3 +59,5 @@ output.jsonl
 .claude/skills/promote-regression-vocabulary/
 .claude/skills/refactor/
 .claude/skills/write-a-skill/
+# ADW: copied slash commands (do not commit)
+.claude/commands/correct_output.md

@@ -7,7 +7,7 @@
 import type { Logger } from './types.js';
 import { worktreeQueryOps } from './worktreeQueryOps.js';
 
-type Runner = (command: string, cwd: string) => string;
+type Runner = (argv: readonly string[], cwd: string) => string;
 
 interface FsDeps {
   existsSync: (p: string) => boolean;
@@ -31,7 +31,7 @@ interface BranchCheckoutStatus {
 
 function isBranchCheckedOutElsewhere(run: Runner, baseCwd: string, branchName: string): BranchCheckoutStatus {
   try {
-    const output = run('git worktree list --porcelain', baseCwd);
+    const output = run(['git', 'worktree', 'list', '--porcelain'], baseCwd);
     const lines = output.split('\n');
     let currentWorktreePath: string | null = null;
     let mainRepoPath: string | null = null;
@@ -63,14 +63,14 @@ function isBranchCheckedOutElsewhere(run: Runner, baseCwd: string, branchName: s
 function freeBranchFromMainRepo(run: Runner, baseCwd: string, branchName: string, log: Logger): void {
   log(`Freeing branch '${branchName}' from main repository at ${baseCwd}`, 'info');
   try {
-    const status = run('git status --porcelain', baseCwd);
+    const status = run(['git', 'status', '--porcelain'], baseCwd);
     if (status.trim()) {
       log('Found uncommitted changes in main repository, auto-committing...', 'info');
-      run('git add -A', baseCwd);
-      run('git commit -m "WIP: auto-commit before switching to worktree"', baseCwd);
+      run(['git', 'add', '-A'], baseCwd);
+      run(['git', 'commit', '-m', 'WIP: auto-commit before switching to worktree'], baseCwd);
       log('Auto-committed changes', 'success');
       try {
-        run(`git push -u origin "${branchName}"`, baseCwd);
+        run(['git', 'push', '-u', 'origin', branchName], baseCwd);
         log(`Pushed branch '${branchName}' to origin`, 'success');
       } catch (pushError) {
         log(`Warning: Could not push branch to origin: ${pushError}`, 'info');
@@ -79,11 +79,11 @@ function freeBranchFromMainRepo(run: Runner, baseCwd: string, branchName: string
     // get default branch by inspecting origin/HEAD
     let defaultBranch = 'main';
     try {
-      defaultBranch = run('git rev-parse --abbrev-ref origin/HEAD', baseCwd).replace('origin/', '').trim();
+      defaultBranch = run(['git', 'rev-parse', '--abbrev-ref', 'origin/HEAD'], baseCwd).replace('origin/', '').trim();
     } catch {
       // fall back to 'main'
     }
-    run(`git checkout "${defaultBranch}"`, baseCwd);
+    run(['git', 'checkout', defaultBranch], baseCwd);
     log(`Switched main repository to '${defaultBranch}'`, 'success');
   } catch (error) {
     throw new Error(`Failed to free branch '${branchName}' from main repository: ${error}`);
@@ -113,16 +113,16 @@ function copyEnvToWorktree(
 
 function resolveBranchExists(run: Runner, baseCwd: string, branchName: string, log: Logger): boolean {
   try {
-    run(`git rev-parse --verify "${branchName}"`, baseCwd);
+    run(['git', 'rev-parse', '--verify', branchName], baseCwd);
     return true;
   } catch { /* branch not found locally */ }
   try {
-    run(`git rev-parse --verify "origin/${branchName}"`, baseCwd);
+    run(['git', 'rev-parse', '--verify', `origin/${branchName}`], baseCwd);
     return true;
   } catch { /* branch not found on remote */ }
   try {
-    run(`git fetch origin "${branchName}"`, baseCwd);
-    run(`git rev-parse --verify "origin/${branchName}"`, baseCwd);
+    run(['git', 'fetch', 'origin', branchName], baseCwd);
+    run(['git', 'rev-parse', '--verify', `origin/${branchName}`], baseCwd);
     log(`Fetched branch '${branchName}' from origin`, 'info');
     return true;
   } catch {
@@ -164,18 +164,18 @@ function createWorktree(
           return checkoutStatus.path;
         }
       }
-      run(`git worktree add "${worktreePath}" "${branchName}"`, baseCwd);
+      run(['git', 'worktree', 'add', worktreePath, branchName], baseCwd);
       log(`Created worktree for existing branch '${branchName}' at ${worktreePath}`, 'success');
     } else if (baseBranch) {
-      try { run(`git fetch origin "${baseBranch}"`, baseCwd); } catch { /* non-fatal */ }
+      try { run(['git', 'fetch', 'origin', baseBranch], baseCwd); } catch { /* non-fatal */ }
       try {
-        const localHash = run(`git rev-parse "${baseBranch}"`, baseCwd);
-        const remoteHash = run(`git rev-parse "origin/${baseBranch}"`, baseCwd);
+        const localHash = run(['git', 'rev-parse', baseBranch], baseCwd);
+        const remoteHash = run(['git', 'rev-parse', `origin/${baseBranch}`], baseCwd);
         if (localHash !== remoteHash) {
           log(`Local ${baseBranch} differs from origin/${baseBranch}, using remote ref`, 'warn');
         }
       } catch { /* non-fatal */ }
-      run(`git worktree add -b "${branchName}" "${worktreePath}" "origin/${baseBranch}"`, baseCwd);
+      run(['git', 'worktree', 'add', '-b', branchName, worktreePath, `origin/${baseBranch}`], baseCwd);
       log(`Created worktree with new branch '${branchName}' from 'origin/${baseBranch}' at ${worktreePath}`, 'success');
     } else {
       throw new Error(`Branch '${branchName}' does not exist and no base branch was provided`);
@@ -209,10 +209,10 @@ function createWorktreeForNewBranch(
   try {
     let base = 'HEAD';
     if (baseBranch) {
-      try { run(`git fetch origin "${baseBranch}"`, baseCwd); } catch { /* non-fatal */ }
+      try { run(['git', 'fetch', 'origin', baseBranch], baseCwd); } catch { /* non-fatal */ }
       base = `origin/${baseBranch}`;
     }
-    run(`git worktree add -b "${branchName}" "${worktreePath}" "${base}"`, baseCwd);
+    run(['git', 'worktree', 'add', '-b', branchName, worktreePath, base], baseCwd);
     log(`Created worktree with new branch '${branchName}' at ${worktreePath}`, 'success');
     return worktreePath;
   } catch (error) {

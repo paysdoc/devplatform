@@ -26,15 +26,15 @@ function validOptions(overrides: Partial<GitContextOptions> = {}): GitContextOpt
 }
 
 interface SpyCall {
-  command: string;
+  argv: readonly string[];
   cwd: string;
   env: NodeJS.ProcessEnv;
 }
 
 function makeSpyExec(stdout = 'main\n'): { exec: ExecFn; calls: SpyCall[] } {
   const calls: SpyCall[] = [];
-  const exec: ExecFn = (command, options) => {
-    calls.push({ command, cwd: options.cwd, env: options.env });
+  const exec: ExecFn = (argv, options) => {
+    calls.push({ argv, cwd: options.cwd, env: options.env });
     return stdout;
   };
   return { exec, calls };
@@ -97,15 +97,15 @@ describe('workspace-scoped git/worktree ops remain pinned to basePath', () => {
 // ── exec() with the frameworkRoot class preserves the #775 contract ─────────
 // No GitContext method reaches this class any more — only a forge adapter's
 // own classifier (e.g. `ghCommandRunner.ts`) calls `exec()` with
-// `{ cwd: { kind: 'frameworkRoot' } }` directly. The command string below is
-// an arbitrary placeholder: this suite proves the cwd/env plumbing, not any
+// `{ cwd: { kind: 'frameworkRoot' } }` directly. The argv below is an
+// arbitrary placeholder: this suite proves the cwd/env plumbing, not any
 // gh-specific behaviour.
 
 describe("exec()'s frameworkRoot working-directory class is the #775 contract", () => {
   it('records the injected framework root for a target context', () => {
     const { exec, calls } = makeSpyExec();
     const ctx = new GitContext(validOptions(), { exec });
-    ctx.exec('some-repo-api-command', { cwd: { kind: 'frameworkRoot' }, env: ctx.commandEnv() });
+    ctx.exec(['some-repo-api-command'], { cwd: { kind: 'frameworkRoot' }, env: ctx.commandEnv() });
     expect(calls[0].cwd).toBe(FRAMEWORK_ROOT);
     expect(calls[0].cwd).not.toBe(ctx.basePath);
   });
@@ -113,7 +113,7 @@ describe("exec()'s frameworkRoot working-directory class is the #775 contract", 
   it('records the injected framework root for a self-host context', () => {
     const { exec, calls } = makeSpyExec();
     const ctx = new GitContext(validOptions({ selfHost: true }), { exec });
-    ctx.exec('some-repo-api-command', { cwd: { kind: 'frameworkRoot' }, env: ctx.commandEnv() });
+    ctx.exec(['some-repo-api-command'], { cwd: { kind: 'frameworkRoot' }, env: ctx.commandEnv() });
     expect(calls[0].cwd).toBe(FRAMEWORK_ROOT);
     expect(calls[0].cwd).toBe(ctx.basePath);
   });
@@ -124,7 +124,7 @@ describe("exec()'s frameworkRoot working-directory class is the #775 contract", 
       const { exec, calls } = makeSpyExec();
       const ctx = new GitContext(validOptions(), { exec });
       process.chdir(os.tmpdir());
-      ctx.exec('some-repo-api-command', { cwd: { kind: 'frameworkRoot' }, env: ctx.commandEnv() });
+      ctx.exec(['some-repo-api-command'], { cwd: { kind: 'frameworkRoot' }, env: ctx.commandEnv() });
       expect(calls[0].cwd).toBe(FRAMEWORK_ROOT);
       expect(calls[0].cwd).not.toBe(process.cwd());
     } finally {

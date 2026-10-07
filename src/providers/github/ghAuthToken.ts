@@ -16,12 +16,12 @@
  * Why not routed through `ghCommandRunner`: this function is the
  * pre-context read that *produces* the credential `ghCommandRunner`'s
  * TokenProvider needs — a credentialed executor would recurse through the
- * credential assembly it is being asked for. It stays a direct spawn inside
- * this guard-exempt adapter, the `gh`-side mirror of the core's
- * `readOriginRemoteUrl` pre-context `git` read.
+ * credential assembly it is being asked for. It stays a direct
+ * `execFileSync` of `gh` — no shell — inside this guard-exempt adapter, the
+ * `gh`-side mirror of the core's `readOriginRemoteUrl` pre-context `git` read.
  */
 
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
 
 /**
  * Returns the `gh auth token` output, or an empty string if gh is not available.
@@ -29,7 +29,7 @@ import { execSync } from 'child_process';
  */
 export function ghAuthToken(): string {
   try {
-    return execSync('gh auth token', {
+    return execFileSync('gh', ['auth', 'token'], {
       encoding: 'utf-8',
       stdio: ['pipe', 'pipe', 'pipe'],
     }).trim();

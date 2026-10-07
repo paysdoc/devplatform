@@ -2,14 +2,14 @@ import { describe, it, expect } from 'vitest';
 import { remoteOps } from '../remoteOps.js';
 
 interface RunnerCall {
-  command: string;
+  argv: readonly string[];
   cwd: string;
 }
 
-function makeRunner(stdout = ''): { run: (cmd: string, cwd: string) => string; calls: RunnerCall[] } {
+function makeRunner(stdout = ''): { run: (argv: readonly string[], cwd: string) => string; calls: RunnerCall[] } {
   const calls: RunnerCall[] = [];
-  const run = (command: string, cwd: string): string => {
-    calls.push({ command, cwd });
+  const run = (argv: readonly string[], cwd: string): string => {
+    calls.push({ argv, cwd });
     return stdout;
   };
   return { run, calls };
@@ -20,10 +20,10 @@ const CWD = '/srv/adw/repos/acme/webapp/.worktrees/feature-issue-1-foo';
 // ── fetchRemote ──────────────────────────────────────────────────────────────
 
 describe('fetchRemote', () => {
-  it('issues git fetch origin "<branch>" with the given cwd', () => {
+  it('issues git fetch origin <branch> with the given cwd', () => {
     const { run, calls } = makeRunner();
     remoteOps.fetchRemote(run, 'main', CWD);
-    expect(calls[0].command).toBe('git fetch origin "main"');
+    expect(calls[0].argv).toEqual(['git', 'fetch', 'origin', 'main']);
     expect(calls[0].cwd).toBe(CWD);
   });
 
@@ -36,23 +36,23 @@ describe('fetchRemote', () => {
 // ── mergeBranch ──────────────────────────────────────────────────────────────
 
 describe('mergeBranch', () => {
-  it('issues git merge "<ref>" with no flags when opts is empty', () => {
+  it('issues git merge <ref> with no flags when opts is empty', () => {
     const { run, calls } = makeRunner();
     remoteOps.mergeBranch(run, 'origin/main', CWD);
-    expect(calls[0].command).toBe('git merge "origin/main"');
+    expect(calls[0].argv).toEqual(['git', 'merge', 'origin/main']);
     expect(calls[0].cwd).toBe(CWD);
   });
 
   it('includes --no-commit and --no-ff flags', () => {
     const { run, calls } = makeRunner();
     remoteOps.mergeBranch(run, 'origin/main', CWD, { noCommit: true, noFf: true });
-    expect(calls[0].command).toBe('git merge --no-commit --no-ff "origin/main"');
+    expect(calls[0].argv).toEqual(['git', 'merge', '--no-commit', '--no-ff', 'origin/main']);
   });
 
   it('includes --no-edit flag', () => {
     const { run, calls } = makeRunner();
     remoteOps.mergeBranch(run, 'origin/main', CWD, { noEdit: true });
-    expect(calls[0].command).toBe('git merge --no-edit "origin/main"');
+    expect(calls[0].argv).toEqual(['git', 'merge', '--no-edit', 'origin/main']);
   });
 
   it('propagates runner errors (conflict throws)', () => {
@@ -67,7 +67,7 @@ describe('abortMerge', () => {
   it('issues git merge --abort with the given cwd', () => {
     const { run, calls } = makeRunner();
     remoteOps.abortMerge(run, CWD);
-    expect(calls[0].command).toBe('git merge --abort');
+    expect(calls[0].argv).toEqual(['git', 'merge', '--abort']);
     expect(calls[0].cwd).toBe(CWD);
   });
 
@@ -80,10 +80,10 @@ describe('abortMerge', () => {
 // ── lsRemote ─────────────────────────────────────────────────────────────────
 
 describe('lsRemote', () => {
-  it('issues git ls-remote origin "<branch>" with the given cwd', () => {
+  it('issues git ls-remote origin <branch> with the given cwd', () => {
     const { run, calls } = makeRunner('abc123\trefs/heads/main\n');
     remoteOps.lsRemote(run, 'main', CWD);
-    expect(calls[0].command).toBe('git ls-remote origin "main"');
+    expect(calls[0].argv).toEqual(['git', 'ls-remote', 'origin', 'main']);
     expect(calls[0].cwd).toBe(CWD);
   });
 

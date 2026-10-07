@@ -12,7 +12,7 @@
  * a fixed-string TokenProvider for tests and fixtures — the one
  * implementation that lives here rather than in a forge adapter, since it
  * carries no forge logic. Every *production* TokenProvider implementation
- * (`createGitHubTokenProvider`), the gh command-string builders, GitHub App
+ * (`createGitHubTokenProvider`), the gh argv builders, GitHub App
  * authentication, token resolution, GitHub remote-URL parsing, bot-identity
  * derivation and clone-URL construction all live in the GitHub forge adapter
  * (`src/providers/github/`, #792/#793) and, since issue #11, are themselves

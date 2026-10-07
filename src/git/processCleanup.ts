@@ -4,11 +4,11 @@
  * Self-contained — no git/gh, no ADW core imports.
  */
 
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
 
 export function killProcessesInDirectory(directoryPath: string): void {
   try {
-    const output = execSync(`lsof +D "${directoryPath}" -t`, { encoding: 'utf-8' });
+    const output = execFileSync('lsof', ['+D', directoryPath, '-t'], { encoding: 'utf-8' });
     const pids = output
       .split('\n')
       .map((line) => parseInt(line.trim(), 10))
@@ -20,7 +20,7 @@ export function killProcessesInDirectory(directoryPath: string): void {
       try { process.kill(pid, 'SIGTERM'); } catch { /* already exited */ }
     });
 
-    execSync('sleep 0.5', { stdio: 'pipe' });
+    execFileSync('sleep', ['0.5'], { stdio: 'pipe' });
 
     const survivors = pids.filter((pid) => {
       try { process.kill(pid, 0); return true; } catch { return false; }

@@ -34,10 +34,10 @@ function validOptions(overrides: Partial<GitContextOptions> = {}): GitContextOpt
 }
 
 function enoentError(): NodeJS.ErrnoException {
-  return Object.assign(new Error('spawnSync /bin/sh ENOENT'), {
+  return Object.assign(new Error('spawnSync git ENOENT'), {
     code: 'ENOENT',
-    syscall: 'spawnSync /bin/sh',
-    path: '/bin/sh',
+    syscall: 'spawnSync git',
+    path: 'git',
   });
 }
 
@@ -104,7 +104,7 @@ describe('isSpawnEnoent()', () => {
   });
 
   it('is false for a bare Error with no code (the node/bun message-divergence case)', () => {
-    expect(isSpawnEnoent(new Error('spawnSync /bin/sh ENOENT'))).toBe(false);
+    expect(isSpawnEnoent(new Error('spawnSync git ENOENT'))).toBe(false);
   });
 
   it('is false for a non-ENOENT-coded error', () => {
@@ -169,7 +169,7 @@ describe('GitContext #run wiring: missing working directory', () => {
     frameworkRepoRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'adw-777-framework-'));
   }
 
-  it('getCurrentBranch() throws a message naming basePath, the repo and selfHost=false, still coded ENOENT', () => {
+  it('getCurrentBranch() throws a message naming basePath, the repo, selfHost=false and the space-joined argv, still coded ENOENT', () => {
     makeRoots();
     const ctx = new GitContext(
       validOptions({ frameworkRepoRoot, targetReposDir, owner: 'acme', repo: 'webapp' }),
@@ -185,7 +185,24 @@ describe('GitContext #run wiring: missing working directory', () => {
       expect(e.message).toContain(ctx.basePath);
       expect(e.message).toContain('acme/webapp');
       expect(e.message).toContain('selfHost=false');
+      expect(e.message).toContain('git branch --show-current');
       expect(e.code).toBe('ENOENT');
+    }
+  });
+
+  it('a real spawn in a never-created workspace is rewrapped through the default executor', () => {
+    makeRoots();
+    const ctx = new GitContext(validOptions({ frameworkRepoRoot, targetReposDir, owner: 'acme', repo: 'webapp' }));
+    expect(fs.existsSync(ctx.basePath)).toBe(false);
+    try {
+      ctx.getCurrentBranch();
+      expect.unreachable('expected getCurrentBranch to throw');
+    } catch (err) {
+      const e = err as NodeJS.ErrnoException & { cause?: NodeJS.ErrnoException };
+      expect(e.message).toContain(ctx.basePath);
+      expect(e.message).toContain('acme/webapp');
+      expect(e.code).toBe('ENOENT');
+      expect(e.cause?.code).toBe('ENOENT');
     }
   });
 
@@ -245,7 +262,7 @@ describe('GitContext #run wiring: missing working directory', () => {
       expect.unreachable('expected getCurrentBranch to throw');
     } catch (err) {
       const e = err as NodeJS.ErrnoException;
-      expect(e.message).toBe('spawnSync /bin/sh ENOENT');
+      expect(e.message).toBe('spawnSync git ENOENT');
       expect(e.message).not.toContain(basePath);
     }
   });
@@ -268,7 +285,7 @@ describe('GitContext #run wiring: missing working directory', () => {
       validOptions({ frameworkRepoRoot, targetReposDir }),
       { exec, fsDeps: countingFsDeps },
     );
-    ctx.exec('some-repo-api-command', { cwd: { kind: 'frameworkRoot' }, env: ctx.commandEnv() });
+    ctx.exec(['some-repo-api-command'], { cwd: { kind: 'frameworkRoot' }, env: ctx.commandEnv() });
     expect(probeCount).toBe(0);
   });
 
@@ -280,7 +297,7 @@ describe('GitContext #run wiring: missing working directory', () => {
       { exec },
     );
     expect(fs.existsSync(ctx.basePath)).toBe(false);
-    const repoApiOp = () => ctx.exec('some-repo-api-command', { cwd: { kind: 'frameworkRoot' }, env: ctx.commandEnv() });
+    const repoApiOp = () => ctx.exec(['some-repo-api-command'], { cwd: { kind: 'frameworkRoot' }, env: ctx.commandEnv() });
     expect(repoApiOp).not.toThrow();
     expect(repoApiOp()).toBe('trunk');
   });

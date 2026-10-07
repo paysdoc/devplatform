@@ -10,34 +10,33 @@ const MUTATION_MOVE =
 
 // ── Command builders ───────────────────────────────────────────────────────
 
-export function graphQLInputCmd(): string {
-  return 'gh api graphql --input -';
+export function graphQLInputCmd(): string[] {
+  return ['gh', 'api', 'graphql', '--input', '-'];
 }
 
-export function graphQLCmd(query: string, variables?: Record<string, string | number>): string {
-  const varArgs = variables
-    ? Object.entries(variables)
-        .map(([k, v]) => (typeof v === 'number' ? `-F ${k}=${v}` : `-f ${k}='${v}'`))
-        .join(' ')
-    : '';
-  const sep = varArgs ? ' ' : '';
-  return `gh api graphql -f query='${query}'${sep}${varArgs}`;
+// -F types a value (a number here); -f always sends a string.
+export function graphQLCmd(query: string, variables?: Record<string, string | number>): string[] {
+  return [
+    'gh', 'api', 'graphql', '-f', `query=${query}`,
+    ...Object.entries(variables ?? {}).flatMap(([key, value]) =>
+      typeof value === 'number' ? ['-F', `${key}=${value}`] : ['-f', `${key}=${value}`]),
+  ];
 }
 
-export function projectQueryCmd(owner: string, repo: string): string {
-  return `gh api graphql -f query='${QUERY_PROJECT}' -f owner='${owner}' -f repo='${repo}'`;
+export function projectQueryCmd(owner: string, repo: string): string[] {
+  return graphQLCmd(QUERY_PROJECT, { owner, repo });
 }
 
-export function itemQueryCmd(owner: string, repo: string, issueNumber: number): string {
-  return `gh api graphql -f query='${QUERY_ITEM}' -f owner='${owner}' -f repo='${repo}' -F number=${issueNumber}`;
+export function itemQueryCmd(owner: string, repo: string, issueNumber: number): string[] {
+  return graphQLCmd(QUERY_ITEM, { owner, repo, number: issueNumber });
 }
 
-export function fieldQueryCmd(projectId: string): string {
-  return `gh api graphql -f query='${QUERY_FIELD}' -f projectId='${projectId}'`;
+export function fieldQueryCmd(projectId: string): string[] {
+  return graphQLCmd(QUERY_FIELD, { projectId });
 }
 
-export function moveStatusCmd(projectId: string, itemId: string, fieldId: string, optionId: string): string {
-  return `gh api graphql -f query='${MUTATION_MOVE}' -f projectId='${projectId}' -f itemId='${itemId}' -f fieldId='${fieldId}' -f optionId='${optionId}'`;
+export function moveStatusCmd(projectId: string, itemId: string, fieldId: string, optionId: string): string[] {
+  return graphQLCmd(MUTATION_MOVE, { projectId, itemId, fieldId, optionId });
 }
 
 // ── Response parsers ───────────────────────────────────────────────────────

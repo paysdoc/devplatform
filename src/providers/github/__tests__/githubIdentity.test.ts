@@ -3,8 +3,8 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { execSync } from 'child_process';
+import { isDeepStrictEqual } from 'util';
 import { resolveBootstrapGitIdentity, parseGitHubRemoteUrl, readLocalRepoInfo } from '../githubIdentity.js';
-import type { BootstrapIdentityDeps } from '../githubIdentity.js';
 import { Platform } from '../../types.js';
 
 // ---------------------------------------------------------------------------
@@ -147,15 +147,15 @@ describe('resolveBootstrapGitIdentity — resolution order', () => {
   });
 
   it('falls back to git-config when no env vars are set', () => {
-    const fakeExec = (cmd: string, _opts: unknown) => {
-      if (cmd === 'git config user.name') return 'Config Bot\n';
-      if (cmd === 'git config user.email') return 'config@bot.dev\n';
-      throw new Error(`Unexpected: ${cmd}`);
+    const fakeExec = (argv: readonly string[]): string => {
+      if (isDeepStrictEqual(argv, ['git', 'config', 'user.name'])) return 'Config Bot\n';
+      if (isDeepStrictEqual(argv, ['git', 'config', 'user.email'])) return 'config@bot.dev\n';
+      throw new Error(`Unexpected: ${argv.join(' ')}`);
     };
     const identity = resolveBootstrapGitIdentity({
       env: {},
       isAppConfigured: () => false,
-      exec: fakeExec as unknown as BootstrapIdentityDeps['exec'],
+      exec: fakeExec,
     });
     expect(identity.authorName).toBe('Config Bot');
     expect(identity.authorEmail).toBe('config@bot.dev');

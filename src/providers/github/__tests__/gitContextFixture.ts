@@ -31,20 +31,23 @@ export function validOptions(overrides: Partial<GitContextOptions> = {}): GitCon
 }
 
 export interface SpyCall {
+  argv: readonly string[];
+  /** `argv` joined with spaces — a display and substring-dispatch view only, never what the executor received. */
   command: string;
   cwd: string;
   env: NodeJS.ProcessEnv;
   input?: string;
 }
 
-/** A spy `exec` that answers by first-matching command substring, or `defaultStdout` when nothing matches. */
+/** A spy `exec` that answers by first-matching substring of the joined argv, or `defaultStdout` when nothing matches. */
 export function makeSpyExec(
   responses: ReadonlyMap<string, string | Error> = new Map(),
   defaultStdout = '',
 ): { exec: ExecFn; calls: SpyCall[] } {
   const calls: SpyCall[] = [];
-  const exec: ExecFn = (command, options) => {
-    calls.push({ command, cwd: options.cwd, env: { ...options.env }, input: options.input });
+  const exec: ExecFn = (argv, options) => {
+    const command = argv.join(' ');
+    calls.push({ argv, command, cwd: options.cwd, env: { ...options.env }, input: options.input });
     for (const [pattern, response] of responses) {
       if (command.includes(pattern)) {
         if (response instanceof Error) throw response;
